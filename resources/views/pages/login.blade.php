@@ -113,7 +113,7 @@
                 type="submit"
                 class="w-full bg-[#4B5563] hover:bg-[#374151] active:bg-[#1F2937] text-white text-sm font-bold rounded-lg py-3 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
             >
-            <a href="{{url ('/dashboard')}}"></a>
+            <a href="{{url('/pages/dashboard')}}"></a>
                 Login
             </button>
 

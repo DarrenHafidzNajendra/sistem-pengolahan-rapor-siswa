@@ -21,33 +21,30 @@ Route::get('/', function () {
     return view('pages.login');
 });
 
-// login
-Route::get('/pages.login', [AuthController::class, 'showLogin']);
-
 // dashboard
-Route::get('/pages/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
 // siswa
-Route::get('/pages/data_siswa', [SiswaController::class, 'showDataSiswa'])->name('data_siswa');
+Route::get('/data_siswa', [SiswaController::class, 'showDataSiswa'])->name('data_siswa');
 // guru
-Route::get('/pages/data_guru', [GuruController::class, 'showGuru'])->name('data_guru');
+Route::get('/data_guru', [GuruController::class, 'showGuru'])->name('data_guru');
 // kelas
-Route::get('/pages/data_kelas', [KelasController::class, 'showKelas'])->name('data_kelas');
+Route::get('/data_kelas', [KelasController::class, 'showKelas'])->name('data_kelas');
 // mapel
-Route::get('/pages/data_mapel', [MapelController::class, 'showMapel'])->name('data_mapel');
+Route::get('/data_mapel', [MapelController::class, 'showMapel'])->name('data_mapel');
 // rapor
-Route::get('/pages/data_rapor', [RaporController::class, 'showRapor'])->name('data_rapor');
+Route::get('/data_rapor', [RaporController::class, 'showRapor'])->name('data_rapor');
 // pengampu
-Route::get('/pages/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
+Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
 // input nilai
-Route::get('/pages/input_nilai', [InputNilaiController::class, 'showInputNilai'])->name('input_nilai');
+Route::get('/input_nilai', [InputNilaiController::class, 'showInputNilai'])->name('input_nilai');
 // lupa sandi
-Route::get('/pages/lupa_sandi', function () {
+Route::get('/lupa_sandi', function () {
     return view('pages.lupa_sandi');
 });
-Route::get('/pages/presensi', [PresensiController::class, 'showPresensi'])->name('presensi');
+Route::get('/presensi', [PresensiController::class, 'showPresensi'])->name('presensi');
 
 // ubah kata sandi
-Route::get('/pages/ubah_kata_sandi', function () {
+Route::get('/ubah_kata_sandi', function () {
     return view('pages.ubah_kata_sandi');
 })->name('ubah_kata_sandi');
 
@@ -59,4 +56,4 @@ Route::put('/password/update', function () {
 Route::resource('pengampu', PengampuController::class);
 
 // rekap nilai
-Route::get('/pages/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');
+Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');

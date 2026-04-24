@@ -37,9 +37,9 @@
 
         {{-- Dashboard --}}
         <div class="px-2 mb-0.5">
-            <a href="/pages/dashboard"
+            <a href="/dashboard"
                class="flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                      {{ request()->is('pages/dashboard')
+                      {{ request()->is('dashboard')
                          ? 'bg-gray-900 text-white font-bold'
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -51,10 +51,10 @@
 
 
         {{-- Data Master (Dropdown) --}}
-        <div class="px-2" x-data="{ open: {{ request()->is('pages/data_siswa') || request()->is('pages/data_guru') || request()->is('pages/data_kelas') || request()->is('pages/data_mapel') ? 'true' : 'false' }} }">
+        <div class="px-2" x-data="{ open: {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                     class="flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                           {{ request()->is('pages/data_siswa') || request()->is('pages/data_guru') || request()->is('pages/data_kelas') || request()->is('pages/data_mapel')
+                           {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel')
                               ? 'bg-gray-900 text-white font-bold'
                               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -76,19 +76,19 @@
                  x-transition:enter-end="opacity-100 translate-y-0"
                  class="mt-0.5 ml-4 pl-3 border-l-2 border-gray-200 space-y-0.5">
                 <a href="data_siswa" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('pages/data_siswa') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                                   {{ request()->is('data_siswa') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Siswa
                 </a>
                 <a href="data_guru" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('pages/data_guru') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                                   {{ request()->is('data_guru') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Guru
                 </a>
                 <a href="data_kelas" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('pages/data_kelas') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                                   {{ request()->is('data_kelas') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Kelas
                 </a>
                 <a href="data_mapel" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('pages/data_mapel') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                                   {{ request()->is('data_mapel') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Mapel
                 </a>
             </div>
@@ -96,10 +96,10 @@
 
 
         {{-- Akademik (Dropdown) --}}
-        <div class="px-2" x-data="{ open: {{ request()->is('pages/pengampu') || request()->is('pages/rekap_nilai') || request()->is('pages/input_nilai') || request()->is('pages/presensi') ? 'true' : 'false' }} }">
+        <div class="px-2" x-data="{ open: {{ request()->is('pengampu') || request()->is('rekap_nilai') || request()->is('input_nilai') || request()->is('presensi') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                     class="flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                           {{ request()->is('pages/pengampu') || request()->is('pages/rekap_nilai') || request()->is('pages/input_nilai') || request()->is('pages/presensi')
+                           {{ request()->is('pengampu') || request()->is('rekap_nilai') || request()->is('input_nilai') || request()->is('presensi')
                               ? 'bg-gray-900 text-white font-bold'
                               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -119,19 +119,19 @@
                  x-transition:enter-end="opacity-100 translate-y-0"
                  class="mt-0.5 ml-4 pl-3 border-l-2 border-gray-200 space-y-0.5">
                 <a href="pengampu" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('pages/pengampu') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                                   {{ request()->is('pengampu') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Pengampu
                 </a>
                 <a href="rekap_nilai" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('pages/rekap_nilai') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                                   {{ request()->is('rekap_nilai') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Rekap Nilai
                 </a>
                  <a href="input_nilai" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('pages/input_nilai') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                                   {{ request()->is('input_nilai') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Input nilai
                 </a>
                  <a href="presensi" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('pages/presensi') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                                   {{ request()->is('presensi') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Presensi
                 </a>
             </div>
@@ -139,9 +139,9 @@
 
         {{-- Rapor --}}
         <div class="px-2 mb-0.5">
-            <a href="pages/data_rapor"
+            <a href="data_rapor"
                class="flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                      {{ request()->is('pages/data_rapor')
+                      {{ request()->is('data_rapor')
                          ? 'bg-gray-900 text-white font-bold'
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -153,9 +153,9 @@
 
         {{-- Ubah Kata Sandi --}}
         <div class="px-2">
-            <a href="pages/ubah_kata_sandi"
+            <a href="ubah_kata_sandi"
                class="flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                      {{ request()->is('pages/ubah_kata_sandi')
+                      {{ request()->is('ubah_kata_sandi')
                          ? 'bg-gray-900 text-white font-bold'
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">

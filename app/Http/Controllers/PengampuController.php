@@ -25,7 +25,7 @@ class PengampuController extends Controller
     $gurus = Guru::all();
     $kelas = Kelas::all();
 
-    return view('pengampu', compact(
+    return view('pages.pengampu', compact(
         'pengampus',
         'mapels',
         'gurus',
