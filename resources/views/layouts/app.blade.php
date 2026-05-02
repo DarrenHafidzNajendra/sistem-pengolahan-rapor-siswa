@@ -8,7 +8,7 @@
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     
     {{-- CSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,7 +19,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
                     },
                 }
             }
@@ -28,7 +28,7 @@
 
     <style>
         [x-cloak] { display: none !important; }
-        body { font-family: 'Poppins', sans-serif; }
+        body { font-family: 'Inter', sans-serif; }
         {{-- Mengoptimalkan tampilan pada zoom 100% agar lebih padat --}}
         input, select, button { font-size: 0.875rem !important; }
 
@@ -96,7 +96,7 @@
          class="fixed bottom-6 right-6 z-[100] w-[360px]">
 
         <div :class="$store.toast.leaving ? 'toast-leave' : 'toast-enter'">
-            <div class="bg-gray-900 rounded-xl overflow-hidden border border-gray-800">
+            <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-700">
 
                 {{-- Content Row --}}
                 <div class="flex items-center gap-3 px-4 py-3">
