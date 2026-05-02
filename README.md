@@ -1,59 +1,218 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://img.icons8.com/fluency/96/graduation-cap.png" width="80" alt="SmartRapor Logo">
 </p>
 
-## About Laravel
+<h1 align="center">SMART<span>RAPOR</span></h1>
+<p align="center"><strong>Student Report Card Management System</strong></p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  <a href="https://www.php.net/"><img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP"></a>
+  <a href="https://laravel.com/"><img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel"></a>
+  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"></a>
+  <a href="https://alpinejs.dev/"><img src="https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=flat-square&logo=alpinedotjs&logoColor=white" alt="Alpine.js"></a>
+  <a href="https://flowbite.com/"><img src="https://img.shields.io/badge/Flowbite-4.0-1A56DB?style=flat-square&logo=flowbite&logoColor=white" alt="Flowbite"></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite"></a>
+  <a href="https://www.chartjs.org/"><img src="https://img.shields.io/badge/Chart.js-4-FF6384?style=flat-square&logo=chartdotjs&logoColor=white" alt="Chart.js"></a>
+  <a href="https://www.mysql.com/"><img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL"></a>
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<p align="center">
+  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa"><img src="https://img.shields.io/github/last-commit/drvn-sss/sistem-pengolahan-rapor-siswa?style=flat-square&color=green" alt="Last Commit"></a>
+  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa"><img src="https://img.shields.io/github/repo-size/drvn-sss/sistem-pengolahan-rapor-siswa?style=flat-square" alt="Repo Size"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License"></a>
+</p>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📖 About
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+**SmartRapor** is a web-based student report card management system designed for schools to efficiently manage academic data. Built with **Laravel 12** and a modern flat UI design, it provides a centralized platform for administrators to manage students, teachers, classes, subjects, grading, and report card generation.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The application features a clean, component-based architecture using **Blade components**, **Tailwind CSS** for styling, **Alpine.js** for client-side interactivity, and **Chart.js** for dashboard analytics visualization.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## ✨ Features
 
-### Premium Partners
+### 🔐 Authentication
+- Secure login system with password visibility toggle
+- Forgot password (password recovery) page
+- Change password functionality
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 📊 Dashboard
+- Overview statistics cards (Total Students, Teachers, Classes, Subjects)
+- **Grade Trend Chart** — Line chart tracking average student grades per semester
+- **Grade Distribution Chart** — Bar chart showing grade distribution (A–E)
+- **Grade Completeness Chart** — Doughnut chart visualizing input progress
+- **Subject Grades by Class** — Filterable bar chart by department & subject
 
-## Contributing
+### 📁 Master Data Management
+- **Student Data** (`Data Siswa`) — Full CRUD with search and pagination
+- **Teacher Data** (`Data Guru`) — Manage teacher records with NIP and contact info
+- **Class Data** (`Data Kelas`) — Manage classes with department and grade level
+- **Subject Data** (`Data Mapel`) — Manage subjects with curriculum mapping
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 🎓 Academic Module
+- **Teaching Assignment** (`Pengampu`) — Assign teachers to subjects and classes
+- **Grade Input** (`Input Nilai`) — Enter assignment, midterm (UTS), and final exam (UAS) scores
+- **Grade Recap** (`Rekap Nilai`) — View and filter consolidated student grades with pass/fail status
+- **Attendance** (`Presensi`) — Track student attendance records
 
-## Code of Conduct
+### 📄 Report Card
+- **Student Report Card** (`Rapor Siswa`) — Generate and manage student report cards
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 🧩 Reusable UI Components
+- `<x-stat-card>` — Statistics display card
+- `<x-chart-card>` — Chart container with title and icon
+- `<x-search-toolbar>` — Search bar with filter integration
+- `<x-action-buttons>` — Standardized CRUD action buttons
+- `<x-modal>` — Reusable modal dialog
+- `<x-badge>` — Status badge (success/warning)
+- `<x-pagination>` — Table pagination component
+- `<x-sidebar>` — Collapsible navigation sidebar with active state highlighting
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🛠️ Tech Stack
 
-## License
+| Layer        | Technology                                                     |
+|--------------|----------------------------------------------------------------|
+| **Backend**  | PHP 8.2+, Laravel 12, Eloquent ORM                            |
+| **Frontend** | Blade Templates, Tailwind CSS 3.4, Alpine.js 3.x              |
+| **UI Kit**   | Flowbite 4.0, Font Awesome 6                                  |
+| **Build**    | Vite 7, PostCSS, Autoprefixer                                 |
+| **Charts**   | Chart.js (via CDN)                                             |
+| **Database** | MySQL (via XAMPP)                                              |
+| **Font**     | [Inter](https://fonts.google.com/specimen/Inter) (Google Fonts)|
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 📁 Project Structure
+
+```
+sistem-pengolahan-rapor-siswa/
+├── app/
+│   ├── Http/Controllers/     # Route controllers
+│   └── Models/               # Eloquent models (User, Guru, Kelas, Mapel, Pengampu)
+├── database/
+│   ├── migrations/           # Database schema definitions
+│   └── seeders/              # Sample data seeders
+├── resources/views/
+│   ├── layouts/              # Master layouts (app.blade.php, guest.blade.php)
+│   ├── components/           # Reusable Blade components
+│   └── pages/                # Application pages
+├── routes/
+│   └── web.php               # Web route definitions
+├── public/                   # Public assets & entry point
+├── vite.config.js            # Vite build configuration
+├── tailwind.config.js        # Tailwind CSS configuration
+└── composer.json             # PHP dependencies
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **PHP** ≥ 8.2
+- **Composer** ≥ 2.x
+- **Node.js** ≥ 18.x
+- **MySQL** ≥ 8.0 (or MariaDB)
+- **XAMPP** (recommended) or any LAMP/LEMP stack
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa.git
+   cd sistem-pengolahan-rapor-siswa
+   ```
+
+2. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Environment setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Configure the database**
+
+   Update `.env` with your database credentials:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=sistem_rapor
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+5. **Run migrations and seeders**
+   ```bash
+   php artisan migrate --seed
+   ```
+
+6. **Build frontend assets**
+   ```bash
+   npm run build
+   ```
+
+7. **Start the development server**
+   ```bash
+   composer dev
+   ```
+   This concurrently starts: Laravel server, queue worker, Pail log viewer, and Vite dev server.
+
+   Alternatively, run them individually:
+   ```bash
+   php artisan serve
+   npm run dev
+   ```
+
+8. **Visit the application**
+   ```
+   http://localhost:8000
+   ```
+
+---
+
+## 📸 Screenshots
+
+> _Screenshots coming soon — contributions welcome!_
+
+<!--
+Add screenshots here:
+![Dashboard](docs/screenshots/dashboard.png)
+![Login](docs/screenshots/login.png)
+![Grade Recap](docs/screenshots/rekap-nilai.png)
+-->
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is open-sourced under the [MIT License](https://opensource.org/licenses/MIT).
+
+---
+
+<p align="center">
+  Built with ❤️ using <a href="https://laravel.com">Laravel</a> &amp; <a href="https://tailwindcss.com">Tailwind CSS</a>
+</p>
