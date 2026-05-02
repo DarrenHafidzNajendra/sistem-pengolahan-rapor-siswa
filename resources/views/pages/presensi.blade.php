@@ -33,13 +33,13 @@
             markAllHadir() {
                 this.presensiList.forEach(s => s.status = 'hadir');
             }
-        }" class="bg-white rounded-lg shadow-sm border border-gray-200">
+        }" class="bg-white rounded-lg border border-gray-200">
             {{-- Toolbar --}}
             <div class="p-6 border-b border-gray-200">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
                         <div class="relative">
-                            <select x-model="mapel" class="appearance-none w-40 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer">
+                            <select x-model="mapel" class="appearance-none w-40 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
                                 <option value="Matematika Wajib">Matematika</option>
                                 <option value="Bahasa Inggris">Bahasa Inggris</option>
                                 <option value="Fisika Dasar">Fisika Dasar</option>
@@ -47,20 +47,20 @@
                             <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-600 pointer-events-none"></i>
                         </div>
                         <div class="relative">
-                            <select x-model="kelas" class="appearance-none w-32 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer">
+                            <select x-model="kelas" class="appearance-none w-32 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
                                 <option value="X MIPA 1">X MIPA 1</option>
                                 <option value="X MIPA 2">X MIPA 2</option>
                                 <option value="XI IPS 1">XI IPS 1</option>
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-600 pointer-events-none"></i>
                         </div>
-                        <input type="date" x-model="tanggal" class="w-40 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer">
+                        <input type="date" x-model="tanggal" class="w-40 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
                     </div>
                     <div class="flex items-center gap-2 w-full md:w-auto">
-                        <button @click="markAllHadir()" class="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-100 border border-blue-200 transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
+                        <button @click="markAllHadir()" class="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-100 border border-blue-200 transition-colors flex items-center gap-2 whitespace-nowrap">
                             <i class="fa-solid fa-check-double"></i><span>Hadir Semua</span>
                         </button>
-                        <button class="px-4 py-2 bg-gray-700 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-all flex items-center gap-2 whitespace-nowrap shadow-sm hover:shadow-md">
+                        <button class="px-4 py-2 bg-gray-700 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap">
                             <i class="fa-solid fa-floppy-disk text-lg"></i><span>Simpan Presensi</span>
                         </button>
                     </div>
@@ -98,7 +98,7 @@
             {{-- Table --}}
             <div class="overflow-x-auto">
                 <table class="w-full">
-                    <thead class="bg-gradient-to-r from-gray-900 to-gray-800">
+                    <thead class="bg-gray-900">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">NO</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">NIS</th>
@@ -118,7 +118,7 @@
                                 <td class="px-6 py-4 text-center">
                                     <label class="inline-flex items-center justify-center cursor-pointer group">
                                         <input type="radio" :name="'status_'+p.nis" value="hadir" x-model="p.status" class="hidden">
-                                        <div :class="p.status === 'hadir' ? 'bg-green-100 text-green-700 border-green-300 ring-2 ring-green-200' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-all group-hover:scale-110">
+                                        <div :class="p.status === 'hadir' ? 'bg-green-500 text-white border-green-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors">
                                             <i class="fa-solid fa-check"></i>
                                         </div>
                                     </label>
@@ -126,7 +126,7 @@
                                 <td class="px-6 py-4 text-center">
                                     <label class="inline-flex items-center justify-center cursor-pointer group">
                                         <input type="radio" :name="'status_'+p.nis" value="tidak_hadir" x-model="p.status" class="hidden">
-                                        <div :class="p.status === 'tidak_hadir' ? 'bg-red-100 text-red-700 border-red-300 ring-2 ring-red-200' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-all group-hover:scale-110">
+                                        <div :class="p.status === 'tidak_hadir' ? 'bg-red-500 text-white border-red-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors">
                                             <i class="fa-solid fa-xmark"></i>
                                         </div>
                                     </label>
@@ -134,13 +134,13 @@
                                 <td class="px-6 py-4 text-center">
                                     <label class="inline-flex items-center justify-center cursor-pointer group">
                                         <input type="radio" :name="'status_'+p.nis" value="izin" x-model="p.status" class="hidden">
-                                        <div :class="p.status === 'izin' ? 'bg-blue-100 text-blue-700 border-blue-300 ring-2 ring-blue-200' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-all group-hover:scale-110">
+                                        <div :class="p.status === 'izin' ? 'bg-blue-500 text-white border-blue-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors">
                                             <i class="fa-solid fa-info"></i>
                                         </div>
                                     </label>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <input type="text" x-model="p.ket" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-200 shadow-sm bg-white transition-all" :placeholder="p.status !== 'hadir' ? 'Alasan...' : ''">
+                                    <input type="text" x-model="p.ket" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white transition-colors" :placeholder="p.status !== 'hadir' ? 'Alasan...' : ''">
                                 </td>
                             </tr>
                         </template>

@@ -11,11 +11,11 @@
                 <div class="space-y-4">
                     <div>
                         <label for="nama_kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Kelas</label>
-                        <input type="text" id="nama_kelas" name="nama_kelas" placeholder="Contoh: X IPA 1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all">
+                        <input type="text" id="nama_kelas" name="nama_kelas" placeholder="Contoh: X IPA 1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors">
                     </div>
                     <div>
                         <label for="wali_kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Wali Kelas</label>
-                        <select id="wali_kelas" name="wali_kelas" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all cursor-pointer">
+                        <select id="wali_kelas" name="wali_kelas" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors cursor-pointer">
                             <option value="">Pilih Guru Wali Kelas</option>
                             <option>Drs. Bambang Heru</option>
                             <option>Siti Aminah, S.Pd</option>
@@ -25,16 +25,16 @@
                 <div class="flex items-center gap-3 mt-8">
                     <button type="submit" 
                             @click.prevent="openTambah = false; $dispatch('notify', { message: 'Data kelas baru berhasil disimpan.' })"
-                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-gray-800 active:scale-95 transition-all shadow-sm">
+                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors">
                         <i class="fa-solid fa-check"></i>
                         <span>Simpan Kelas</span>
                     </button>
-                    <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-bold text-gray-500 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all">Batal</button>
+                    <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
                 </div>
             </form>
         </x-modal>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <x-search-toolbar 
                 placeholder="Cari kelas..." 
                 :showFilter="false"

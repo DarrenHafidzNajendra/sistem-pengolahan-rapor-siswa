@@ -10,7 +10,7 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Mapel</label>
-                    <select name="mapel_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:border-gray-400 text-gray-700 appearance-none cursor-pointer">
+                    <select name="mapel_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white text-gray-700 appearance-none cursor-pointer">
                         @foreach($mapels as $mapel)
                             <option value="{{ $mapel->id }}">{{ $mapel->nama_mapel }}</option>
                         @endforeach
@@ -18,11 +18,11 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Minimum KKM</label>
-                    <input type="number" name="minimum_kkm" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white hover:border-gray-400">
+                    <input type="number" name="minimum_kkm" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Guru</label>
-                    <select name="guru_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:border-gray-400 text-gray-700 appearance-none cursor-pointer">
+                    <select name="guru_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white text-gray-700 appearance-none cursor-pointer">
                         @foreach($gurus as $guru)
                             <option value="{{ $guru->id }}">{{ $guru->nama_guru }}</option>
                         @endforeach
@@ -30,7 +30,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                    <select name="kelas_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:border-gray-400 text-gray-700 appearance-none cursor-pointer">
+                    <select name="kelas_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white text-gray-700 appearance-none cursor-pointer">
                         @foreach($kelas as $k)
                             <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
                         @endforeach
@@ -38,18 +38,18 @@
                 </div>
             </div>
             <div class="flex items-center gap-3 mt-6">
-                <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-all shadow-sm hover:shadow-md">Tambah</button>
+                <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors">Tambah</button>
                 <button type="button" @click="openTambah = false" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all">Batal</button>
             </div>
         </form>
     </x-modal>
 
     <div class="max-w-full">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="bg-white rounded-lg border border-gray-200">
             <x-search-toolbar placeholder="Cari pengampu, guru..." :filterOptions="['Aktif', 'Tidak Aktif']" filterLabel="Filter Status" />
             <div class="overflow-x-auto">
                 <table class="w-full">
-                    <thead class="bg-gradient-to-r from-gray-900 to-gray-800">
+                    <thead class="bg-gray-900">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">NO</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Kode Mapel</th>

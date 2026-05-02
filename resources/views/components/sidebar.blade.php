@@ -23,7 +23,7 @@
             <a href="{{ route('dashboard') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('dashboard')
-                         ? 'bg-gray-900 text-white font-bold shadow-md'
+                         ? 'bg-gray-900 text-white font-bold'
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 @if(request()->is('dashboard')) <div class="absolute left-0 w-1 h-4 bg-blue-500 rounded-r-full"></div> @endif
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -132,7 +132,7 @@
             <a href="{{ route('data_rapor') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('data_rapor')
-                         ? 'bg-gray-900 text-white font-bold shadow-md'
+                         ? 'bg-gray-900 text-white font-bold'
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 @if(request()->is('data_rapor')) <div class="absolute left-0 w-1 h-4 bg-blue-500 rounded-r-full"></div> @endif
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -147,7 +147,7 @@
             <a href="{{ route('ubah_kata_sandi') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('ubah_kata_sandi')
-                         ? 'bg-gray-900 text-white font-bold shadow-md'
+                         ? 'bg-gray-900 text-white font-bold'
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 @if(request()->is('ubah_kata_sandi')) <div class="absolute left-0 w-1 h-4 bg-blue-500 rounded-r-full"></div> @endif
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">

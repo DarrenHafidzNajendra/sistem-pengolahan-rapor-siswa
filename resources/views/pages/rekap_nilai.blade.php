@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="max-w-full">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="bg-white rounded-lg border border-gray-200">
             {{-- Custom Multi-Filter Toolbar --}}
             <div class="p-6 border-b border-gray-200">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
@@ -12,7 +12,7 @@
                         <div class="relative group">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
                             <input type="text" placeholder="Cari nama siswa..." 
-                                   class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all bg-gray-50/50 focus:bg-white">
+                                   class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
                         </div>
                     </div>
                     
@@ -20,7 +20,7 @@
                     <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Filter:</span>
-                            <select class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none bg-white cursor-pointer hover:border-gray-400 transition-all min-w-[140px]">
+                            <select class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white cursor-pointer transition-colors min-w-[140px]">
                                 <option value="">Semua Kelas</option>
                                 <option>X A</option>
                                 <option>X B</option>
@@ -29,7 +29,7 @@
                             </select>
                         </div>
                         
-                        <select class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none bg-white cursor-pointer hover:border-gray-400 transition-all min-w-[180px]">
+                        <select class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white cursor-pointer transition-colors min-w-[180px]">
                             <option value="">Semua Mata Pelajaran</option>
                             <option>Matematika</option>
                             <option>Bahasa Indonesia</option>
@@ -38,7 +38,7 @@
                             <option>Kimia</option>
                         </select>
 
-                        <button class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-gray-800 active:scale-95 transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
+                        <button class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap">
                             <i class="fa-solid fa-magnifying-glass text-xs"></i>
                             <span>Cari</span>
                         </button>
@@ -58,7 +58,6 @@
                             <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">UAS</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Nilai Akhir</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -85,13 +84,6 @@
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $r[5] }}</td>
                             <td class="px-6 py-4 text-center text-sm font-bold text-gray-900">{{ $r[6] }}</td>
                             <td class="px-6 py-4 text-center"><x-badge :type="$r[7] === 'Tuntas' ? 'success' : 'warning'">{{ $r[7] }}</x-badge></td>
-                            <td class="px-6 py-4 text-center">
-                                <div class="flex items-center justify-center">
-                                    <button title="Cetak Rekap Siswa" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm active:scale-95">
-                                        <i class="fa-solid fa-print"></i><span>Cetak</span>
-                                    </button>
-                                </div>
-                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -101,7 +93,7 @@
         </div>
 
         {{-- Footer Info --}}
-        <div class="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="mt-6 bg-white rounded-lg border border-gray-200 p-6">
             <h3 class="text-sm font-semibold text-gray-900 mb-4">Keterangan Status</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex items-center gap-3">

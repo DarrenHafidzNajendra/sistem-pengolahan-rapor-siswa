@@ -11,23 +11,23 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="nis" class="block text-sm font-semibold text-gray-700 mb-1.5">NIS</label>
-                        <input type="text" id="nis" name="nis" placeholder="Masukkan NIS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white hover:border-gray-400">
+                        <input type="text" id="nis" name="nis" placeholder="Masukkan NIS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
                     </div>
                     <div>
                         <label for="nama_siswa" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Siswa</label>
-                        <input type="text" id="nama_siswa" name="nama_siswa" placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white hover:border-gray-400">
+                        <input type="text" id="nama_siswa" name="nama_siswa" placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                        <select id="kelas" name="kelas" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-gray-50 hover:border-gray-400 text-gray-700 appearance-none cursor-pointer">
+                        <select id="kelas" name="kelas" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
                             <option value="">Pilih Kelas</option>
                         </select>
                     </div>
                     <div>
                         <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
-                        <select id="jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-gray-50 hover:border-gray-400 text-gray-700 appearance-none cursor-pointer">
+                        <select id="jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
                             <option value="">Pilih Jenis Kelamin</option>
                             <option value="L">Laki-laki</option>
                             <option value="P">Perempuan</option>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="mb-6">
                     <label for="status_siswa" class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
-                    <select id="status_siswa" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-gray-50 hover:border-gray-400 text-gray-700 appearance-none cursor-pointer">
+                    <select id="status_siswa" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
                         <option value="">Pilih Status</option>
                         <option value="aktif">Aktif</option>
                         <option value="tidak_aktif">Tidak Aktif</option>
@@ -45,16 +45,16 @@
                 <div class="flex items-center gap-3">
                     <button type="submit" 
                             @click.prevent="openTambah = false; $dispatch('notify', { message: 'Data siswa baru berhasil ditambahkan ke sistem.' })"
-                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 active:bg-gray-700 transition-all shadow-sm hover:shadow-md">
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors">
                         <i class="fa-solid fa-plus text-xs"></i>
                         <span>Tambah Siswa</span>
                     </button>
-                    <button type="button" @click="openTambah = false" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-all">Batal</button>
+                    <button type="button" @click="openTambah = false" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Batal</button>
                 </div>
             </form>
         </x-modal>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
             {{-- Toolbar Section --}}
             <x-search-toolbar 
                 placeholder="Cari siswa berdasarkan NIS atau Nama..." 

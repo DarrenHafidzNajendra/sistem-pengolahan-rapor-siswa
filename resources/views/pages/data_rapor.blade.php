@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="max-w-full">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="bg-white rounded-lg border border-gray-200">
             <x-search-toolbar placeholder="Cari nama siswa..." :filterOptions="['X A', 'X B', 'XI A', 'XI B', 'XII A', 'XII B']" filterLabel="Filter Kelas" :showTambah="false" />
 
             <div class="overflow-x-auto">
@@ -40,7 +40,7 @@
                             <td class="px-6 py-4 text-center"><x-badge :type="$r[4] === 'Lulus' ? 'success' : ($r[4] === 'Kondisional' ? 'warning' : 'danger')">{{ $r[4] }}</x-badge></td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center">
-                                    <button title="Cetak Rapor (PDF)" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow-md active:scale-95">
+                                    <button title="Cetak Rapor (PDF)" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                                         <i class="fa-solid fa-print"></i><span>Cetak Rapor</span>
                                     </button>
                                 </div>
