@@ -29,7 +29,7 @@
             </form>
 
             <div class="mt-8 pt-6 border-t border-gray-100 text-[10px]">
-                <a href="/login" class="font-bold text-gray-400 hover:text-black">KEMBALI KE LOGIN</a>
+                <a href="{{ route('login') }}" class="font-bold text-gray-400 hover:text-black">KEMBALI KE LOGIN</a>
             </div>
         </div>
     </div>

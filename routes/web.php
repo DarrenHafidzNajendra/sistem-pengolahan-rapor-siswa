@@ -19,7 +19,16 @@ use App\Http\Controllers\UbahKataSandiController;
 // first page
 Route::get('/', function () {
     return view('pages.login');
+})->name('login');
+
+Route::get('/login', function () {
+    return redirect()->route('login');
 });
+
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect()->route('login');
+})->name('logout');
 
 // dashboard
 Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
@@ -40,7 +49,7 @@ Route::get('/input_nilai', [InputNilaiController::class, 'showInputNilai'])->nam
 // lupa sandi
 Route::get('/lupa_sandi', function () {
     return view('pages.lupa_sandi');
-});
+})->name('lupa_sandi');
 Route::get('/presensi', [PresensiController::class, 'showPresensi'])->name('presensi');
 
 // ubah kata sandi
@@ -53,7 +62,7 @@ Route::put('/password/update', function () {
 })->name('password.update');
 
 // tambah pengampu
-Route::resource('pengampu', PengampuController::class);
+Route::resource('pengampu', PengampuController::class)->except(['index']);
 
 // rekap nilai
 Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');

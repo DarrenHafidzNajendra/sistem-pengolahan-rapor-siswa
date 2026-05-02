@@ -20,7 +20,7 @@
 
         {{-- Dashboard --}}
         <div class="px-2 mb-2">
-            <a href="/dashboard"
+            <a href="{{ route('dashboard') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('dashboard')
                          ? 'bg-gray-900 text-white font-bold shadow-md'
@@ -62,19 +62,19 @@
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
                  class="mt-1 ml-4 pl-3 border-l border-gray-200 space-y-1">
-                <a href="data_siswa" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                <a href="{{ route('data_siswa') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('data_siswa') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Siswa
                 </a>
-                <a href="data_guru" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                <a href="{{ route('data_guru') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('data_guru') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Guru
                 </a>
-                <a href="data_kelas" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                <a href="{{ route('data_kelas') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('data_kelas') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Kelas
                 </a>
-                <a href="data_mapel" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                <a href="{{ route('data_mapel') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('data_mapel') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Mapel
                 </a>
@@ -108,19 +108,19 @@
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
                  class="mt-1 ml-4 pl-3 border-l border-gray-200 space-y-1">
-                <a href="pengampu" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                <a href="{{ route('pengampu') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('pengampu') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Pengampu
                 </a>
-                <a href="rekap_nilai" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                <a href="{{ route('rekap_nilai') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('rekap_nilai') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Rekap Nilai
                 </a>
-                 <a href="input_nilai" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                 <a href="{{ route('input_nilai') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('input_nilai') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Input nilai
                 </a>
-                 <a href="presensi" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                 <a href="{{ route('presensi') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('presensi') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Presensi
                 </a>
@@ -129,7 +129,7 @@
 
         {{-- Rapor --}}
         <div class="px-2 mb-2">
-            <a href="data_rapor"
+            <a href="{{ route('data_rapor') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('data_rapor')
                          ? 'bg-gray-900 text-white font-bold shadow-md'
@@ -144,7 +144,7 @@
 
         {{-- Ubah Kata Sandi --}}
         <div class="px-2">
-            <a href="ubah_kata_sandi"
+            <a href="{{ route('ubah_kata_sandi') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('ubah_kata_sandi')
                          ? 'bg-gray-900 text-white font-bold shadow-md'
@@ -162,7 +162,7 @@
 
     {{-- Logout --}}
     <div class="p-3 border-t border-gray-200">
-        <form method="POST" action="/logout">
+        <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit"
                     class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-red-600 rounded-lg

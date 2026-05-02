@@ -16,7 +16,7 @@
             </div>
 
             {{-- Form --}}
-            <form method="GET" action="/dashboard" class="space-y-6">
+            <form method="GET" action="{{ route('dashboard') }}" class="space-y-6">
                 @csrf
 
                 <div class="space-y-1">
@@ -29,7 +29,7 @@
                 <div class="space-y-1">
                     <div class="flex justify-between items-center">
                         <label for="password" class="text-[10px] font-bold text-gray-500 uppercase">Password</label>
-                        <a href="/lupa_sandi" class="text-[10px] text-gray-400 hover:text-black">Lupa sandi?</a>
+                        <a href="{{ route('lupa_sandi') }}" class="text-[10px] text-gray-400 hover:text-black">Lupa sandi?</a>
                     </div>
                     <div class="relative">
                         <input type="password" :type="showPass ? 'text' : 'password'" id="password" name="password" required
