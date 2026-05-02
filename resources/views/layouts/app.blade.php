@@ -6,13 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Rapor — @yield('title', 'Dashboard')</title>
 
-    {{-- Google Fonts - Inter & Plus Jakarta Sans --}}
+    {{-- Google Fonts - Poppins --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     {{-- Tailwind CSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
 
     {{-- Alpine.js --}}
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -26,7 +37,7 @@
     @stack('styles')
     @stack('head-scripts')
 </head>
-<body class="bg-gray-50" @yield('body-attrs')>
+<body class="bg-gray-50 font-sans antialiased text-gray-900" @yield('body-attrs')>
 
     {{-- Sidebar --}}
     <x-sidebar />

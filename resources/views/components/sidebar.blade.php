@@ -1,21 +1,4 @@
 {{-- resources/views/components/sidebar.blade.php --}}
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
-    
-    * {
-        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
-    
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
-        font-weight: 600;
-    }
-    
-    body {
-        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        letter-spacing: -0.3px;
-    }
-</style>
 
 <aside id="sidebar" class="fixed top-0 left-0 z-50 flex flex-col w-48 min-h-screen bg-gray-50 border-r border-gray-200">
 
@@ -33,15 +16,16 @@
     </div>
 
     {{-- Navigation --}}
-    <nav class="flex-1 py-2 overflow-y-auto">
+    <nav class="flex-1 py-4 overflow-y-auto scrollbar-thin">
 
         {{-- Dashboard --}}
-        <div class="px-2 mb-0.5">
+        <div class="px-2 mb-2">
             <a href="/dashboard"
-               class="flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('dashboard')
-                         ? 'bg-gray-900 text-white font-bold'
+                         ? 'bg-gray-900 text-white font-bold shadow-md'
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                @if(request()->is('dashboard')) <div class="absolute left-0 w-1 h-4 bg-blue-500 rounded-r-full"></div> @endif
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zM11 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM11 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/>
                 </svg>
@@ -51,12 +35,15 @@
 
 
         {{-- Data Master (Dropdown) --}}
-        <div class="px-2" x-data="{ open: {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel') ? 'true' : 'false' }} }">
+        <div class="px-2 mb-2" x-data="{ open: {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel') ? 'true' : 'false' }} }">
             <button @click="open = !open"
-                    class="flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                    class="relative flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
                            {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel')
                               ? 'bg-gray-900 text-white font-bold'
                               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                @if(request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel'))
+                    <div class="absolute left-0 w-1 h-4 bg-blue-500 rounded-r-full"></div>
+                @endif
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z"/>
                     <path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z"/>
@@ -74,21 +61,21 @@
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
-                 class="mt-0.5 ml-4 pl-3 border-l-2 border-gray-200 space-y-0.5">
-                <a href="data_siswa" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('data_siswa') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                 class="mt-1 ml-4 pl-3 border-l border-gray-200 space-y-1">
+                <a href="data_siswa" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                                   {{ request()->is('data_siswa') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Siswa
                 </a>
-                <a href="data_guru" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('data_guru') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                <a href="data_guru" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                                   {{ request()->is('data_guru') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Guru
                 </a>
-                <a href="data_kelas" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('data_kelas') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                <a href="data_kelas" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                                   {{ request()->is('data_kelas') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Kelas
                 </a>
-                <a href="data_mapel" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('data_mapel') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                <a href="data_mapel" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                                   {{ request()->is('data_mapel') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Data Mapel
                 </a>
             </div>
@@ -96,12 +83,15 @@
 
 
         {{-- Akademik (Dropdown) --}}
-        <div class="px-2" x-data="{ open: {{ request()->is('pengampu') || request()->is('rekap_nilai') || request()->is('input_nilai') || request()->is('presensi') ? 'true' : 'false' }} }">
+        <div class="px-2 mb-2" x-data="{ open: {{ request()->is('pengampu') || request()->is('rekap_nilai') || request()->is('input_nilai') || request()->is('presensi') ? 'true' : 'false' }} }">
             <button @click="open = !open"
-                    class="flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                    class="relative flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
                            {{ request()->is('pengampu') || request()->is('rekap_nilai') || request()->is('input_nilai') || request()->is('presensi')
                               ? 'bg-gray-900 text-white font-bold'
                               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                @if(request()->is('pengampu') || request()->is('rekap_nilai') || request()->is('input_nilai') || request()->is('presensi'))
+                    <div class="absolute left-0 w-1 h-4 bg-gray-900 rounded-r-full"></div>
+                @endif
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
                 </svg>
@@ -117,47 +107,49 @@
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
-                 class="mt-0.5 ml-4 pl-3 border-l-2 border-gray-200 space-y-0.5">
-                <a href="pengampu" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('pengampu') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                 class="mt-1 ml-4 pl-3 border-l border-gray-200 space-y-1">
+                <a href="pengampu" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                                   {{ request()->is('pengampu') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Pengampu
                 </a>
-                <a href="rekap_nilai" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('rekap_nilai') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                <a href="rekap_nilai" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                                   {{ request()->is('rekap_nilai') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Rekap Nilai
                 </a>
-                 <a href="input_nilai" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('input_nilai') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                 <a href="input_nilai" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                                   {{ request()->is('input_nilai') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Input nilai
                 </a>
-                 <a href="presensi" class="block px-3 py-1.5 text-xs font-medium rounded transition-colors
-                                   {{ request()->is('presensi') ? 'bg-gray-900 text-white font-bold' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                 <a href="presensi" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                                   {{ request()->is('presensi') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Presensi
                 </a>
             </div>
         </div>
 
         {{-- Rapor --}}
-        <div class="px-2 mb-0.5">
+        <div class="px-2 mb-2">
             <a href="data_rapor"
-               class="flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('data_rapor')
-                         ? 'bg-gray-900 text-white font-bold'
+                         ? 'bg-gray-900 text-white font-bold shadow-md'
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                @if(request()->is('data_rapor')) <div class="absolute left-0 w-1 h-4 bg-blue-500 rounded-r-full"></div> @endif
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
                 </svg>
-                <span>Rapor</span>
+                <span>Rapor Siswa</span>
             </a>
         </div>
 
         {{-- Ubah Kata Sandi --}}
         <div class="px-2">
             <a href="ubah_kata_sandi"
-               class="flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('ubah_kata_sandi')
-                         ? 'bg-gray-900 text-white font-bold'
+                         ? 'bg-gray-900 text-white font-bold shadow-md'
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                @if(request()->is('ubah_kata_sandi')) <div class="absolute left-0 w-1 h-4 bg-blue-500 rounded-r-full"></div> @endif
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clip-rule="evenodd"/>
                 </svg>
