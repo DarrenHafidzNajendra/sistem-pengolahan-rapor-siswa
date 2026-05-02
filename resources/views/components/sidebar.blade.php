@@ -1,18 +1,18 @@
 {{-- resources/views/components/sidebar.blade.php --}}
 
-<aside id="sidebar" class="fixed top-0 left-0 z-50 flex flex-col w-48 min-h-screen bg-gray-50 border-r border-gray-200">
+<aside id="sidebar" class="fixed top-0 left-0 z-50 flex flex-col w-52 min-h-screen bg-white border-r border-gray-200">
 
     {{-- Logo --}}
-    <div class="px-4 py-4 border-b border-gray-200">
-        <svg width="130" height="40" viewBox="0 0 148 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0" y="6" width="20" height="26" rx="3" fill="#4B5563"/>
-            <rect x="22" y="6" width="20" height="26" rx="3" fill="#6B7280"/>
-            <line x1="21" y1="6" x2="21" y2="32" stroke="white" stroke-width="2"/>
-            <circle cx="10" cy="19" r="4" fill="white" fill-opacity="0.3"/>
-            <circle cx="32" cy="19" r="4" fill="white" fill-opacity="0.2"/>
-            <text x="50" y="22" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="17" font-weight="800" fill="#1F2937" letter-spacing="1">SMART</text>
-            <text x="50" y="37" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="11" font-weight="500" fill="#9CA3AF" letter-spacing="3">RAPOR</text>
-        </svg>
+    <div class="px-5 py-5 border-b border-gray-100">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white">
+                <i class="fa-solid fa-graduation-cap text-xs"></i>
+            </div>
+            <div>
+                <h1 class="text-sm font-black tracking-tighter text-gray-900 leading-none">SMART<span class="text-blue-600">RAPOR</span></h1>
+                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Management</p>
+            </div>
+        </div>
     </div>
 
     {{-- Navigation --}}

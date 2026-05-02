@@ -11,21 +11,17 @@
     {{-- Card --}}
     <div class="bg-white rounded-2xl shadow-md w-full max-w-md px-10 py-10">
 
-        {{-- Logo SVG SmartRapor --}}
+        {{-- Logo SmartRapor --}}
         <div class="flex flex-col items-center mb-8">
-            <svg width="160" height="52" viewBox="0 0 160 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Ikon buku terbuka -->
-                <rect x="0" y="8" width="22" height="28" rx="3" fill="#4B5563"/>
-                <rect x="24" y="8" width="22" height="28" rx="3" fill="#6B7280"/>
-                <line x1="23" y1="8" x2="23" y2="36" stroke="white" stroke-width="2"/>
-                <!-- Tanda bintang / rapor -->
-                <circle cx="11" cy="22" r="5" fill="white" fill-opacity="0.3"/>
-                <circle cx="35" cy="22" r="5" fill="white" fill-opacity="0.2"/>
-                <!-- Teks SMART -->
-                <text x="54" y="26" font-family="Plus Jakarta Sans, sans-serif" font-size="18" font-weight="800" fill="#1F2937" letter-spacing="1">SMART</text>
-                <!-- Teks RAPOR -->
-                <text x="54" y="42" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="500" fill="#6B7280" letter-spacing="3">RAPOR</text>
-            </svg>
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gray-900 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-gray-200">
+                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tighter text-gray-900 leading-none">SMART<span class="text-blue-600">RAPOR</span></h1>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] mt-1">Management</p>
+                </div>
+            </div>
         </div>
 
         {{-- Form --}}

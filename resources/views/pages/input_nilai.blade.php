@@ -1,78 +1,122 @@
 @extends('layouts.app')
 @section('title', 'Input Nilai')
-@section('body-attrs') x-data="inputNilai()" @endsection
 
 @section('content')
-    <div class="max-w-full">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            {{-- Toolbar --}}
-            <div class="p-4 border-b border-gray-200">
-                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-                    <div class="w-full md:w-auto md:max-w-xs">
-                        <div class="relative group">
-                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                            <input type="text" placeholder="Cari Siswa" class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white hover:border-gray-400">
-                        </div>
+    <div class="max-w-full" x-data="inputNilai()">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            {{-- Toolbar & Header --}}
+            <div class="p-6 border-b border-gray-100 bg-gray-50/30">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+                    <div class="space-y-1">
+                        <h2 class="text-xl font-bold text-gray-900">Input Capaian Belajar</h2>
+                        <p class="text-sm text-gray-500">Kelola nilai pengetahuan, keterampilan, dan sikap siswa.</p>
                     </div>
-                    <div class="flex items-center gap-2 w-full md:w-auto flex-wrap">
-                        <select class="px-3 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg bg-white hover:border-gray-400">
-                            <option>Mapel</option>
-                            <option>Matematika</option><option>Bahasa Indonesia</option>
+                    
+                    <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                        <select class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all cursor-pointer">
+                            <option>Matematika</option>
+                            <option>Bahasa Indonesia</option>
                         </select>
-                        <select class="px-3 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg bg-white hover:border-gray-400">
-                            <option>Kelas</option>
-                            <option>X-IPA-1</option><option>X-IPA-2</option>
+                        <select class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all cursor-pointer">
+                            <option>X-IPA-1</option>
+                            <option>X-IPA-2</option>
                         </select>
-                        <select class="px-3 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg bg-white hover:border-gray-400">
-                            <option value="">Semester</option><option value="ganjil">Ganjil</option><option value="genap">Genap</option>
-                        </select>
-                        <select class="px-3 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg bg-white hover:border-gray-400">
-                            <option value="">Tahun Ajaran</option><option>2024/2025</option><option>2025/2026</option>
-                        </select>
-                        <button @click="toggleEdit()" :class="isEditing ? 'bg-gray-700 hover:bg-gray-800' : 'bg-blue-600 hover:bg-blue-700'" class="px-4 py-2 text-white text-sm font-semibold rounded-lg transition-all flex items-center gap-2 whitespace-nowrap shadow-sm hover:shadow-md">
-                            <svg x-show="isEditing" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-                            <svg x-show="!isEditing" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            <span x-text="isEditing ? 'Simpan Draft' : 'Edit Draft'"></span>
+                        <button @click="toggleEdit()" :class="isEditing ? 'bg-gray-900' : 'bg-blue-600'" class="px-5 py-2.5 text-white text-sm font-bold rounded-xl transition-all flex items-center gap-2 shadow-sm hover:shadow-md active:scale-95">
+                            <i class="fa-solid" :class="isEditing ? 'fa-floppy-disk' : 'fa-pen-to-square'"></i>
+                            <span x-text="isEditing ? 'Simpan Data' : 'Edit Nilai'"></span>
                         </button>
                     </div>
                 </div>
+
+                {{-- Tabs Selection --}}
+                <div class="flex items-center gap-1 mt-8 p-1 bg-gray-100 rounded-xl w-fit border border-gray-200">
+                    <button @click="activeTab = 'pengetahuan'" :class="activeTab === 'pengetahuan' ? 'bg-white text-blue-600 shadow-sm border-gray-200' : 'text-gray-500 hover:text-gray-700 border-transparent'" class="px-6 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center gap-2 border">
+                        <i class="fa-solid fa-book-open"></i> Pengetahuan
+                    </button>
+                    <button @click="activeTab = 'keterampilan'" :class="activeTab === 'keterampilan' ? 'bg-white text-blue-600 shadow-sm border-gray-200' : 'text-gray-500 hover:text-gray-700 border-transparent'" class="px-6 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center gap-2 border">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> Keterampilan
+                    </button>
+                    <button @click="activeTab = 'sikap'" :class="activeTab === 'sikap' ? 'bg-white text-blue-600 shadow-sm border-gray-200' : 'text-gray-500 hover:text-gray-700 border-transparent'" class="px-6 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center gap-2 border">
+                        <i class="fa-solid fa-hands-praying"></i> Sikap & Spiritual
+                    </button>
+                </div>
             </div>
 
-
-            {{-- Table --}}
+            {{-- Table Content --}}
             <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gradient-to-r from-gray-900 to-gray-800">
+                <table class="w-full border-collapse">
+                    <thead class="bg-gray-900 border-b border-gray-800">
                         <tr>
-                            <th class="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">NO</th>
-                            <th class="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">NIS</th>
-                            <th class="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Nama Siswa</th>
-                            <th class="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Nilai Tugas</th>
-                            <th class="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Ulangan Harian</th>
-                            <th class="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">UTS</th>
-                            <th class="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">UAS</th>
-                            <th class="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Nilai Akhir</th>
-                            <th class="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Predikat</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Data Siswa</th>
+                            
+                            <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Tugas</th>
+                            <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">UH</th>
+                            <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">UTS</th>
+                            <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">UAS</th>
+
+                            <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Praktik</th>
+                            <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Proyek</th>
+                            <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Portofolio</th>
+
+                            <th x-show="activeTab === 'sikap'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Spiritual</th>
+                            <th x-show="activeTab === 'sikap'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Sosial</th>
+
+                            <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Nilai Akhir</th>
+                            <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Predikat</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
+                    <tbody class="divide-y divide-gray-100">
                         <template x-for="(siswa, index) in siswaList" :key="siswa.id">
-                            <tr class="hover:bg-blue-50 transition-colors duration-150 border-l-4 border-transparent hover:border-blue-500" :class="index % 2 === 1 ? 'bg-gray-50' : 'bg-white'">
-                                <td class="px-4 py-3 text-sm font-medium text-gray-900" x-text="index + 1"></td>
-                                <td class="px-4 py-3 text-sm text-gray-700 font-semibold" x-text="siswa.nis"></td>
-                                <td class="px-4 py-3 text-sm text-gray-900 font-medium whitespace-nowrap" x-text="siswa.nama"></td>
-                                <td class="px-4 py-3"><input type="number" min="0" max="100" x-model.number="siswa.tugas" @input="hitungNilaiAkhir(siswa)" :disabled="!isEditing" :class="!isEditing ? 'bg-gray-50 cursor-not-allowed' : (siswa.tugas < 70 && siswa.tugas !== null ? 'text-red-600 bg-red-50 border-red-200' : 'bg-white border-gray-300')" class="w-16 px-2 py-1.5 text-sm text-center border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors" placeholder="0"></td>
-                                <td class="px-4 py-3"><input type="number" min="0" max="100" x-model.number="siswa.ulangan" @input="hitungNilaiAkhir(siswa)" :disabled="!isEditing" :class="!isEditing ? 'bg-gray-50 cursor-not-allowed' : (siswa.ulangan < 70 && siswa.ulangan !== null ? 'text-red-600 bg-red-50 border-red-200' : 'bg-white border-gray-300')" class="w-16 px-2 py-1.5 text-sm text-center border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors" placeholder="0"></td>
-                                <td class="px-4 py-3"><input type="number" min="0" max="100" x-model.number="siswa.uts" @input="hitungNilaiAkhir(siswa)" :disabled="!isEditing" :class="!isEditing ? 'bg-gray-50 cursor-not-allowed' : (siswa.uts < 70 && siswa.uts !== null ? 'text-red-600 bg-red-50 border-red-200' : 'bg-white border-gray-300')" class="w-16 px-2 py-1.5 text-sm text-center border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors" placeholder="0"></td>
-                                <td class="px-4 py-3"><input type="number" min="0" max="100" x-model.number="siswa.uas" @input="hitungNilaiAkhir(siswa)" :disabled="!isEditing" :class="!isEditing ? 'bg-gray-50 cursor-not-allowed' : (siswa.uas < 70 && siswa.uas !== null ? 'text-red-600 bg-red-50 border-red-200' : 'bg-white border-gray-300')" class="w-16 px-2 py-1.5 text-sm text-center border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors" placeholder="0"></td>
-                                <td class="px-4 py-3"><div class="w-16 px-2 py-1.5 text-sm text-center border border-gray-200 rounded bg-gray-50 text-gray-700 font-semibold" x-text="siswa.nilaiAkhir !== null ? siswa.nilaiAkhir : ''"></div></td>
-                                <td class="px-4 py-3"><div class="w-12 px-2 py-1.5 text-sm text-center border border-gray-200 rounded font-bold" :class="{'bg-green-50 text-green-700':siswa.predikat==='A','bg-blue-50 text-blue-700':siswa.predikat==='B','bg-yellow-50 text-yellow-700':siswa.predikat==='C','bg-red-50 text-red-700':siswa.predikat==='D','bg-gray-50 text-gray-400':!siswa.predikat}" x-text="siswa.predikat || ''"></div></td>
+                            <tr class="hover:bg-blue-50/40 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-bold text-gray-900" x-text="siswa.nama"></span>
+                                        <span class="text-[11px] text-gray-400 font-medium" x-text="siswa.nis"></span>
+                                    </div>
+                                </td>
+
+                                <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center"><input type="number" x-model.number="siswa.p_tugas" @input="updateAll(siswa)" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white shadow-sm'"></td>
+                                <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center"><input type="number" x-model.number="siswa.p_uh" @input="updateAll(siswa)" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white shadow-sm'"></td>
+                                <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center"><input type="number" x-model.number="siswa.p_uts" @input="updateAll(siswa)" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white shadow-sm'"></td>
+                                <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center"><input type="number" x-model.number="siswa.p_uas" @input="updateAll(siswa)" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white shadow-sm'"></td>
+
+                                <td x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center"><input type="number" x-model.number="siswa.k_praktik" @input="updateAll(siswa)" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white shadow-sm'"></td>
+                                <td x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center"><input type="number" x-model.number="siswa.k_proyek" @input="updateAll(siswa)" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white shadow-sm'"></td>
+                                <td x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center"><input type="number" x-model.number="siswa.k_portofolio" @input="updateAll(siswa)" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white shadow-sm'"></td>
+
+                                <td x-show="activeTab === 'sikap'" class="px-4 py-4 text-center">
+                                    <select x-model="siswa.s_spiritual" :disabled="!isEditing" class="px-3 py-2 text-xs font-bold rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white shadow-sm'">
+                                        <option value="A">Sangat Baik (A)</option><option value="B">Baik (B)</option><option value="C">Cukup (C)</option><option value="D">Kurang (D)</option>
+                                    </select>
+                                </td>
+                                <td x-show="activeTab === 'sikap'" class="px-4 py-4 text-center">
+                                    <select x-model="siswa.s_sosial" :disabled="!isEditing" class="px-3 py-2 text-xs font-bold rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white shadow-sm'">
+                                        <option value="A">Sangat Baik (A)</option><option value="B">Baik (B)</option><option value="C">Cukup (C)</option><option value="D">Kurang (D)</option>
+                                    </select>
+                                </td>
+
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-sm font-black text-gray-900" x-text="getDisplayAvg(siswa)"></span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="inline-block px-3 py-1.5 text-[10px] font-black rounded-lg shadow-sm" 
+                                         :class="getPredikatClass(siswa)"
+                                         x-text="getDisplayPredikat(siswa)"></div>
+                                </td>
                             </tr>
                         </template>
                     </tbody>
                 </table>
             </div>
-            <x-pagination :from="1" :to="20" :total="20" :lastPage="1" />
+            
+            <div class="p-6 bg-gray-50/30 border-t border-gray-100">
+                <div class="flex items-center justify-between">
+                    <p class="text-[11px] text-gray-400 font-medium italic">
+                        <i class="fa-solid fa-circle-info mr-1"></i> Nilai dihitung otomatis berdasarkan bobot standar pendidikan.
+                    </p>
+                    <x-pagination :from="1" :to="5" :total="5" :lastPage="1" />
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -81,31 +125,63 @@
 <script>
 function inputNilai() {
     return {
-        siswaList: Array.from({length: 20}, (_, i) => ({
-            id: i+1, nis: `180959900${String(i+1).padStart(2,'0')}`, nama: 'Samuel Simorangkir',
-            tugas: null, ulangan: null, uts: null, uas: null, nilaiAkhir: null, predikat: ''
-        })),
+        activeTab: 'pengetahuan',
         isEditing: true,
+        siswaList: [
+            { id: 1, nis: '1809599001', nama: 'Budi Santoso', p_tugas: 85, p_uh: 80, p_uts: 75, p_uas: 88, p_avg: 82, p_pred: 'B', k_praktik: 90, k_proyek: 85, k_portofolio: 88, k_avg: 87.7, k_pred: 'B', s_spiritual: 'A', s_sosial: 'B' },
+            { id: 2, nis: '1809599002', nama: 'Siti Nurhaliza', p_tugas: 92, p_uh: 90, p_uts: 95, p_uas: 92, p_avg: 92.3, p_pred: 'A', k_praktik: 95, k_proyek: 94, k_portofolio: 92, k_avg: 93.7, k_pred: 'A', s_spiritual: 'A', s_sosial: 'A' },
+            { id: 3, nis: '1809599003', nama: 'Ahmad Wijaya', p_tugas: 70, p_uh: 65, p_uts: 60, p_uas: 72, p_avg: 66.8, p_pred: 'D', k_praktik: 75, k_proyek: 70, k_portofolio: 72, k_avg: 72.3, k_pred: 'C', s_spiritual: 'B', s_sosial: 'B' },
+            { id: 4, nis: '1809599004', nama: 'Ratna Kusuma', p_tugas: 88, p_uh: 85, p_uts: 80, p_uas: 82, p_avg: 83.8, p_pred: 'B', k_praktik: 85, k_proyek: 88, k_portofolio: 84, k_avg: 85.7, k_pred: 'B', s_spiritual: 'A', s_sosial: 'A' },
+            { id: 5, nis: '1809599005', nama: 'Eka Prasetyo', p_tugas: 75, p_uh: 78, p_uts: 82, p_uas: 70, p_avg: 76.3, p_pred: 'C', k_praktik: 80, k_proyek: 75, k_portofolio: 78, k_avg: 77.7, k_pred: 'C', s_spiritual: 'B', s_sosial: 'B' },
+        ],
+
         toggleEdit() {
             this.isEditing = !this.isEditing;
-            if (!this.isEditing) {
-                console.log('Draft disimpan:', this.siswaList);
+            if(!this.isEditing) {
+                window.dispatchEvent(new CustomEvent('notify', { 
+                    detail: { message: 'Data nilai siswa berhasil diperbarui dan disimpan.', type: 'success' } 
+                }));
             }
         },
-        get stats() {
-            const list = this.siswaList.filter(s => s.nilaiAkhir !== null);
-            const total = list.reduce((acc, s) => acc + s.nilaiAkhir, 0);
-            const avg = list.length > 0 ? (total / list.length).toFixed(1) : 0;
-            const tuntas = list.filter(s => s.nilaiAkhir >= 70).length;
-            const remedial = list.filter(s => s.nilaiAkhir < 70).length;
-            return { rataRata: avg, tuntas: tuntas, remedial: remedial };
+
+        updateAll(siswa) {
+            const p = ( (siswa.p_tugas||0) + (siswa.p_uh||0) + (siswa.p_uts||0) + (siswa.p_uas||0) ) / 4;
+            siswa.p_avg = p > 0 ? Math.round(p * 10) / 10 : null;
+            siswa.p_pred = this.calcPredikat(p);
+
+            const k = ( (siswa.k_praktik||0) + (siswa.k_proyek||0) + (siswa.k_portofolio||0) ) / 3;
+            siswa.k_avg = k > 0 ? Math.round(k * 10) / 10 : null;
+            siswa.k_pred = this.calcPredikat(k);
         },
-        hitungNilaiAkhir(s) {
-            const t=parseFloat(s.tugas)||0, u=parseFloat(s.ulangan)||0, m=parseFloat(s.uts)||0, a=parseFloat(s.uas)||0;
-            if(s.tugas===null&&s.ulangan===null&&s.uts===null&&s.uas===null){s.nilaiAkhir=null;s.predikat='';return;}
-            const na=(t*0.2)+(u*0.2)+(m*0.3)+(a*0.3);
-            s.nilaiAkhir=Math.round(na*10)/10;
-            s.predikat=na>=90?'A':na>=80?'B':na>=70?'C':'D';
+
+        calcPredikat(n) {
+            if(n >= 90) return 'A';
+            if(n >= 80) return 'B';
+            if(n >= 70) return 'C';
+            if(n > 0) return 'D';
+            return '';
+        },
+
+        getDisplayAvg(siswa) {
+            if(this.activeTab === 'pengetahuan') return siswa.p_avg || '-';
+            if(this.activeTab === 'keterampilan') return siswa.k_avg || '-';
+            return '-';
+        },
+
+        getDisplayPredikat(siswa) {
+            if(this.activeTab === 'pengetahuan') return siswa.p_pred || '-';
+            if(this.activeTab === 'keterampilan') return siswa.k_pred || '-';
+            if(this.activeTab === 'sikap') return siswa.s_spiritual;
+            return '-';
+        },
+
+        getPredikatClass(siswa) {
+            const p = this.getDisplayPredikat(siswa);
+            if(p === 'A') return 'bg-green-100 text-green-700 ring-1 ring-green-200';
+            if(p === 'B') return 'bg-blue-100 text-blue-700 ring-1 ring-blue-200';
+            if(p === 'C') return 'bg-yellow-100 text-yellow-700 ring-1 ring-yellow-200';
+            if(p === 'D') return 'bg-red-100 text-red-700 ring-1 ring-red-200';
+            return 'bg-gray-100 text-gray-400';
         }
     }
 }
