@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mapels', function (Blueprint $table) {
+        Schema::create('siswa', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_mapel')->unique();
-            $table->string('nama_mapel');
-            $table->integer('minimum_kkm')->default(75);
+            $table->string('nis')->unique();
+            $table->string('nama_siswa');
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
+            $table->date('tanggal_lahir')->nullable();
+            $table->text('alamat')->nullable();
+            $table->string('no_hp_ortu')->nullable();
             $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');
             $table->timestamps();
         });
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mapels');
+        Schema::dropIfExists('siswa');
     }
 };

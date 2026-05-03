@@ -3,57 +3,20 @@
 
 @section('content')
     <div class="max-w-full">
-        <div x-data="{ 
-            mapel: 'Matematika Wajib', 
-            kelas: 'X MIPA 1', 
-            tanggal: '2023-10-15',
-            presensiList: [
-                { nis: '1809599001', nama: 'Samuel Simorangkir', status: 'hadir', ket: '' },
-                { nis: '1809599002', nama: 'Budi Santoso', status: 'hadir', ket: '' },
-                { nis: '1809599003', nama: 'Citra Kirana', status: 'hadir', ket: '' },
-                { nis: '1809599004', nama: 'Dewi Lestari', status: 'izin', ket: 'Izin keluarga' },
-                { nis: '1809599005', nama: 'Eka Saputra', status: 'hadir', ket: '' },
-                { nis: '1809599006', nama: 'Fitriani', status: 'hadir', ket: '' },
-                { nis: '1809599007', nama: 'Gilang Ramadan', status: 'hadir', ket: '' },
-                { nis: '1809599008', nama: 'Hesti Purwanti', status: 'tidak_hadir', ket: 'Sakit demam' },
-                { nis: '1809599009', nama: 'Ivan Gunawan', status: 'hadir', ket: '' },
-                { nis: '1809599010', nama: 'Julia Perez', status: 'hadir', ket: '' },
-            ],
-            formatTanggal() { 
-                if (!this.tanggal) return '-'; 
-                return new Date(this.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }); 
-            },
-            get stats() {
-                return {
-                    hadir: this.presensiList.filter(s => s.status === 'hadir').length,
-                    tidakHadir: this.presensiList.filter(s => s.status === 'tidak_hadir').length,
-                    izin: this.presensiList.filter(s => s.status === 'izin').length
-                }
-            },
-            markAllHadir() {
-                this.presensiList.forEach(s => s.status = 'hadir');
-            }
-        }" class="bg-white rounded-lg border border-gray-200">
-            {{-- Toolbar --}}
+        <div x-data="presensiApp()" class="bg-white rounded-lg border border-gray-200">
             <div class="p-6 border-b border-gray-200">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                        <div class="relative">
-                            <select x-model="mapel" class="appearance-none w-40 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
-                                <option value="Matematika Wajib">Matematika</option>
-                                <option value="Bahasa Inggris">Bahasa Inggris</option>
-                                <option value="Fisika Dasar">Fisika Dasar</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-600 pointer-events-none"></i>
-                        </div>
-                        <div class="relative">
-                            <select x-model="kelas" class="appearance-none w-32 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
-                                <option value="X MIPA 1">X MIPA 1</option>
-                                <option value="X MIPA 2">X MIPA 2</option>
-                                <option value="XI IPS 1">XI IPS 1</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-600 pointer-events-none"></i>
-                        </div>
+                        <select x-model="mapel" class="appearance-none w-40 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
+                            @foreach($mapelList as $m)
+                                <option value="{{ $m->nama_mapel }}">{{ $m->nama_mapel }}</option>
+                            @endforeach
+                        </select>
+                        <select x-model="kelas" class="appearance-none w-32 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
+                            @foreach($kelasList as $k)
+                                <option value="{{ $k->nama_kelas }}">{{ $k->nama_kelas }}</option>
+                            @endforeach
+                        </select>
                         <input type="date" x-model="tanggal" class="w-40 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
                     </div>
                     <div class="flex items-center gap-2 w-full md:w-auto">
@@ -66,8 +29,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Context Header --}}
             <div class="px-6 py-4 bg-gray-50/50 border-b border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
@@ -94,8 +55,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Table --}}
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-900">
@@ -118,25 +77,19 @@
                                 <td class="px-6 py-4 text-center">
                                     <label class="inline-flex items-center justify-center cursor-pointer group">
                                         <input type="radio" :name="'status_'+p.nis" value="hadir" x-model="p.status" class="hidden">
-                                        <div :class="p.status === 'hadir' ? 'bg-green-500 text-white border-green-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors">
-                                            <i class="fa-solid fa-check"></i>
-                                        </div>
+                                        <div :class="p.status === 'hadir' ? 'bg-green-500 text-white border-green-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors"><i class="fa-solid fa-check"></i></div>
                                     </label>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <label class="inline-flex items-center justify-center cursor-pointer group">
                                         <input type="radio" :name="'status_'+p.nis" value="tidak_hadir" x-model="p.status" class="hidden">
-                                        <div :class="p.status === 'tidak_hadir' ? 'bg-red-500 text-white border-red-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </div>
+                                        <div :class="p.status === 'tidak_hadir' ? 'bg-red-500 text-white border-red-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors"><i class="fa-solid fa-xmark"></i></div>
                                     </label>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <label class="inline-flex items-center justify-center cursor-pointer group">
                                         <input type="radio" :name="'status_'+p.nis" value="izin" x-model="p.status" class="hidden">
-                                        <div :class="p.status === 'izin' ? 'bg-blue-500 text-white border-blue-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors">
-                                            <i class="fa-solid fa-info"></i>
-                                        </div>
+                                        <div :class="p.status === 'izin' ? 'bg-blue-500 text-white border-blue-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors"><i class="fa-solid fa-info"></i></div>
                                     </label>
                                 </td>
                                 <td class="px-6 py-4">
@@ -147,7 +100,31 @@
                     </tbody>
                 </table>
             </div>
-            <x-pagination :from="1" :to="20" :total="45" :lastPage="9" />
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+function presensiApp() {
+    return {
+        mapel: @json($selectedPengampu?->mapel?->nama_mapel ?? ''),
+        kelas: @json($selectedPengampu?->kelas?->nama_kelas ?? ''),
+        tanggal: @json($tanggal),
+        presensiList: @json($presensiJsonData),
+        formatTanggal() {
+            if (!this.tanggal) return '-';
+            return new Date(this.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        },
+        get stats() {
+            return {
+                hadir: this.presensiList.filter(s => s.status === 'hadir').length,
+                tidakHadir: this.presensiList.filter(s => s.status === 'tidak_hadir').length,
+                izin: this.presensiList.filter(s => s.status === 'izin' || s.status === 'sakit').length
+            }
+        },
+        markAllHadir() { this.presensiList.forEach(s => s.status = 'hadir'); }
+    }
+}
+</script>
+@endpush

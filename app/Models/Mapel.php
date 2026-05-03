@@ -7,14 +7,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Mapel extends Model
 {
+    protected $table = 'mapel';
+
     protected $fillable = [
         'kode_mapel',
         'nama_mapel',
-        'minimum_kkm',
+        'kelompok',
         'status',
     ];
 
-    public function pengampus(): HasMany
+    /**
+     * Relasi ke data pengampu.
+     */
+    public function pengampu(): HasMany
     {
         return $this->hasMany(Pengampu::class);
     }

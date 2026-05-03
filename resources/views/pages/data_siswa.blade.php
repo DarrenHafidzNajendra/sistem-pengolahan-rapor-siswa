@@ -21,16 +21,19 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                        <select id="kelas" name="kelas" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
+                        <select id="kelas" name="kelas_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
                             <option value="">Pilih Kelas</option>
+                            @foreach($kelasList as $kelas)
+                                <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
                         <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
                         <select id="jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
                             <option value="">Pilih Jenis Kelamin</option>
-                            <option value="L">Laki-laki</option>
-                            <option value="P">Perempuan</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
                         </select>
                     </div>
                 </div>
@@ -38,8 +41,8 @@
                     <label for="status_siswa" class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                     <select id="status_siswa" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
                         <option value="">Pilih Status</option>
-                        <option value="aktif">Aktif</option>
-                        <option value="tidak_aktif">Tidak Aktif</option>
+                        <option value="Aktif">Aktif</option>
+                        <option value="Tidak Aktif">Tidak Aktif</option>
                     </select>
                 </div>
                 <div class="flex items-center gap-3">
@@ -78,32 +81,29 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @php
-                            $siswaData = [
-                                ['1809599001','Budi Santoso','X IPA 1','L','Aktif'],
-                                ['1809599002','Siti Nurhaliza','X IPA 2','P','Aktif'],
-                                ['1809599003','Ahmad Hidayat','X IPS 1','L','Aktif'],
-                                ['1809599004','Dewi Lestari','XI IPA 1','P','Aktif'],
-                                ['1809599005','Rinto Harahap','XI IPS 1','L','Tidak Aktif'],
-                            ];
-                        @endphp
-                        @foreach($siswaData as $i => $s)
+                        @forelse($siswaData as $i => $s)
                         <tr class="hover:bg-blue-50/40 transition-colors">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $i + 1 }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $s[0] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700 font-bold">{{ $s[1] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $s[2] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $s[3] === 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
-                            <td class="px-6 py-4 text-sm"><x-badge :type="$s[4] === 'Aktif' ? 'success' : 'danger'">{{ $s[4] }}</x-badge></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $siswaData->firstItem() + $i }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $s->nis }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-bold">{{ $s->nama_siswa }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $s->kelasSiswa->first()?->kelas?->nama_kelas ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $s->jenis_kelamin }}</td>
+                            <td class="px-6 py-4 text-sm"><x-badge :type="$s->status === 'Aktif' ? 'success' : 'danger'">{{ $s->status }}</x-badge></td>
                             <td class="px-6 py-4 text-center"><x-action-buttons /></td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <p class="text-sm font-medium">Tidak ada data siswa</p>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
             <div class="p-6 bg-gray-50/30 border-t border-gray-100">
-                <x-pagination :from="1" :to="5" :total="432" :lastPage="22" />
+                <x-pagination :paginator="$siswaData" />
             </div>
         </div>
     </div>
