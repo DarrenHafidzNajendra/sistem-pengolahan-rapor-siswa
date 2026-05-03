@@ -23,20 +23,20 @@
                         <label for="jenis_kelamin_guru" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
                         <select id="jenis_kelamin_guru" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer">
                             <option value="">Pilih Jenis Kelamin</option>
-                            <option value="L">Laki-laki</option>
-                            <option value="P">Perempuan</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
                         </select>
                     </div>
                     <div>
                         <label for="no_telp" class="block text-sm font-semibold text-gray-700 mb-1.5">No. Telepon</label>
-                        <input type="text" id="no_telp" name="no_telp" placeholder="08xxxxxxxxxx" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
+                        <input type="text" id="no_telp" name="no_hp" placeholder="08xxxxxxxxxx" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label for="status" class="block text-sm font-semibold text-gray-700 mb-1.5">Status Pegawai</label>
+                    <label for="status" class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                     <select id="status" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer">
-                        <option value="PNS">PNS</option>
-                        <option value="Honorer">Honorer</option>
+                        <option value="Aktif">Aktif</option>
+                        <option value="Tidak Aktif">Tidak Aktif</option>
                     </select>
                 </div>
                 <div class="flex items-center gap-3 mt-6">
@@ -54,7 +54,7 @@
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <x-search-toolbar 
                 placeholder="Cari guru berdasarkan NIP atau Nama..." 
-                :filterOptions="['PNS', 'Honorer']" 
+                :filterOptions="['Aktif', 'Tidak Aktif']" 
                 filterLabel="Status Guru"
                 tambahClick="openTambah = true"
             />
@@ -63,6 +63,7 @@
                 <table class="w-full border-collapse">
                     <thead class="bg-gray-900 border-b border-gray-800">
                         <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">NO</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">NIP</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Nama Guru</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Jenis Kelamin</th>
@@ -72,30 +73,29 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @php
-                            $guruData = [
-                                ['198001012005011001','Drs. Bambang Heru','L','081234567890','PNS'],
-                                ['198505122010022005','Siti Aminah, S.Pd','P','085678901234','PNS'],
-                                ['-','Rizky Pratama, S.Kom','L','087654321098','Honorer'],
-                                ['197812152003121002','H. Mulyadi, M.Pd','L','082345678901','PNS'],
-                            ];
-                        @endphp
-                        @foreach($guruData as $g)
+                        @forelse($guruData as $i => $g)
                         <tr class="hover:bg-blue-50/40 transition-colors">
-                            <td class="px-6 py-4 text-sm text-gray-400 font-medium tracking-tighter">{{ $g[0] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-bold">{{ $g[1] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $g[2] === 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600 font-medium">{{ $g[3] }}</td>
-                            <td class="px-6 py-4 text-sm"><x-badge :type="$g[4] === 'PNS' ? 'success' : 'warning'">{{ $g[4] }}</x-badge></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $guruData->firstItem() + $i }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-400 font-medium tracking-tighter">{{ $g->nip }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-bold">{{ $g->nama_guru }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $g->jenis_kelamin }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600 font-medium">{{ $g->no_hp ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm"><x-badge :type="$g->status === 'Aktif' ? 'success' : 'danger'">{{ $g->status }}</x-badge></td>
                             <td class="px-6 py-4 text-center"><x-action-buttons /></td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <p class="text-sm font-medium">Tidak ada data guru</p>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
             <div class="p-6 bg-gray-50/30 border-t border-gray-100">
-                <x-pagination :from="1" :to="4" :total="48" :lastPage="12" />
+                {{ $guruData->links() }}
             </div>
         </div>
     </div>
