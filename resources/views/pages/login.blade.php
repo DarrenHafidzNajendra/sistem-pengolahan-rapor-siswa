@@ -5,11 +5,11 @@
 @section('content')
     <div class="w-full max-w-sm" x-data="{ showPass: false }">
         {{-- Ultra-Flat Card --}}
-        <div class="bg-white border border-gray-200 p-10"> {{-- Tanpa Rounded Berlebihan & Tanpa Shadow --}}
+        <div class="bg-white border border-gray-200 p-10 rounded-2xl"> {{-- Rounded secukupnya --}}
             
             {{-- Simple Logo --}}
             <div class="flex items-center gap-2 mb-10 justify-center">
-                <div class="w-8 h-8 bg-black flex items-center justify-center text-white">
+                <div class="w-8 h-8 bg-black flex items-center justify-center text-white rounded-md">
                     <i class="fa-solid fa-graduation-cap text-xs"></i>
                 </div>
                 <h1 class="text-sm font-bold tracking-tight text-black">SMART RAPOR</h1>
@@ -22,7 +22,7 @@
                 <div class="space-y-1">
                     <label for="username" class="text-[10px] font-bold text-gray-500 uppercase">Username</label>
                     <input type="text" id="username" name="username" required
-                           class="w-full px-4 py-2 text-sm border border-gray-300 focus:border-black outline-none transition-none bg-white"
+                           class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-black outline-none transition-none bg-white"
                            placeholder="Username Anda">
                 </div>
 
@@ -33,7 +33,7 @@
                     </div>
                     <div class="relative">
                         <input type="password" :type="showPass ? 'text' : 'password'" id="password" name="password" required
-                               class="w-full px-4 py-2 text-sm border border-gray-300 focus:border-black outline-none transition-none bg-white"
+                               class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-black outline-none transition-none bg-white"
                                placeholder="••••••••">
                         <button type="button" @click="showPass = !showPass" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black">
                             <i class="fa-solid" :class="showPass ? 'fa-eye-slash' : 'fa-eye' shadow-none"></i>
@@ -41,7 +41,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-none">
+                <button type="submit" class="w-full py-3 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-gray-800 transition-none">
                     Login
                 </button>
             </form>
