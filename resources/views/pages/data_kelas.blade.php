@@ -45,7 +45,6 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Nama Kelas</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Tingkat</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Total Siswa</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Status</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -57,11 +56,10 @@
                             <td class="px-6 py-4 text-sm text-gray-900 font-bold uppercase tracking-tight">{{ $k->nama_kelas }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600 font-medium">{{ $k->tingkat }}</td>
                             <td class="px-6 py-4 text-center text-sm font-bold text-gray-700">{{ $k->kelas_siswa_count }} Siswa</td>
-                            <td class="px-6 py-4 text-sm"><x-badge :type="$k->status === 'Aktif' ? 'success' : 'danger'">{{ $k->status }}</x-badge></td>
                             <td class="px-6 py-4 text-center"><x-action-buttons /></td>
                         </tr>
                         @empty
-                        <tr><td colspan="7" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data kelas</p></td></tr>
+                        <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data kelas</p></td></tr>
                         @endforelse
                     </tbody>
                 </table>

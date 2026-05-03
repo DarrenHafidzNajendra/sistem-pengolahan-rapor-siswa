@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('kode_kelas')->unique();
             $table->string('nama_kelas');
             $table->enum('tingkat', ['X', 'XI', 'XII']);
-            $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');
             $table->timestamps();
         });
     }
