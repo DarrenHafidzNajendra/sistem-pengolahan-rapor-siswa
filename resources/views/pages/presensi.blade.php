@@ -6,19 +6,22 @@
         <div x-data="presensiApp()" class="bg-white rounded-lg border border-gray-200">
             <div class="p-6 border-b border-gray-200">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                        <select x-model="mapel" class="appearance-none w-40 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
+                    <form action="{{ route('presensi') }}" method="GET" class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        <select name="mapel_id" class="appearance-none w-40 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
                             @foreach($mapelList as $m)
-                                <option value="{{ $m->nama_mapel }}">{{ $m->nama_mapel }}</option>
+                                <option value="{{ $m->id }}" {{ ($selectedPengampu && $selectedPengampu->mapel_id == $m->id) || request('mapel_id') == $m->id ? 'selected' : '' }}>{{ $m->nama_mapel }}</option>
                             @endforeach
                         </select>
-                        <select x-model="kelas" class="appearance-none w-32 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
+                        <select name="kelas_id" class="appearance-none w-32 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
                             @foreach($kelasList as $k)
-                                <option value="{{ $k->nama_kelas }}">{{ $k->nama_kelas }}</option>
+                                <option value="{{ $k->id }}" {{ ($selectedPengampu && $selectedPengampu->kelas_id == $k->id) || request('kelas_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kelas }}</option>
                             @endforeach
                         </select>
-                        <input type="date" x-model="tanggal" class="w-40 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
-                    </div>
+                        <input type="date" name="tanggal" x-model="tanggal" class="w-40 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-900 cursor-pointer">
+                        <button type="submit" class="px-4 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i><span>Cari</span>
+                        </button>
+                    </form>
                     <div class="flex items-center gap-2 w-full md:w-auto">
                         <button @click="markAllHadir()" class="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-100 border border-blue-200 transition-colors flex items-center gap-2 whitespace-nowrap">
                             <i class="fa-solid fa-check-double"></i><span>Hadir Semua</span>
@@ -34,8 +37,8 @@
                     <div>
                         <h2 class="text-base font-bold text-gray-900">Form Input Presensi Siswa</h2>
                         <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-2 text-sm">
-                            <div class="flex items-center gap-2 text-gray-600"><i class="fa-solid fa-book text-blue-600 opacity-80"></i><span>Mata Pelajaran: <strong class="text-gray-900" x-text="mapel"></strong></span></div>
-                            <div class="flex items-center gap-2 text-gray-600"><i class="fa-solid fa-users text-blue-600 opacity-80"></i><span>Kelas: <strong class="text-gray-900" x-text="kelas"></strong></span></div>
+                            <div class="flex items-center gap-2 text-gray-600"><i class="fa-solid fa-book text-blue-600 opacity-80"></i><span>Mata Pelajaran: <strong class="text-gray-900">{{ $selectedPengampu?->mapel?->nama_mapel ?? '-' }}</strong></span></div>
+                            <div class="flex items-center gap-2 text-gray-600"><i class="fa-solid fa-users text-blue-600 opacity-80"></i><span>Kelas: <strong class="text-gray-900">{{ $selectedPengampu?->kelas?->nama_kelas ?? '-' }}</strong></span></div>
                             <div class="flex items-center gap-2 text-gray-600"><i class="fa-regular fa-calendar-days text-blue-600 opacity-80"></i><span>Tanggal: <strong class="text-gray-900" x-text="formatTanggal()"></strong></span></div>
                         </div>
                     </div>
@@ -108,8 +111,6 @@
 <script>
 function presensiApp() {
     return {
-        mapel: @json($selectedPengampu?->mapel?->nama_mapel ?? ''),
-        kelas: @json($selectedPengampu?->kelas?->nama_kelas ?? ''),
         tanggal: @json($tanggal),
         presensiList: @json($presensiJsonData),
         formatTanggal() {

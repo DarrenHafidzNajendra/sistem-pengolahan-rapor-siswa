@@ -4,7 +4,27 @@
 @section('content')
     <div class="max-w-full">
         <div class="bg-white rounded-lg border border-gray-200">
-            <x-search-toolbar placeholder="Cari nama siswa..." :filterOptions="$kelasList->pluck('nama_kelas')->toArray()" filterLabel="Filter Kelas" :showTambah="false" />
+            <div class="p-6 border-b border-gray-200">
+                <form action="{{ route('data_rapor') }}" method="GET" class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                    <div class="w-full lg:w-80">
+                        <div class="relative group">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama siswa..." class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                        <select name="kelas_id" class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg bg-white focus:border-gray-900 outline-none transition-colors cursor-pointer">
+                            <option value="">Semua Kelas</option>
+                            @foreach($kelasList as $kelas)
+                                <option value="{{ $kelas->id }}" {{ request('kelas_id') == $kelas->id ? 'selected' : '' }}>{{ $kelas->nama_kelas }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i><span>Cari</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-900">

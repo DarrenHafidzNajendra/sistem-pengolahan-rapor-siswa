@@ -10,11 +10,11 @@ use Illuminate\Http\Request;
 
 class RaporController extends Controller
 {
-    public function showRapor()
+    public function showRapor(Request $request)
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
 
-        $siswaData = Siswa::with(['kelasSiswa' => function ($q) use ($semesterAktif) {
+        $query = Siswa::with(['kelasSiswa' => function ($q) use ($semesterAktif) {
             if ($semesterAktif) {
                 $q->where('semester_id', $semesterAktif->id)->with('kelas');
             }
@@ -22,9 +22,23 @@ class RaporController extends Controller
             if ($semesterAktif) {
                 $q->whereHas('pengampu', fn($p) => $p->where('semester_id', $semesterAktif->id));
             }
-        }])->where('status', 'Aktif')
-          ->orderBy('nama_siswa')
-          ->paginate(20);
+        }])->where('status', 'Aktif');
+
+        if ($request->filled('search')) {
+            $query->where('nama_siswa', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('kelas_id')) {
+            $kelasId = $request->kelas_id;
+            $query->whereHas('kelasSiswa', function ($q) use ($kelasId, $semesterAktif) {
+                $q->where('kelas_id', $kelasId);
+                if ($semesterAktif) {
+                    $q->where('semester_id', $semesterAktif->id);
+                }
+            });
+        }
+
+        $siswaData = $query->orderBy('nama_siswa')->paginate(20)->withQueryString();
 
         // Hitung rata-rata dan status kelulusan per siswa
         $siswaData->getCollection()->transform(function ($siswa) {

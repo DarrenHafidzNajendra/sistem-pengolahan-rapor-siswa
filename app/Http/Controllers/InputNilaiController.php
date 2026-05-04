@@ -26,9 +26,18 @@ class InputNilaiController extends Controller
         $mapelList = $pengampuList->pluck('mapel')->unique('id')->values();
         $kelasList = $pengampuList->pluck('kelas')->unique('id')->values();
 
-        // Pilih pengampu (dari request atau default pertama)
-        $selectedPengampuId = $request->get('pengampu_id', $pengampuList->first()?->id);
-        $selectedPengampu = $pengampuList->firstWhere('id', $selectedPengampuId);
+        // Pilih pengampu berdasarkan form filter
+        $mapelId = $request->get('mapel_id');
+        $kelasId = $request->get('kelas_id');
+
+        if ($mapelId && $kelasId) {
+            $selectedPengampu = $pengampuList->firstWhere(function ($p) use ($mapelId, $kelasId) {
+                return $p->mapel_id == $mapelId && $p->kelas_id == $kelasId;
+            });
+        } else {
+            $selectedPengampuId = $request->get('pengampu_id', $pengampuList->first()?->id);
+            $selectedPengampu = $pengampuList->firstWhere('id', $selectedPengampuId);
+        }
 
         // Ambil siswa di kelas tersebut + nilai mereka
         $siswaList = collect();

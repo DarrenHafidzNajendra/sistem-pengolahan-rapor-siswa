@@ -11,17 +11,22 @@
                         <p class="text-sm text-gray-500">Kelola nilai pengetahuan, keterampilan, dan sikap siswa.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                        <select class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg bg-white focus:border-gray-900 outline-none transition-colors cursor-pointer">
-                            @foreach($mapelList as $mapel)
-                                <option value="{{ $mapel->id }}" {{ $selectedPengampu && $selectedPengampu->mapel_id == $mapel->id ? 'selected' : '' }}>{{ $mapel->nama_mapel }}</option>
-                            @endforeach
-                        </select>
-                        <select class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg bg-white focus:border-gray-900 outline-none transition-colors cursor-pointer">
-                            @foreach($kelasList as $kelas)
-                                <option value="{{ $kelas->id }}" {{ $selectedPengampu && $selectedPengampu->kelas_id == $kelas->id ? 'selected' : '' }}>{{ $kelas->nama_kelas }}</option>
-                            @endforeach
-                        </select>
-                        <button @click="toggleEdit()" :class="isEditing ? 'bg-gray-900' : 'bg-blue-600'" class="px-5 py-2.5 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2">
+                        <form action="{{ route('input_nilai') }}" method="GET" class="flex flex-wrap items-center gap-3">
+                            <select name="mapel_id" class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg bg-white focus:border-gray-900 outline-none transition-colors cursor-pointer">
+                                @foreach($mapelList as $mapel)
+                                    <option value="{{ $mapel->id }}" {{ ($selectedPengampu && $selectedPengampu->mapel_id == $mapel->id) || request('mapel_id') == $mapel->id ? 'selected' : '' }}>{{ $mapel->nama_mapel }}</option>
+                                @endforeach
+                            </select>
+                            <select name="kelas_id" class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg bg-white focus:border-gray-900 outline-none transition-colors cursor-pointer">
+                                @foreach($kelasList as $kelas)
+                                    <option value="{{ $kelas->id }}" {{ ($selectedPengampu && $selectedPengampu->kelas_id == $kelas->id) || request('kelas_id') == $kelas->id ? 'selected' : '' }}>{{ $kelas->nama_kelas }}</option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap">
+                                <i class="fa-solid fa-magnifying-glass text-xs"></i><span>Cari</span>
+                            </button>
+                        </form>
+                        <button type="button" @click="toggleEdit()" :class="isEditing ? 'bg-gray-900' : 'bg-blue-600'" class="px-5 py-2.5 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2">
                             <i class="fa-solid" :class="isEditing ? 'fa-floppy-disk' : 'fa-pen-to-square'"></i>
                             <span x-text="isEditing ? 'Simpan Data' : 'Edit Nilai'"></span>
                         </button>
