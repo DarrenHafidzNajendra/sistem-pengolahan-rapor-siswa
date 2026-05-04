@@ -104,6 +104,11 @@
                     </tbody>
                 </table>
             </div>
+            <div class="p-6 bg-gray-50/30 border-t border-gray-100 flex flex-col md:flex-row justify-end items-center gap-4">
+                <div class="w-full md:w-auto">
+                    <x-pagination :paginator="$presensiList" />
+                </div>
+            </div>
         </div>
     </div>
 @endsection

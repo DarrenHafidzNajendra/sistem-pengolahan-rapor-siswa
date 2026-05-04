@@ -98,10 +98,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="p-6 bg-gray-50/30 border-t border-gray-100">
+            <div class="p-6 bg-gray-50/30 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-[11px] text-gray-400 font-medium italic">
                     <i class="fa-solid fa-circle-info mr-1"></i> Nilai dihitung otomatis berdasarkan bobot standar pendidikan.
                 </p>
+                <div class="w-full md:w-auto">
+                    <x-pagination :paginator="$siswaList" />
+                </div>
             </div>
         </div>
     </div>

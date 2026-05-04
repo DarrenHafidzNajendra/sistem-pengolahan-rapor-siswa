@@ -40,7 +40,7 @@ class InputNilaiController extends Controller
         }
 
         // Ambil siswa di kelas tersebut + nilai mereka
-        $siswaList = collect();
+        $siswaList = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
         if ($selectedPengampu && $semesterAktif) {
             $kelasId = $selectedPengampu->kelas_id;
 
@@ -55,16 +55,18 @@ class InputNilaiController extends Controller
 
             $siswaList = \App\Models\Siswa::whereIn('id', $siswaIds)
                 ->orderBy('nama_siswa')
-                ->get()
-                ->map(function ($siswa) use ($nilaiMap) {
-                    $nilai = $nilaiMap->get($siswa->id);
-                    $siswa->nilai = $nilai;
-                    return $siswa;
-                });
+                ->paginate(20)
+                ->withQueryString();
+
+            $siswaList->getCollection()->transform(function ($siswa) use ($nilaiMap) {
+                $nilai = $nilaiMap->get($siswa->id);
+                $siswa->nilai = $nilai;
+                return $siswa;
+            });
         }
 
         // Pre-build JSON-safe array for Alpine.js
-        $siswaJsonData = $siswaList->map(function ($s) {
+        $siswaJsonData = collect($siswaList->items())->map(function ($s) {
             $nilai = $s->nilai;
             return [
                 'id' => $s->id,

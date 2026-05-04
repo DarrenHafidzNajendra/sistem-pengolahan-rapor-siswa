@@ -41,7 +41,7 @@ class PresensiController extends Controller
         $tanggal = $request->get('tanggal', now()->format('Y-m-d'));
 
         // Ambil daftar siswa + presensi
-        $presensiList = collect();
+        $presensiList = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
         if ($selectedPengampu && $semesterAktif) {
             $siswaIds = KelasSiswa::where('kelas_id', $selectedPengampu->kelas_id)
                 ->where('semester_id', $semesterAktif->id)
@@ -55,17 +55,19 @@ class PresensiController extends Controller
 
             $presensiList = \App\Models\Siswa::whereIn('id', $siswaIds)
                 ->orderBy('nama_siswa')
-                ->get()
-                ->map(function ($siswa) use ($presensiMap) {
-                    $p = $presensiMap->get($siswa->id);
-                    $siswa->presensi_status = $p ? $p->status : null;
-                    $siswa->presensi_keterangan = $p ? $p->keterangan : '';
-                    return $siswa;
-                });
+                ->paginate(20)
+                ->withQueryString();
+
+            $presensiList->getCollection()->transform(function ($siswa) use ($presensiMap) {
+                $p = $presensiMap->get($siswa->id);
+                $siswa->presensi_status = $p ? $p->status : null;
+                $siswa->presensi_keterangan = $p ? $p->keterangan : '';
+                return $siswa;
+            });
         }
 
         // Pre-build JSON-safe array for Alpine.js
-        $presensiJsonData = $presensiList->map(function ($s) {
+        $presensiJsonData = collect($presensiList->items())->map(function ($s) {
             return [
                 'nis' => $s->nis,
                 'nama' => $s->nama_siswa,
