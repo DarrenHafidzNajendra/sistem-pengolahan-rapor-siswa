@@ -23,11 +23,12 @@
                         </button>
                     </form>
                     <div class="flex items-center gap-2 w-full md:w-auto">
-                        <button @click="markAllHadir()" class="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-100 border border-blue-200 transition-colors flex items-center gap-2 whitespace-nowrap">
+                        <button x-show="isEditing" @click="markAllHadir()" class="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-100 border border-blue-200 transition-colors flex items-center gap-2 whitespace-nowrap">
                             <i class="fa-solid fa-check-double"></i><span>Hadir Semua</span>
                         </button>
-                        <button class="px-4 py-2 bg-gray-700 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap">
-                            <i class="fa-solid fa-floppy-disk text-lg"></i><span>Simpan Presensi</span>
+                        <button @click="toggleEdit()" :class="isEditing ? 'bg-gray-900' : 'bg-blue-600'" class="w-[160px] justify-center px-4 py-2.5 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap">
+                            <i class="fa-solid" :class="isEditing ? 'fa-floppy-disk' : 'fa-pen-to-square'"></i>
+                            <span x-text="isEditing ? 'Simpan Data' : 'Edit Presensi'"></span>
                         </button>
                     </div>
                 </div>
@@ -78,25 +79,25 @@
                                 <td class="px-6 py-4 text-sm text-gray-700 font-semibold" x-text="p.nis"></td>
                                 <td class="px-6 py-4 text-sm text-gray-900 font-medium whitespace-nowrap" x-text="p.nama"></td>
                                 <td class="px-6 py-4 text-center">
-                                    <label class="inline-flex items-center justify-center cursor-pointer group">
-                                        <input type="radio" :name="'status_'+p.nis" value="hadir" x-model="p.status" class="hidden">
+                                    <label class="inline-flex items-center justify-center group" :class="isEditing ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'">
+                                        <input type="radio" :name="'status_'+p.nis" value="hadir" x-model="p.status" class="hidden" :disabled="!isEditing">
                                         <div :class="p.status === 'hadir' ? 'bg-green-500 text-white border-green-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors"><i class="fa-solid fa-check"></i></div>
                                     </label>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <label class="inline-flex items-center justify-center cursor-pointer group">
-                                        <input type="radio" :name="'status_'+p.nis" value="tidak_hadir" x-model="p.status" class="hidden">
+                                    <label class="inline-flex items-center justify-center group" :class="isEditing ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'">
+                                        <input type="radio" :name="'status_'+p.nis" value="tidak_hadir" x-model="p.status" class="hidden" :disabled="!isEditing">
                                         <div :class="p.status === 'tidak_hadir' ? 'bg-red-500 text-white border-red-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors"><i class="fa-solid fa-xmark"></i></div>
                                     </label>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <label class="inline-flex items-center justify-center cursor-pointer group">
-                                        <input type="radio" :name="'status_'+p.nis" value="izin" x-model="p.status" class="hidden">
+                                    <label class="inline-flex items-center justify-center group" :class="isEditing ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'">
+                                        <input type="radio" :name="'status_'+p.nis" value="izin" x-model="p.status" class="hidden" :disabled="!isEditing">
                                         <div :class="p.status === 'izin' ? 'bg-blue-500 text-white border-blue-500' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-colors"><i class="fa-solid fa-info"></i></div>
                                     </label>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <input type="text" x-model="p.ket" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white transition-colors" :placeholder="p.status !== 'hadir' ? 'Alasan...' : ''">
+                                    <input type="text" x-model="p.ket" :disabled="!isEditing" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors" :class="!isEditing ? 'bg-gray-50 text-gray-500' : 'bg-white'" :placeholder="p.status !== 'hadir' ? 'Alasan...' : ''">
                                 </td>
                             </tr>
                         </template>
@@ -111,8 +112,17 @@
 <script>
 function presensiApp() {
     return {
+        isEditing: false,
         tanggal: @json($tanggal),
         presensiList: @json($presensiJsonData),
+        toggleEdit() {
+            this.isEditing = !this.isEditing;
+            if(!this.isEditing) {
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: { message: 'Data presensi berhasil diperbarui dan disimpan.', type: 'success' }
+                }));
+            }
+        },
         formatTanggal() {
             if (!this.tanggal) return '-';
             return new Date(this.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });

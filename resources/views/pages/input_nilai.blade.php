@@ -26,7 +26,7 @@
                                 <i class="fa-solid fa-magnifying-glass text-xs"></i><span>Cari</span>
                             </button>
                         </form>
-                        <button type="button" @click="toggleEdit()" :class="isEditing ? 'bg-gray-900' : 'bg-blue-600'" class="px-5 py-2.5 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2">
+                        <button type="button" @click="toggleEdit()" :class="isEditing ? 'bg-gray-900' : 'bg-blue-600'" class="w-[140px] justify-center px-5 py-2.5 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2">
                             <i class="fa-solid" :class="isEditing ? 'fa-floppy-disk' : 'fa-pen-to-square'"></i>
                             <span x-text="isEditing ? 'Simpan Data' : 'Edit Nilai'"></span>
                         </button>

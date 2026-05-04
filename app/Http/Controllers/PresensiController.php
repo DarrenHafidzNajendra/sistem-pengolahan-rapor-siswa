@@ -58,7 +58,7 @@ class PresensiController extends Controller
                 ->get()
                 ->map(function ($siswa) use ($presensiMap) {
                     $p = $presensiMap->get($siswa->id);
-                    $siswa->presensi_status = $p ? $p->status : 'hadir';
+                    $siswa->presensi_status = $p ? $p->status : null;
                     $siswa->presensi_keterangan = $p ? $p->keterangan : '';
                     return $siswa;
                 });
