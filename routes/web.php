@@ -35,20 +35,13 @@ Route::middleware('guest')->group(function () {
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', function () {
-        Auth::logout();
-        return redirect()->route('login');
-    })->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Shared Routes (Admin & Guru)
     Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
     Route::get('/data_rapor', [RaporController::class, 'showRapor'])->name('data_rapor');
-    Route::get('/ubah_kata_sandi', function () {
-        return view('pages.ubah_kata_sandi');
-    })->name('ubah_kata_sandi');
-    Route::put('/password/update', function () {
-        return back()->with('status', 'Kata sandi berhasil diperbarui!');
-    })->name('password.update');
+    Route::get('/ubah_kata_sandi', [UbahKataSandiController::class, 'showUbahKataSandi'])->name('ubah_kata_sandi');
+    Route::put('/password/update', [UbahKataSandiController::class, 'updatePassword'])->name('password.update');
 
     // Admin Only Routes
     Route::middleware('role:admin')->group(function () {

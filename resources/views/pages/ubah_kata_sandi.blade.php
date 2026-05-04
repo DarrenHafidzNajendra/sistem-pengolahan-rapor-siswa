@@ -76,19 +76,30 @@
                     <h2 class="text-lg font-bold text-gray-900 mb-2">Ubah Kata Sandi</h2>
                     <p class="text-sm text-gray-500 mb-6">Pastikan akun Anda menggunakan kata sandi yang panjang dan acak agar tetap aman.</p>
 
-                    <form action="#" method="POST" @submit.prevent="$dispatch('notify', { message: 'Kata sandi Anda berhasil diperbarui.', type: 'success' })">
+                    @if(session('status'))
+                        <div class="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium rounded-lg flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i>
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('password.update') }}" method="POST">
                         @csrf
+                        @method('PUT')
                         <div class="space-y-5 mb-8">
                             {{-- Password Lama --}}
                             <div>
                                 <label for="current_password" class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi Saat Ini</label>
                                 <div class="relative group">
-                                    <input :type="showOld ? 'text' : 'password'" id="current_password" name="current_password" 
-                                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
+                                    <input :type="showOld ? 'text' : 'password'" id="current_password" name="current_password" required
+                                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white @error('current_password') border-red-500 @enderror">
                                     <button type="button" @click="showOld = !showOld" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                                         <i class="fa-solid" :class="showOld ? 'fa-eye-slash' : 'fa-eye'"></i>
                                     </button>
                                 </div>
+                                @error('current_password')
+                                    <p class="text-xs text-red-500 mt-1 font-medium">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div class="h-px bg-gray-100 my-2"></div>
@@ -97,19 +108,22 @@
                             <div>
                                 <label for="new_password" class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi Baru</label>
                                 <div class="relative group">
-                                    <input :type="showNew ? 'text' : 'password'" id="new_password" name="new_password" 
-                                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
+                                    <input :type="showNew ? 'text' : 'password'" id="new_password" name="new_password" required
+                                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white @error('new_password') border-red-500 @enderror">
                                     <button type="button" @click="showNew = !showNew" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                                         <i class="fa-solid" :class="showNew ? 'fa-eye-slash' : 'fa-eye'"></i>
                                     </button>
                                 </div>
+                                @error('new_password')
+                                    <p class="text-xs text-red-500 mt-1 font-medium">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             {{-- Konfirmasi Password --}}
                             <div>
-                                <label for="confirm_password" class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Kata Sandi Baru</label>
+                                <label for="new_password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Kata Sandi Baru</label>
                                 <div class="relative group">
-                                    <input :type="showConfirm ? 'text' : 'password'" id="confirm_password" name="confirm_password" 
+                                    <input :type="showConfirm ? 'text' : 'password'" id="new_password_confirmation" name="new_password_confirmation" required
                                            class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
                                     <button type="button" @click="showConfirm = !showConfirm" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                                         <i class="fa-solid" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
