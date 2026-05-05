@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
     // Shared Routes (Admin & Guru)
     Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
     Route::get('/data_rapor', [RaporController::class, 'showRapor'])->name('data_rapor');
+    Route::post('/data_rapor/catatan', [RaporController::class, 'saveCatatan'])->name('data_rapor.catatan');
     Route::get('/ubah_kata_sandi', [UbahKataSandiController::class, 'showUbahKataSandi'])->name('ubah_kata_sandi');
     Route::put('/password/update', [UbahKataSandiController::class, 'updatePassword'])->name('password.update');
 

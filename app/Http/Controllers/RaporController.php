@@ -94,4 +94,40 @@ class RaporController extends Controller
 
         return view('pages.data_rapor', compact('siswaData', 'kelasList'));
     }
+
+    public function saveCatatan(Request $request)
+    {
+        $request->validate([
+            'siswa_id' => 'required|exists:siswa,id',
+            'catatan' => 'nullable|string'
+        ]);
+
+        $semesterAktif = Semester::where('is_aktif', true)->first();
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
+        }
+
+        $kelasSiswa = \App\Models\KelasSiswa::where('siswa_id', $request->siswa_id)
+            ->where('semester_id', $semesterAktif->id)
+            ->first();
+
+        if (!$kelasSiswa) {
+            return redirect()->back()->with('error', 'Data penempatan siswa tidak ditemukan.');
+        }
+
+        // Cek otorisasi: Hanya Wali Kelas dari kelas tersebut atau Admin yang bisa simpan
+        $user = auth()->user();
+        if (!$user->isAdmin()) {
+            $kelas = Kelas::find($kelasSiswa->kelas_id);
+            if (!$kelas || $kelas->wali_id !== $user->guru_id) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki hak akses sebagai Wali Kelas untuk siswa ini.');
+            }
+        }
+
+        $kelasSiswa->update([
+            'catatan_wali' => $request->catatan
+        ]);
+
+        return redirect()->back()->with('success', 'Catatan wali kelas berhasil diperbarui.');
+    }
 }
