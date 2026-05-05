@@ -32,19 +32,9 @@
                 <div x-show="activeTab === 'profil'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
                     <h2 class="text-lg font-bold text-gray-900 mb-6">Informasi Pribadi</h2>
                     
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-8">
-                        <div class="relative">
-                            <div class="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border-4 border-white shadow-sm overflow-hidden">
-                                <i class="fa-solid fa-user text-4xl"></i>
-                            </div>
-                            <button class="absolute bottom-0 right-0 w-8 h-8 bg-gray-900 rounded-full text-white flex items-center justify-center border-2 border-white hover:bg-gray-800 transition-colors" title="Ubah Foto">
-                                <i class="fa-solid fa-camera text-xs"></i>
-                            </button>
-                        </div>
-                        <div>
-                            <h3 class="text-base font-bold text-gray-900">{{ auth()->user()->nama }}</h3>
-                            <p class="text-sm text-gray-500">JPG, GIF atau PNG maksimal 2MB.</p>
-                        </div>
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold text-gray-900">{{ auth()->user()->nama }}</h3>
+                        <p class="text-sm text-blue-600 font-medium">Informasi Akun</p>
                     </div>
 
                     <form action="#" method="POST" @submit.prevent="$dispatch('notify', { message: 'Profil berhasil diperbarui.', type: 'success' })">
