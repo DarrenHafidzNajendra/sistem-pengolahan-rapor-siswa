@@ -13,6 +13,7 @@ class KelasSiswa extends Model
         'siswa_id',
         'kelas_id',
         'semester_id',
+        'catatan_wali',
     ];
 
     /**

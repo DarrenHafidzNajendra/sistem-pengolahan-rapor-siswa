@@ -32,12 +32,18 @@
                         <input type="text" id="no_telp" name="no_hp" placeholder="08xxxxxxxxxx" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
                     </div>
                 </div>
-                <div class="mb-4">
-                    <label for="status" class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
-                    <select id="status" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer">
-                        <option value="Aktif">Aktif</option>
-                        <option value="Tidak Aktif">Tidak Aktif</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">Email (Untuk Login & Lupa Sandi)</label>
+                        <input type="email" id="email" name="email" placeholder="guru@sekolah.sch.id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
+                        <select id="status" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="flex items-center gap-3 mt-6">
                     <button type="submit" 
@@ -54,8 +60,10 @@
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <x-search-toolbar 
                 placeholder="Cari guru berdasarkan NIP atau Nama..." 
-                :filterOptions="['Aktif', 'Tidak Aktif']" 
-                filterLabel="Status Guru"
+                :filters="[
+                    ['name' => 'status', 'label' => 'Status Guru', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
+                ]"
+                :resetUrl="route('data_guru')"
                 tambahClick="openTambah = true"
             />
 
@@ -67,6 +75,7 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">NIP</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Nama Guru</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Jenis Kelamin</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Email</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">No. Telepon</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Status</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Aksi</th>
@@ -79,13 +88,14 @@
                             <td class="px-6 py-4 text-sm text-gray-400 font-medium tracking-tighter">{{ $g->nip }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-bold">{{ $g->nama_guru }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $g->jenis_kelamin }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600 font-medium">{{ $g->user ? $g->user->email : '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600 font-medium">{{ $g->no_hp ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm"><x-badge :type="$g->status === 'Aktif' ? 'success' : 'danger'">{{ $g->status }}</x-badge></td>
                             <td class="px-6 py-4 text-center"><x-action-buttons /></td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">
                                 <p class="text-sm font-medium">Tidak ada data guru</p>
                             </td>
                         </tr>

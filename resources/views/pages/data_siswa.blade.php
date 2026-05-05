@@ -45,14 +45,14 @@
                         <option value="Tidak Aktif">Tidak Aktif</option>
                     </select>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 mt-8">
                     <button type="submit" 
                             @click.prevent="openTambah = false; $dispatch('notify', { message: 'Data siswa baru berhasil ditambahkan ke sistem.' })"
-                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                        <span>Tambah Siswa</span>
+                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Simpan Data</span>
                     </button>
-                    <button type="button" @click="openTambah = false" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Batal</button>
+                    <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
                 </div>
             </form>
         </x-modal>
@@ -61,8 +61,11 @@
             {{-- Toolbar Section --}}
             <x-search-toolbar 
                 placeholder="Cari siswa berdasarkan NIS atau Nama..." 
-                :filterOptions="['Aktif', 'Tidak Aktif']" 
-                filterLabel="Status Siswa"
+                :filters="[
+                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']],
+                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()]
+                ]"
+                :resetUrl="route('data_siswa')"
                 tambahClick="openTambah = true"
             />
 

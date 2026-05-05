@@ -35,7 +35,15 @@
         </x-modal>
 
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <x-search-toolbar placeholder="Cari mata pelajaran..." :showFilter="false" tambahClick="openTambah = true" />
+            <x-search-toolbar 
+                placeholder="Cari mata pelajaran..." 
+                :filters="[
+                    ['name' => 'kelompok', 'label' => 'Kelompok', 'options' => ['Wajib' => 'Wajib', 'Peminatan' => 'Peminatan', 'Muatan Lokal' => 'Muatan Lokal']],
+                    ['name' => 'status', 'label' => 'Status', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
+                ]"
+                :resetUrl="route('data_mapel')"
+                tambahClick="openTambah = true" 
+            />
             <div class="overflow-x-auto">
                 <table class="w-full border-collapse">
                     <thead class="bg-gray-900 border-b border-gray-800">

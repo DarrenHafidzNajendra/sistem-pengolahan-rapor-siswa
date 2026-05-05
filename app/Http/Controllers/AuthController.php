@@ -12,4 +12,27 @@ class AuthController extends Controller
         return view('pages.login');
     }
 
+    // Proses login
+    public function login(Request $request) {
+        $credentials = $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard');
+        }
+
+        return back()->withErrors([
+            'username' => 'NIP atau password salah.',
+        ])->onlyInput('username');
+    }
+    // Proses logout
+    public function logout(Request $request) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login');
+    }
 }

@@ -13,47 +13,6 @@ class MapelSeeder extends Seeder
      */
     public function run(): void
     {
-        $mapels = [
-            [
-                'kode_mapel' => 'BIO01',
-                'nama_mapel' => 'Biologi',
-                'minimum_kkm' => 75,
-                'status' => 'Aktif',
-            ],
-            [
-                'kode_mapel' => 'MTK01',
-                'nama_mapel' => 'Matematika',
-                'minimum_kkm' => 75,
-                'status' => 'Aktif',
-            ],
-            [
-                'kode_mapel' => 'BIN01',
-                'nama_mapel' => 'Bahasa Indonesia',
-                'minimum_kkm' => 75,
-                'status' => 'Aktif',
-            ],
-            [
-                'kode_mapel' => 'PJK01',
-                'nama_mapel' => 'Pendidikan Jasmani',
-                'minimum_kkm' => 75,
-                'status' => 'Aktif',
-            ],
-            [
-                'kode_mapel' => 'KIM01',
-                'nama_mapel' => 'Kimia',
-                'minimum_kkm' => 75,
-                'status' => 'Aktif',
-            ],
-            [
-                'kode_mapel' => 'FIS01',
-                'nama_mapel' => 'Fisika',
-                'minimum_kkm' => 75,
-                'status' => 'Aktif',
-            ],
-        ];
-
-        foreach ($mapels as $mapel) {
-            Mapel::create($mapel);
-        }
+        // Data sudah disatukan di DatabaseSeeder.php
     }
 }

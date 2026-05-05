@@ -3,14 +3,20 @@
 
 <div
     x-show="{{ $name }}"
+    x-init="$watch('{{ $name }}', value => {
+        if (value) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    })"
     x-transition:enter="transition ease-out duration-200"
     x-transition:enter-start="opacity-0"
     x-transition:enter-end="opacity-100"
     x-transition:leave="transition ease-in duration-150"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
-    @click.self="{{ $name }} = false"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
     style="display: none;"
 >
     <div

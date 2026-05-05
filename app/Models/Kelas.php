@@ -14,7 +14,16 @@ class Kelas extends Model
         'kode_kelas',
         'nama_kelas',
         'tingkat',
+        'wali_id',
     ];
+
+    /**
+     * Relasi ke Guru yang menjadi Wali Kelas.
+     */
+    public function wali(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Guru::class, 'wali_id');
+    }
 
     /**
      * Relasi ke penempatan siswa (pivot kelas_siswa).

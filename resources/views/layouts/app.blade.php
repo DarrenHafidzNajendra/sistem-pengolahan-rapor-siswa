@@ -89,7 +89,7 @@
     @stack('head-scripts')
     @stack('styles')
 </head>
-<body class="bg-gray-50 font-sans antialiased text-gray-900">
+<body class="bg-gray-50 font-sans antialiased text-gray-900" @yield('body-attrs')>
 
     {{-- ═══ Flat Toast Notification ═══ --}}
     <div x-data x-show="$store.toast.show" x-cloak
@@ -163,5 +163,21 @@
     </main>
 
     @stack('scripts')
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            @if(session('success'))
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: { message: "{{ session('success') }}", type: 'success' }
+                }));
+            @endif
+
+            @if(session('error'))
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: { message: "{{ session('error') }}", type: 'error' }
+                }));
+            @endif
+        });
+    </script>
 </body>
 </html>

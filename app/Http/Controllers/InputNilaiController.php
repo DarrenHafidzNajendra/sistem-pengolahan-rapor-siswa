@@ -16,22 +16,40 @@ class InputNilaiController extends Controller
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
 
-        // Ambil daftar pengampu untuk dropdown
+        // Ambil data user guru yang sedang login
+        $user = auth()->user();
+
+        // Ambil daftar pengampu untuk dropdown (hanya milik guru tersebut)
         $pengampuList = Pengampu::with(['mapel', 'kelas'])
             ->when($semesterAktif, fn($q) => $q->where('semester_id', $semesterAktif->id))
+            ->where('guru_id', $user->guru_id) // Filter mutlak berdasarkan guru_id user
             ->where('status', 'Aktif')
             ->get();
 
-        // Ambil daftar mapel & kelas unik dari pengampu aktif
+        // Ambil daftar mapel & kelas unik dari pengampu milik guru tersebut
         $mapelList = $pengampuList->pluck('mapel')->unique('id')->values();
         $kelasList = $pengampuList->pluck('kelas')->unique('id')->values();
 
-        // Pilih pengampu (dari request atau default pertama)
-        $selectedPengampuId = $request->get('pengampu_id', $pengampuList->first()?->id);
-        $selectedPengampu = $pengampuList->firstWhere('id', $selectedPengampuId);
+        // Pilih pengampu berdasarkan form filter
+        $mapelId = $request->get('mapel_id');
+        $kelasId = $request->get('kelas_id');
+
+        if ($mapelId && $kelasId) {
+            $selectedPengampu = $pengampuList->where('mapel_id', $mapelId)
+                                           ->where('kelas_id', $kelasId)
+                                           ->first();
+        } else {
+            $selectedPengampuId = $request->get('pengampu_id', $pengampuList->first()?->id);
+            $selectedPengampu = $pengampuList->firstWhere('id', $selectedPengampuId);
+        }
+
+        // Jika mencoba mengakses pengampu_id yang bukan miliknya (lewat URL), batalkan akses
+        if ($request->filled('pengampu_id') && !$selectedPengampu) {
+             return redirect()->route('input_nilai')->with('error', 'Anda tidak memiliki otoritas untuk mengakses data ini.');
+        }
 
         // Ambil siswa di kelas tersebut + nilai mereka
-        $siswaList = collect();
+        $siswaList = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
         if ($selectedPengampu && $semesterAktif) {
             $kelasId = $selectedPengampu->kelas_id;
 
@@ -46,16 +64,18 @@ class InputNilaiController extends Controller
 
             $siswaList = \App\Models\Siswa::whereIn('id', $siswaIds)
                 ->orderBy('nama_siswa')
-                ->get()
-                ->map(function ($siswa) use ($nilaiMap) {
-                    $nilai = $nilaiMap->get($siswa->id);
-                    $siswa->nilai = $nilai;
-                    return $siswa;
-                });
+                ->paginate(20)
+                ->withQueryString();
+
+            $siswaList->getCollection()->transform(function ($siswa) use ($nilaiMap) {
+                $nilai = $nilaiMap->get($siswa->id);
+                $siswa->nilai = $nilai;
+                return $siswa;
+            });
         }
 
         // Pre-build JSON-safe array for Alpine.js
-        $siswaJsonData = $siswaList->map(function ($s) {
+        $siswaJsonData = collect($siswaList->items())->map(function ($s) {
             $nilai = $s->nilai;
             return [
                 'id' => $s->id,
@@ -74,6 +94,7 @@ class InputNilaiController extends Controller
                 'k_pred' => $nilai ? Nilai::hitungPredikat($nilai->rata_keterampilan) : '',
                 's_spiritual' => $nilai?->sikap_spiritual ?? 'B',
                 's_sosial' => $nilai?->sikap_sosial ?? 'B',
+                'catatan' => $nilai?->catatan_guru ?? '',
             ];
         })->values();
 
@@ -85,5 +106,42 @@ class InputNilaiController extends Controller
             'siswaList',
             'siswaJsonData'
         ));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'pengampu_id' => 'required|exists:pengampu,id',
+            'nilai' => 'required|array',
+        ]);
+
+        $pengampuId = $request->pengampu_id;
+        $dataNilai = $request->input('nilai');
+
+        foreach ($dataNilai as $siswaId => $fields) {
+            Nilai::updateOrCreate(
+                [
+                    'pengampu_id' => $pengampuId,
+                    'siswa_id' => $siswaId,
+                ],
+                [
+                    'tugas' => $fields['p_tugas'] ?? null,
+                    'ulangan_harian' => $fields['p_uh'] ?? null,
+                    'uts' => $fields['p_uts'] ?? null,
+                    'uas' => $fields['p_uas'] ?? null,
+                    'praktik' => $fields['k_praktik'] ?? null,
+                    'proyek' => $fields['k_proyek'] ?? null,
+                    'portofolio' => $fields['k_portofolio'] ?? null,
+                    'sikap_spiritual' => $fields['s_spiritual'] ?? 'B',
+                    'sikap_sosial' => $fields['s_sosial'] ?? 'B',
+                    'catatan_guru' => $fields['catatan'] ?? null,
+                ]
+            );
+        }
+
+        return redirect()->back()->with([
+            'success' => 'Data nilai siswa berhasil diperbarui dan disimpan ke database.',
+            'active_tab' => $request->active_tab
+        ]);
     }
 }

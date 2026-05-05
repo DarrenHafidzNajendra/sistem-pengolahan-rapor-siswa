@@ -16,14 +16,20 @@
             </div>
 
             {{-- Form --}}
-            <form method="GET" action="{{ route('dashboard') }}" class="space-y-6">
+            <form method="POST" action="{{ route('login.post') }}" class="space-y-6">
                 @csrf
 
+                @if($errors->has('username'))
+                <div class="p-3 bg-red-50 border border-red-200 text-red-600 text-[10px] font-bold rounded-lg uppercase">
+                    {{ $errors->first('username') }}
+                </div>
+                @endif
+
                 <div class="space-y-1">
-                    <label for="username" class="text-[10px] font-bold text-gray-500 uppercase">Username</label>
+                    <label for="username" class="text-[10px] font-bold text-gray-500 uppercase">NIP</label>
                     <input type="text" id="username" name="username" required
                            class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-black outline-none transition-none bg-white"
-                           placeholder="Username Anda">
+                           placeholder="NIP Anda">
                 </div>
 
                 <div class="space-y-1">

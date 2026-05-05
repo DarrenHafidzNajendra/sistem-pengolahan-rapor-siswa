@@ -3,57 +3,133 @@
 @section('body-attrs') x-data="{ openTambah: false }" @endsection
 
 @section('content')
-    <x-modal name="openTambah" title="Tambah Pengampu">
+    <x-modal name="openTambah" title="Tambah Penugasan Pengampu">
         <form action="{{ route('pengampu.store') }}" method="POST">
             @csrf
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Mata Pelajaran</label>
-                    <select name="mapel_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white text-gray-700 appearance-none cursor-pointer">
-                        @foreach($mapels as $mapel)
-                            <option value="{{ $mapel->id }}">{{ $mapel->nama_mapel }}</option>
-                        @endforeach
-                    </select>
+                    <div class="relative">
+                        <select name="mapel_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white transition-all appearance-none cursor-pointer">
+                            <option value="" disabled selected>Pilih Mata Pelajaran</option>
+                            @foreach($mapels as $mapel)
+                                <option value="{{ $mapel->id }}">{{ $mapel->nama_mapel }} ({{ $mapel->kode_mapel }})</option>
+                            @endforeach
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+                    </div>
                 </div>
+
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Guru</label>
-                    <select name="guru_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white text-gray-700 appearance-none cursor-pointer">
-                        @foreach($gurus as $guru)
-                            <option value="{{ $guru->id }}">{{ $guru->nama_guru }}</option>
-                        @endforeach
-                    </select>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">KKM (Kriteria Ketuntasan Minimal)</label>
+                    <input type="number" name="kkm" value="75" min="0" max="100" required
+                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-all"
+                           placeholder="Contoh: 75">
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                    <select name="kelas_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white text-gray-700 appearance-none cursor-pointer">
-                        @foreach($kelas as $k)
-                            <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
-                        @endforeach
-                    </select>
+
+                {{-- Custom Searchable Guru Dropdown --}}
+                <div x-data="{ 
+                    open: false, 
+                    search: '', 
+                    selectedId: '', 
+                    selectedName: '',
+                    gurus: {{ $gurus->map(fn($g) => ['id' => $g->id, 'nama' => $g->nama_guru])->toJson() }},
+                    get filteredGurus() {
+                        if (this.search === '') return this.gurus;
+                        return this.gurus.filter(g => g.nama.toLowerCase().includes(this.search.toLowerCase()));
+                    },
+                    selectGuru(guru) {
+                        this.selectedId = guru.id;
+                        this.selectedName = guru.nama;
+                        this.search = guru.nama;
+                        this.open = false;
+                    }
+                }" class="relative">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Guru Pengampu</label>
+                    
+                    <div class="relative">
+                        <input type="text" 
+                               x-model="search"
+                               @focus="open = true"
+                               @click.away="open = false; if(!selectedId) search = ''"
+                               placeholder="Cari dan pilih guru..." 
+                               class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-all pr-10"
+                               autocomplete="off">
+                        
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <i class="fa-solid fa-magnifying-glass text-xs" x-show="!search"></i>
+                            <i class="fa-solid fa-xmark text-xs cursor-pointer hover:text-gray-600" x-show="search" @click="search = ''; selectedId = ''; selectedName = ''"></i>
+                        </div>
+                    </div>
+
+                    {{-- Dropdown List --}}
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="opacity-0 translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="absolute z-[60] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-48 overflow-y-auto scrollbar-thin"
+                         style="display: none;">
+                        
+                        <template x-for="guru in filteredGurus" :key="guru.id">
+                            <div @click="selectGuru(guru)"
+                                 class="px-4 py-2.5 text-sm cursor-pointer transition-colors flex items-center justify-between"
+                                 :class="selectedId === guru.id ? 'bg-blue-50 text-blue-700 font-bold' : 'hover:bg-gray-50 text-gray-700'">
+                                <span x-text="guru.nama"></span>
+                                <i class="fa-solid fa-check text-[10px]" x-show="selectedId === guru.id"></i>
+                            </div>
+                        </template>
+
+                        <div x-show="filteredGurus.length === 0" class="px-4 py-8 text-center text-gray-400">
+                            <i class="fa-solid fa-user-slash block mb-2 text-lg"></i>
+                            <p class="text-xs font-medium">Guru tidak ditemukan</p>
+                        </div>
+                    </div>
+
+                    {{-- Hidden Input for Form Submission --}}
+                    <input type="hidden" name="guru_id" :value="selectedId" required>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Semester</label>
-                    <select name="semester_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white text-gray-700 appearance-none cursor-pointer">
-                        @foreach($semesters as $smt)
-                            <option value="{{ $smt->id }}" {{ $smt->is_aktif ? 'selected' : '' }}>{{ $smt->semester }} {{ $smt->tahunAjaran->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">KKM</label>
-                    <input type="number" name="kkm" value="75" min="0" max="100" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 bg-white">
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
+                        <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white transition-all appearance-none cursor-pointer">
+                            @foreach($kelas as $k)
+                                <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Semester</label>
+                        <select name="semester_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white transition-all appearance-none cursor-pointer">
+                            @foreach($semesters as $smt)
+                                <option value="{{ $smt->id }}" {{ $smt->is_aktif ? 'selected' : '' }}>{{ $smt->semester }} {{ $smt->tahunAjaran->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center gap-3 mt-6">
-                <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors">Tambah</button>
-                <button type="button" @click="openTambah = false" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all">Batal</button>
+
+            <div class="flex items-center gap-3 mt-8">
+                <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors">
+                    <i class="fa-solid fa-check"></i><span>Simpan Penugasan</span>
+                </button>
+                <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
             </div>
         </form>
     </x-modal>
 
     <div class="max-w-full">
         <div class="bg-white rounded-lg border border-gray-200">
-            <x-search-toolbar placeholder="Cari pengampu, guru..." :filterOptions="['Aktif', 'Tidak Aktif']" filterLabel="Filter Status" tambahClick="openTambah = true" />
+            <x-search-toolbar 
+                placeholder="Cari pengampu, guru..." 
+                :filters="[
+                    ['name' => 'mapel_id', 'label' => 'Filter Mapel', 'options' => $mapels->pluck('nama_mapel', 'id')->toArray()],
+                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelas->pluck('nama_kelas', 'id')->toArray()]
+                ]"
+                :resetUrl="route('pengampu')"
+                tambahClick="openTambah = true" 
+            />
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-900">

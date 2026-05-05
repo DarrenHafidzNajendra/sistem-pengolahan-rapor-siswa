@@ -1,49 +1,63 @@
 {{-- resources/views/components/search-toolbar.blade.php --}}
 @props([
     'placeholder' => 'Cari...',
-    'filterOptions' => [],
-    'filterLabel' => 'Filter Status',
-    'showFilter' => true,
     'showTambah' => true,
     'tambahClick' => 'openTambah = true',
+    'resetUrl' => null,
+    'filters' => [] {{-- Array of objects: ['name' => 'status', 'label' => 'Status', 'options' => ['Aktif', 'Tidak Aktif']] --}}
 ])
 
 <div class="p-6 border-b border-gray-200">
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <form action="" method="GET" class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         {{-- Left: Search Input --}}
-        <div class="w-full md:w-auto md:max-w-xs">
+        <div class="w-full md:w-auto md:max-w-xs flex-1">
             <div class="relative">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <input type="text" placeholder="{{ $placeholder }}"
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ $placeholder }}"
                        class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
             </div>
         </div>
 
         {{-- Right: Filter & Tombol Tambah --}}
-        <div class="flex items-center gap-3 w-full md:w-auto">
-            @if($showFilter)
-            <select class="flex-1 md:flex-none px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer">
-                <option>{{ $filterLabel }}</option>
-                @foreach($filterOptions as $option)
-                    <option>{{ $option }}</option>
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            @foreach($filters as $filter)
+            <select name="{{ $filter['name'] }}" 
+                    class="px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer min-w-[140px]">
+                <option value="">{{ $filter['label'] }}</option>
+                @foreach($filter['options'] as $key => $label)
+                    <option value="{{ $key }}" {{ request($filter['name']) == $key ? 'selected' : '' }}>
+                        {{ $label }}
+                    </option>
                 @endforeach
             </select>
+            @endforeach
+
+            <button
+                type="submit"
+                class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap"
+            >
+                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                <span>Cari</span>
+            </button>
+
+            @if($resetUrl && request()->anyFilled(array_merge(['search'], array_column($filters, 'name'))))
+                <a href="{{ $resetUrl }}" class="px-4 py-2.5 text-gray-500 hover:text-red-600 transition-colors text-xs font-bold uppercase tracking-wider whitespace-nowrap">
+                    Reset
+                </a>
             @endif
 
             @if($showTambah)
-            {{-- Tombol Tambah — membuka modal --}}
             <button
+                type="button"
                 @click="{{ $tambahClick }}"
-                class="px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap"
+                class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap"
             >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
+                <i class="fa-solid fa-circle-plus"></i>
                 <span>Tambah</span>
             </button>
             @endif
         </div>
-    </div>
+    </form>
 </div>
