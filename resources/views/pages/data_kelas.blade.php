@@ -5,28 +5,37 @@
 @section('content')
     <div class="max-w-full" x-data="{ openTambah: false }">
         <x-modal name="openTambah" title="Tambah Kelas Baru">
-            <form action="" method="">
+            <form action="{{ route('data_kelas.store') }}" method="POST">
                 @csrf
                 <div class="space-y-4">
                     <div>
                         <label for="kode_kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Kelas</label>
-                        <input type="text" id="kode_kelas" name="kode_kelas" placeholder="Contoh: X-MIPA-1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors">
+                        <input type="text" id="kode_kelas" name="kode_kelas" required placeholder="Contoh: X-MIPA-1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors">
                     </div>
                     <div>
                         <label for="nama_kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Kelas</label>
-                        <input type="text" id="nama_kelas" name="nama_kelas" placeholder="Contoh: X MIPA 1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors">
+                        <input type="text" id="nama_kelas" name="nama_kelas" required placeholder="Contoh: X MIPA 1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors">
                     </div>
                     <div>
                         <label for="tingkat" class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
-                        <select id="tingkat" name="tingkat" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors cursor-pointer">
+                        <select id="tingkat" name="tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors cursor-pointer">
                             <option value="X">X</option>
                             <option value="XI">XI</option>
                             <option value="XII">XII</option>
                         </select>
                     </div>
+                    <div>
+                        <label for="wali_id" class="block text-sm font-semibold text-gray-700 mb-1.5">Wali Kelas</label>
+                        <select id="wali_id" name="wali_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors cursor-pointer bg-white">
+                            <option value="">Pilih Wali Kelas (Opsional)</option>
+                            @foreach($guruList as $guru)
+                                <option value="{{ $guru->id }}">{{ $guru->nama_guru }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="flex items-center gap-3 mt-8">
-                    <button type="submit" @click.prevent="openTambah = false; $dispatch('notify', { message: 'Data kelas baru berhasil disimpan.' })" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors">
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors">
                         <i class="fa-solid fa-check"></i><span>Simpan Kelas</span>
                     </button>
                     <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
@@ -51,6 +60,7 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Kode</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Nama Kelas</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Tingkat</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Wali Kelas</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Total Siswa</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -62,11 +72,12 @@
                             <td class="px-6 py-4 text-sm text-gray-400 font-bold tracking-widest">{{ $k->kode_kelas }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-bold uppercase tracking-tight">{{ $k->nama_kelas }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600 font-medium">{{ $k->tingkat }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $k->wali->nama_guru ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm font-bold text-gray-700">{{ $k->kelas_siswa_count }} Siswa</td>
                             <td class="px-6 py-4 text-center"><x-action-buttons /></td>
                         </tr>
                         @empty
-                        <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data kelas</p></td></tr>
+                        <tr><td colspan="7" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data kelas</p></td></tr>
                         @endforelse
                     </tbody>
                 </table>

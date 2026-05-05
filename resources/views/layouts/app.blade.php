@@ -163,5 +163,21 @@
     </main>
 
     @stack('scripts')
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            @if(session('success'))
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: { message: "{{ session('success') }}", type: 'success' }
+                }));
+            @endif
+
+            @if(session('error'))
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: { message: "{{ session('error') }}", type: 'error' }
+                }));
+            @endif
+        });
+    </script>
 </body>
 </html>

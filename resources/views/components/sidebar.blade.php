@@ -126,7 +126,8 @@
             </div>
         </div>
 
-        {{-- Rapor --}}
+        {{-- Rapor (Hanya Admin & Wali Kelas) --}}
+        @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isWaliKelas()))
         <div class="px-2 mb-2">
             <a href="{{ route('data_rapor') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
@@ -139,6 +140,7 @@
                 <span>Rapor Siswa</span>
             </a>
         </div>
+        @endif
 
         {{-- Pengaturan Akun --}}
         <div class="px-2">

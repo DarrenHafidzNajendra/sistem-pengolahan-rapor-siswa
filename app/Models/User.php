@@ -75,4 +75,24 @@ class User extends Authenticatable
     {
         return $this->role === 'guru';
     }
+
+    /**
+     * Cek apakah user adalah Wali Kelas.
+     */
+    public function isWaliKelas(): bool
+    {
+        if (!$this->isGuru() || !$this->guru_id) {
+            return false;
+        }
+
+        return \App\Models\Kelas::where('wali_id', $this->guru_id)->exists();
+    }
+
+    /**
+     * Ambil data kelas yang diampu sebagai Wali Kelas.
+     */
+    public function managedKelas(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Kelas::class, 'wali_id', 'guru_id');
+    }
 }

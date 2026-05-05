@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/data_siswa', [SiswaController::class, 'showDataSiswa'])->name('data_siswa');
         Route::get('/data_guru', [GuruController::class, 'showGuru'])->name('data_guru');
         Route::get('/data_kelas', [KelasController::class, 'showKelas'])->name('data_kelas');
+        Route::post('/data_kelas', [KelasController::class, 'store'])->name('data_kelas.store');
         Route::get('/data_mapel', [MapelController::class, 'showMapel'])->name('data_mapel');
         Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
         Route::resource('pengampu', PengampuController::class)->except(['index']);

@@ -38,6 +38,25 @@ class RaporController extends Controller
             });
         }
 
+        // Restriksi Akses: Hanya Wali Kelas yang bisa melihat rapor kelasnya
+        $user = auth()->user();
+        if (!$user->isAdmin()) {
+            if ($user->isWaliKelas()) {
+                // Guru adalah Wali Kelas, batasi hanya untuk kelas yang dia ampu
+                $managedKelasIds = $user->managedKelas()->pluck('id')->toArray();
+                
+                $query->whereHas('kelasSiswa', function ($q) use ($managedKelasIds, $semesterAktif) {
+                    $q->whereIn('kelas_id', $managedKelasIds);
+                    if ($semesterAktif) {
+                        $q->where('semester_id', $semesterAktif->id);
+                    }
+                });
+            } else {
+                // Guru bukan Wali Kelas, tidak boleh melihat data rapor
+                $query->whereRaw('1 = 0'); // Menghasilkan hasil kosong secara aman
+            }
+        }
+
         $siswaData = $query->orderBy('nama_siswa')->paginate(20)->withQueryString();
 
         // Hitung rata-rata dan status kelulusan per siswa
@@ -65,7 +84,13 @@ class RaporController extends Controller
             return $siswa;
         });
 
-        $kelasList = Kelas::orderBy('nama_kelas')->get();
+        $kelasList = Kelas::orderBy('nama_kelas');
+        
+        if (!$user->isAdmin() && $user->isWaliKelas()) {
+            $kelasList->whereIn('id', $user->managedKelas()->pluck('id')->toArray());
+        }
+
+        $kelasList = $kelasList->get();
 
         return view('pages.data_rapor', compact('siswaData', 'kelasList'));
     }

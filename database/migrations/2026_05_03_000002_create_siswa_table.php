@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nis')->unique();
             $table->string('nama_siswa');
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
-            $table->date('tanggal_lahir')->nullable();
             $table->text('alamat')->nullable();
             $table->string('no_hp_ortu')->nullable();
             $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');

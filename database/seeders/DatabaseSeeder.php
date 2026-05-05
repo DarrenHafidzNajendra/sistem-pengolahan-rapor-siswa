@@ -103,7 +103,9 @@ class DatabaseSeeder extends Seeder
         ];
 
         $kelasList = [];
-        foreach ($kelasData as $k) {
+        foreach ($kelasData as $i => $k) {
+            // Berikan wali kelas (Guru 0-7) untuk kelas 0-7 secara berurutan
+            $k['wali_id'] = $gurus[$i]->id;
             $kelasList[] = Kelas::create($k);
         }
 
@@ -132,26 +134,26 @@ class DatabaseSeeder extends Seeder
         // 6. SISWA
         // =============================================
         $namaSiswa = [
-            ['nis' => '2025001', 'nama_siswa' => 'Budi Santoso',          'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2009-03-15'],
-            ['nis' => '2025002', 'nama_siswa' => 'Siti Nurhaliza',        'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2009-07-22'],
-            ['nis' => '2025003', 'nama_siswa' => 'Ahmad Hidayat',         'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2009-01-10'],
-            ['nis' => '2025004', 'nama_siswa' => 'Dewi Lestari',          'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2009-11-05'],
-            ['nis' => '2025005', 'nama_siswa' => 'Rinto Harahap',         'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2009-05-30'],
-            ['nis' => '2025006', 'nama_siswa' => 'Putri Ayu Lestari',     'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2009-09-18'],
-            ['nis' => '2025007', 'nama_siswa' => 'Fajar Ramadhan',        'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2009-04-25'],
-            ['nis' => '2025008', 'nama_siswa' => 'Maya Saleha',           'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2009-12-01'],
-            ['nis' => '2025009', 'nama_siswa' => 'Eka Prasetyo',          'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2009-06-14'],
-            ['nis' => '2025010', 'nama_siswa' => 'Ratna Kusuma',          'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2009-02-28'],
-            ['nis' => '2025011', 'nama_siswa' => 'Gilang Ramadan',        'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2008-08-12'],
-            ['nis' => '2025012', 'nama_siswa' => 'Hesti Purwanti',        'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2008-10-20'],
-            ['nis' => '2025013', 'nama_siswa' => 'Ivan Gunawan',          'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2008-03-07'],
-            ['nis' => '2025014', 'nama_siswa' => 'Julia Maharani',        'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2008-07-19'],
-            ['nis' => '2025015', 'nama_siswa' => 'Citra Kirana',          'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2008-01-23'],
-            ['nis' => '2025016', 'nama_siswa' => 'Dimas Prayoga',         'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2007-11-30'],
-            ['nis' => '2025017', 'nama_siswa' => 'Anisa Rahma',           'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2007-05-16'],
-            ['nis' => '2025018', 'nama_siswa' => 'Samuel Simorangkir',    'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2007-09-08'],
-            ['nis' => '2025019', 'nama_siswa' => 'Fitriani Dewi',         'jenis_kelamin' => 'Perempuan',  'tanggal_lahir' => '2007-04-11'],
-            ['nis' => '2025020', 'nama_siswa' => 'Rizky Maulana',         'jenis_kelamin' => 'Laki-laki',  'tanggal_lahir' => '2007-12-25'],
+            ['nis' => '2025001', 'nama_siswa' => 'Budi Santoso',          'jenis_kelamin' => 'Laki-laki'],
+            ['nis' => '2025002', 'nama_siswa' => 'Siti Nurhaliza',        'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025003', 'nama_siswa' => 'Ahmad Hidayat',         'jenis_kelamin' => 'Laki-laki'],
+            ['nis' => '2025004', 'nama_siswa' => 'Dewi Lestari',          'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025005', 'nama_siswa' => 'Rinto Harahap',         'jenis_kelamin' => 'Laki-laki'],
+            ['nis' => '2025006', 'nama_siswa' => 'Putri Ayu Lestari',     'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025007', 'nama_siswa' => 'Fajar Ramadhan',        'jenis_kelamin' => 'Laki-laki'],
+            ['nis' => '2025008', 'nama_siswa' => 'Maya Saleha',           'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025009', 'nama_siswa' => 'Eka Prasetyo',          'jenis_kelamin' => 'Laki-laki'],
+            ['nis' => '2025010', 'nama_siswa' => 'Ratna Kusuma',          'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025011', 'nama_siswa' => 'Gilang Ramadan',        'jenis_kelamin' => 'Laki-laki'],
+            ['nis' => '2025012', 'nama_siswa' => 'Hesti Purwanti',        'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025013', 'nama_siswa' => 'Ivan Gunawan',          'jenis_kelamin' => 'Laki-laki'],
+            ['nis' => '2025014', 'nama_siswa' => 'Julia Maharani',        'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025015', 'nama_siswa' => 'Citra Kirana',          'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025016', 'nama_siswa' => 'Dimas Prayoga',         'jenis_kelamin' => 'Laki-laki'],
+            ['nis' => '2025017', 'nama_siswa' => 'Anisa Rahma',           'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025018', 'nama_siswa' => 'Samuel Simorangkir',    'jenis_kelamin' => 'Laki-laki'],
+            ['nis' => '2025019', 'nama_siswa' => 'Fitriani Dewi',         'jenis_kelamin' => 'Perempuan'],
+            ['nis' => '2025020', 'nama_siswa' => 'Rizky Maulana',         'jenis_kelamin' => 'Laki-laki'],
         ];
 
         $siswaList = [];

@@ -14,7 +14,6 @@ class Siswa extends Model
         'nis',
         'nama_siswa',
         'jenis_kelamin',
-        'tanggal_lahir',
         'alamat',
         'no_hp_ortu',
         'status',
@@ -23,7 +22,6 @@ class Siswa extends Model
     protected function casts(): array
     {
         return [
-            'tanggal_lahir' => 'date',
         ];
     }
 
