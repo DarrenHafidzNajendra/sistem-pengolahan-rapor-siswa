@@ -60,8 +60,10 @@
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <x-search-toolbar 
                 placeholder="Cari guru berdasarkan NIP atau Nama..." 
-                :filterOptions="['Aktif', 'Tidak Aktif']" 
-                filterLabel="Status Guru"
+                :filters="[
+                    ['name' => 'status', 'label' => 'Status Guru', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
+                ]"
+                :resetUrl="route('data_guru')"
                 tambahClick="openTambah = true"
             />
 

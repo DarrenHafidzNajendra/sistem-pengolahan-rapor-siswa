@@ -11,14 +11,27 @@ use Illuminate\Http\Request;
 
 class PengampuController extends Controller
 {
-    public function showPengampu()
+    public function showPengampu(Request $request)
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
 
-        $pengampus = Pengampu::with(['guru', 'mapel', 'kelas', 'semester.tahunAjaran'])
-            ->when($semesterAktif, fn($q) => $q->where('semester_id', $semesterAktif->id))
-            ->orderBy('id')
-            ->paginate(20);
+        $query = Pengampu::query()->with(['guru', 'mapel', 'kelas', 'semester.tahunAjaran']);
+
+        if ($semesterAktif) {
+            $query->where('semester_id', $semesterAktif->id);
+        }
+
+        // Filter Mapel
+        if ($request->filled('mapel_id')) {
+            $query->where('mapel_id', $request->mapel_id);
+        }
+
+        // Filter Kelas
+        if ($request->filled('kelas_id')) {
+            $query->where('kelas_id', $request->kelas_id);
+        }
+
+        $pengampus = $query->orderBy('id')->paginate(20)->withQueryString();
 
         $gurus = Guru::where('status', 'Aktif')->orderBy('nama_guru')->get();
         $mapels = Mapel::where('status', 'Aktif')->orderBy('nama_mapel')->get();

@@ -121,7 +121,15 @@
 
     <div class="max-w-full">
         <div class="bg-white rounded-lg border border-gray-200">
-            <x-search-toolbar placeholder="Cari pengampu, guru..." :filterOptions="['Aktif', 'Tidak Aktif']" filterLabel="Filter Status" tambahClick="openTambah = true" />
+            <x-search-toolbar 
+                placeholder="Cari pengampu, guru..." 
+                :filters="[
+                    ['name' => 'mapel_id', 'label' => 'Filter Mapel', 'options' => $mapels->pluck('nama_mapel', 'id')->toArray()],
+                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelas->pluck('nama_kelas', 'id')->toArray()]
+                ]"
+                :resetUrl="route('pengampu')"
+                tambahClick="openTambah = true" 
+            />
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-900">

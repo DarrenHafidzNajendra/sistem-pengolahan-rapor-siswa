@@ -2,7 +2,7 @@
 @section('title', 'Ubah Kata Sandi')
 
 @section('content')
-    <div class="max-w-4xl mx-auto" x-data="{ activeTab: 'profil', showOld: false, showNew: false, showConfirm: false }">
+    <div class="max-w-4xl mx-auto" x-data="{ activeTab: localStorage.getItem('settingTab') || 'profil', showOld: false, showNew: false, showConfirm: false }" x-init="$watch('activeTab', val => localStorage.setItem('settingTab', val))">
         <div class="mb-8">
             <h1 class="text-2xl font-bold text-gray-900">Pengaturan Akun</h1>
             <p class="text-sm text-gray-500 mt-1">Kelola informasi profil dan keamanan akun Anda.</p>

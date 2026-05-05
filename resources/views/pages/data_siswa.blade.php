@@ -61,8 +61,11 @@
             {{-- Toolbar Section --}}
             <x-search-toolbar 
                 placeholder="Cari siswa berdasarkan NIS atau Nama..." 
-                :filterOptions="['Aktif', 'Tidak Aktif']" 
-                filterLabel="Status Siswa"
+                :filters="[
+                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']],
+                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()]
+                ]"
+                :resetUrl="route('data_siswa')"
                 tambahClick="openTambah = true"
             />
 

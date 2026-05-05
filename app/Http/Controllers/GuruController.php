@@ -7,9 +7,24 @@ use Illuminate\Http\Request;
 
 class GuruController extends Controller
 {
-    public function showGuru()
+    public function showGuru(Request $request)
     {
-        $guruData = Guru::with('user')->orderBy('nama_guru')->paginate(20);
+        $query = Guru::query();
+
+        // Filter Search
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('nama_guru', 'like', '%' . $request->search . '%')
+                  ->orWhere('nip', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filter Status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $guruData = $query->with('user')->orderBy('nama_guru')->paginate(20)->withQueryString();
 
         return view('pages.data_guru', compact('guruData'));
     }

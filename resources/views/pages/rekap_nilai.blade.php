@@ -4,42 +4,15 @@
 @section('content')
     <div class="max-w-full">
         <div class="bg-white rounded-lg border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-                <form method="GET" action="{{ route('rekap_nilai') }}" class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                    <div class="w-full lg:w-80">
-                        <div class="relative group">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama siswa..." 
-                                   class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Filter:</span>
-                            <select name="kelas_id" class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white cursor-pointer transition-colors min-w-[140px]">
-                                <option value="">Semua Kelas</option>
-                                @foreach($kelasList as $k)
-                                    <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kelas }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <select name="mapel_id" class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white cursor-pointer transition-colors min-w-[180px]">
-                            <option value="">Semua Mata Pelajaran</option>
-                            @foreach($mapelList as $m)
-                                <option value="{{ $m->id }}" {{ request('mapel_id') == $m->id ? 'selected' : '' }}>{{ $m->nama_mapel }}</option>
-                            @endforeach
-                        </select>
-                        <button type="submit" class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap">
-                            <i class="fa-solid fa-magnifying-glass text-xs"></i><span>Cari</span>
-                        </button>
-                        @if(request()->anyFilled(['search', 'kelas_id', 'mapel_id']))
-                            <a href="{{ route('rekap_nilai') }}" class="px-4 py-2.5 text-gray-500 hover:text-red-600 transition-colors text-xs font-bold uppercase tracking-wider">
-                                Reset
-                            </a>
-                        @endif
-                    </div>
-                </form>
-            </div>
+            <x-search-toolbar 
+                placeholder="Cari nama siswa..." 
+                :filters="[
+                    ['name' => 'kelas_id', 'label' => 'Semua Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()],
+                    ['name' => 'mapel_id', 'label' => 'Semua Mapel', 'options' => $mapelList->pluck('nama_mapel', 'id')->toArray()]
+                ]"
+                :showTambah="false"
+                :resetUrl="route('rekap_nilai')"
+            />
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-900">
