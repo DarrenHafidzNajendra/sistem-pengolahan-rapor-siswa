@@ -26,6 +26,7 @@
                             <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">UAS</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Nilai Akhir</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Catatan</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -41,9 +42,10 @@
                             <td class="px-6 py-4 text-center text-sm font-bold text-gray-900">{{ $n->rata_pengetahuan ?? '-' }}</td>
                             @php $kkm = $n->pengampu->kkm; $tuntas = $n->rata_pengetahuan !== null && $n->rata_pengetahuan >= $kkm; @endphp
                             <td class="px-6 py-4 text-center"><x-badge :type="$tuntas ? 'success' : 'warning'">{{ $tuntas ? 'Tuntas' : 'Belum Tuntas' }}</x-badge></td>
+                            <td class="px-6 py-4 text-sm text-gray-500 italic">{{ $n->catatan_guru ?? '-' }}</td>
                         </tr>
                         @empty
-                        <tr><td colspan="9" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data nilai</p></td></tr>
+                        <tr><td colspan="10" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data nilai</p></td></tr>
                         @endforelse
                     </tbody>
                 </table>

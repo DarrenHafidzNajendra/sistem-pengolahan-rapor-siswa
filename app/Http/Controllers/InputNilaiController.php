@@ -85,6 +85,7 @@ class InputNilaiController extends Controller
                 'k_pred' => $nilai ? Nilai::hitungPredikat($nilai->rata_keterampilan) : '',
                 's_spiritual' => $nilai?->sikap_spiritual ?? 'B',
                 's_sosial' => $nilai?->sikap_sosial ?? 'B',
+                'catatan' => $nilai?->catatan_guru ?? '',
             ];
         })->values();
 

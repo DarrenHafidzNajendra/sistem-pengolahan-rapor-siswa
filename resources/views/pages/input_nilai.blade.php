@@ -42,6 +42,9 @@
                     <button @click="activeTab = 'sikap'" :class="activeTab === 'sikap' ? 'bg-white text-blue-600 border-gray-200' : 'text-gray-500 hover:text-gray-700 border-transparent'" class="px-6 py-2.5 text-xs font-bold rounded-lg transition-colors flex items-center gap-2 border">
                         <i class="fa-solid fa-hands-praying"></i> Sikap & Spiritual
                     </button>
+                    <button @click="activeTab = 'catatan'" :class="activeTab === 'catatan' ? 'bg-white text-blue-600 border-gray-200' : 'text-gray-500 hover:text-gray-700 border-transparent'" class="px-6 py-2.5 text-xs font-bold rounded-lg transition-colors flex items-center gap-2 border">
+                        <i class="fa-solid fa-comment-dots"></i> Catatan Guru
+                    </button>
                 </div>
             </div>
 
@@ -59,8 +62,9 @@
                             <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Portofolio</th>
                             <th x-show="activeTab === 'sikap'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Spiritual</th>
                             <th x-show="activeTab === 'sikap'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Sosial</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Nilai Akhir</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Predikat</th>
+                            <th x-show="activeTab === 'catatan'" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Catatan Guru Mata Pelajaran</th>
+                            <th x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Nilai Akhir</th>
+                            <th x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Predikat</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -89,8 +93,11 @@
                                         <option value="A">Sangat Baik (A)</option><option value="B">Baik (B)</option><option value="C">Cukup (C)</option><option value="D">Kurang (D)</option>
                                     </select>
                                 </td>
-                                <td class="px-6 py-4 text-center"><span class="text-sm font-black text-gray-900" x-text="getDisplayAvg(siswa)"></span></td>
-                                <td class="px-6 py-4 text-center">
+                                <td x-show="activeTab === 'catatan'" class="px-6 py-4">
+                                    <textarea x-model="siswa.catatan" :disabled="!isEditing" rows="1" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors resize-none" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'" placeholder="Tambahkan catatan pencapaian siswa..."></textarea>
+                                </td>
+                                <td x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center"><span class="text-sm font-black text-gray-900" x-text="getDisplayAvg(siswa)"></span></td>
+                                <td x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center">
                                     <div class="inline-block px-3 py-1.5 text-[10px] font-black rounded-lg" :class="getPredikatClass(siswa)" x-text="getDisplayPredikat(siswa)"></div>
                                 </td>
                             </tr>
