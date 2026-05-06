@@ -13,7 +13,7 @@ use App\Http\Controllers\RekapnilaiController;
 use App\Http\Controllers\RaporController;
 use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\InputNilaiController;
-use App\Http\Controllers\PresensiController;
+
 use App\Http\Controllers\UbahKataSandiController;
 
 // Auth Routes (Guest)
@@ -60,7 +60,6 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:guru')->group(function () {
         Route::get('/input_nilai', [InputNilaiController::class, 'showInputNilai'])->name('input_nilai');
         Route::post('/input_nilai', [InputNilaiController::class, 'store'])->name('input_nilai.store');
-        Route::get('/presensi', [PresensiController::class, 'showPresensi'])->name('presensi');
-        Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
+
     });
 });

@@ -49,11 +49,5 @@ class Siswa extends Model
         return $this->hasMany(Nilai::class);
     }
 
-    /**
-     * Relasi ke presensi.
-     */
-    public function presensi(): HasMany
-    {
-        return $this->hasMany(Presensi::class);
-    }
+
 }
