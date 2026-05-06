@@ -51,7 +51,7 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kode Mapel</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Mapel</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kategori</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelompok</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Status</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
                         </tr>
