@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('presensi', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('kelas_siswa_id')->constrained('kelas_siswa')->onDelete('cascade');
             $table->foreignId('pengampu_id')->constrained('pengampu')->onDelete('cascade');
-            $table->foreignId('siswa_id')->constrained('siswa')->onDelete('cascade');
             $table->date('tanggal');
             $table->enum('status', ['hadir', 'tidak_hadir', 'izin', 'sakit']);
             $table->string('keterangan')->nullable();
             $table->timestamps();
 
-            $table->unique(['pengampu_id', 'siswa_id', 'tanggal']);
+            $table->unique(['kelas_siswa_id', 'pengampu_id', 'tanggal']);
         });
     }
 

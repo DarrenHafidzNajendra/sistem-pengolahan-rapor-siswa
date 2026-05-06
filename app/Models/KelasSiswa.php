@@ -39,4 +39,20 @@ class KelasSiswa extends Model
     {
         return $this->belongsTo(Semester::class);
     }
+
+    /**
+     * Relasi ke daftar nilai.
+     */
+    public function nilai(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Nilai::class, 'kelas_siswa_id');
+    }
+
+    /**
+     * Relasi ke daftar presensi.
+     */
+    public function presensi(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Presensi::class, 'kelas_siswa_id');
+    }
 }

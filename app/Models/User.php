@@ -85,14 +85,14 @@ class User extends Authenticatable
             return false;
         }
 
-        return \App\Models\Kelas::where('wali_id', $this->guru_id)->exists();
+        return \App\Models\WaliKelas::where('guru_id', $this->guru_id)->exists();
     }
 
     /**
-     * Ambil data kelas yang diampu sebagai Wali Kelas.
+     * Ambil data kelas yang diampu sebagai Wali Kelas (via bridge WaliKelas).
      */
-    public function managedKelas(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function managedKelas()
     {
-        return $this->hasMany(Kelas::class, 'wali_id', 'guru_id');
+        return Kelas::whereIn('id', WaliKelas::where('guru_id', $this->guru_id)->pluck('kelas_id'));
     }
 }

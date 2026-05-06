@@ -9,10 +9,10 @@
             
             {{-- Simple Logo --}}
             <div class="flex items-center gap-2 mb-10 justify-center">
-                <div class="w-8 h-8 bg-black flex items-center justify-center text-white rounded-md">
+                <div class="w-8 h-8 bg-black flex items-center justify-center text-white rounded">
                     <i class="fa-solid fa-graduation-cap text-xs"></i>
                 </div>
-                <h1 class="text-sm font-bold tracking-tight text-black">SMART RAPOR</h1>
+                <h1 class="text-sm font-black tracking-tighter text-black">Smart Rapor</h1>
             </div>
 
             {{-- Form --}}
@@ -20,26 +20,26 @@
                 @csrf
 
                 @if($errors->has('username'))
-                <div class="p-3 bg-red-50 border border-red-200 text-red-600 text-[10px] font-bold rounded-lg uppercase">
+                <div class="p-3 bg-red-50 border border-red-200 text-red-600 text-[10px] font-semibold rounded">
                     {{ $errors->first('username') }}
                 </div>
                 @endif
 
                 <div class="space-y-1">
-                    <label for="username" class="text-[10px] font-bold text-gray-500 uppercase">NIP</label>
+                    <label for="username" class="text-[10px] font-semibold text-gray-500">NIP</label>
                     <input type="text" id="username" name="username" required
-                           class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-black outline-none transition-none bg-white"
+                           class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-white"
                            placeholder="NIP Anda">
                 </div>
 
                 <div class="space-y-1">
                     <div class="flex justify-between items-center">
-                        <label for="password" class="text-[10px] font-bold text-gray-500 uppercase">Password</label>
+                        <label for="password" class="text-[10px] font-semibold text-gray-500">Password</label>
                         <a href="{{ route('lupa_sandi') }}" class="text-[10px] text-gray-400 hover:text-black">Lupa sandi?</a>
                     </div>
                     <div class="relative">
                         <input type="password" :type="showPass ? 'text' : 'password'" id="password" name="password" required
-                               class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:border-black outline-none transition-none bg-white"
+                               class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-white"
                                placeholder="••••••••">
                         <button type="button" @click="showPass = !showPass" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black">
                             <i class="fa-solid" :class="showPass ? 'fa-eye-slash' : 'fa-eye' shadow-none"></i>
@@ -47,13 +47,13 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-gray-800 transition-none">
+                <button type="submit" class="w-full py-3 bg-black text-white text-xs font-semibold tracking-tight rounded hover:bg-gray-800 transition-none">
                     Login
                 </button>
             </form>
         </div>
 
-        <p class="text-center mt-6 text-[9px] text-gray-400 font-medium uppercase tracking-widest">
+        <p class="text-center mt-6 text-[9px] text-gray-400 font-medium tracking-tight">
             Sistem Informasi Rapor Digital
         </p>
     </div>

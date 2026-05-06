@@ -17,23 +17,23 @@
                 <table class="w-full">
                     <thead class="bg-gray-900">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">No</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Nama Siswa</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Kelas</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Mapel</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Tugas</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">UTS</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">UAS</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Nilai Akhir</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Catatan</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Mapel</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Tugas</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">UTS</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">UAS</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Nilai Akhir</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Catatan</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @forelse($nilaiData as $i => $n)
-                        <tr class="hover:bg-gray-50 transition-colors">
+                        <tr>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $nilaiData->firstItem() + $i }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $n->siswa->nama_siswa }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $n->kelasSiswa->siswa->nama_siswa }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $n->pengampu->kelas->nama_kelas }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $n->pengampu->mapel->nama_mapel }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->tugas ?? '-' }}</td>

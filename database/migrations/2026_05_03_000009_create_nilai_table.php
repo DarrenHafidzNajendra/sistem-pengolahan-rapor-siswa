@@ -13,30 +13,16 @@ return new class extends Migration
     {
         Schema::create('nilai', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('kelas_siswa_id')->constrained('kelas_siswa')->onDelete('cascade');
             $table->foreignId('pengampu_id')->constrained('pengampu')->onDelete('cascade');
-            $table->foreignId('siswa_id')->constrained('siswa')->onDelete('cascade');
-
-            // Pengetahuan
-            $table->decimal('tugas', 5, 2)->nullable();
-            $table->decimal('ulangan_harian', 5, 2)->nullable();
-            $table->decimal('uts', 5, 2)->nullable();
-            $table->decimal('uas', 5, 2)->nullable();
-
-            // Keterampilan
-            $table->decimal('praktik', 5, 2)->nullable();
-            $table->decimal('proyek', 5, 2)->nullable();
-            $table->decimal('portofolio', 5, 2)->nullable();
-
-            // Sikap
-            $table->enum('sikap_spiritual', ['A', 'B', 'C', 'D'])->nullable();
-            $table->enum('sikap_sosial', ['A', 'B', 'C', 'D'])->nullable();
-
-            // Catatan
+            
+            $table->string('jenis_nilai'); // e.g., 'Tugas 1', 'UTS', 'UAS', 'Sikap'
+            $table->decimal('skor', 5, 2)->default(0);
             $table->text('catatan_guru')->nullable();
-
+            
             $table->timestamps();
 
-            $table->unique(['pengampu_id', 'siswa_id']);
+            $table->unique(['kelas_siswa_id', 'pengampu_id', 'jenis_nilai'], 'uq_nilai_siswa');
         });
     }
 

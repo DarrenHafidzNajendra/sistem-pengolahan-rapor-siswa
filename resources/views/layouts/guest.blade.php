@@ -27,7 +27,10 @@
     </script>
     
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            letter-spacing: -0.03em;
+        }
     </style>
 
     {{-- Alpine.js --}}

@@ -16,7 +16,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ $placeholder }}"
-                       class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
+                       class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white">
             </div>
         </div>
 
@@ -24,7 +24,7 @@
         <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
             @foreach($filters as $filter)
             <select name="{{ $filter['name'] }}" 
-                    class="px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer min-w-[140px]">
+                    class="px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer min-w-[140px]">
                 <option value="">{{ $filter['label'] }}</option>
                 @foreach($filter['options'] as $key => $label)
                     <option value="{{ $key }}" {{ request($filter['name']) == $key ? 'selected' : '' }}>
@@ -36,14 +36,14 @@
 
             <button
                 type="submit"
-                class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap"
+                class="px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap"
             >
                 <i class="fa-solid fa-magnifying-glass text-xs"></i>
                 <span>Cari</span>
             </button>
 
             @if($resetUrl && request()->anyFilled(array_merge(['search'], array_column($filters, 'name'))))
-                <a href="{{ $resetUrl }}" class="px-4 py-2.5 text-gray-500 hover:text-red-600 transition-colors text-xs font-bold uppercase tracking-wider whitespace-nowrap">
+                <a href="{{ $resetUrl }}" class="px-4 py-2.5 text-gray-500 hover:text-red-600 transition-colors text-xs font-semibold tracking-tight whitespace-nowrap">
                     Reset
                 </a>
             @endif
@@ -52,7 +52,7 @@
             <button
                 type="button"
                 @click="{{ $tambahClick }}"
-                class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap"
+                class="px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap"
             >
                 <i class="fa-solid fa-circle-plus"></i>
                 <span>Tambah</span>

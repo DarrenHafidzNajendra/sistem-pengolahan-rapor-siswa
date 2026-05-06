@@ -14,15 +14,14 @@ class Kelas extends Model
         'kode_kelas',
         'nama_kelas',
         'tingkat',
-        'wali_id',
     ];
 
     /**
-     * Relasi ke Guru yang menjadi Wali Kelas.
+     * Relasi ke penugasan wali kelas.
      */
-    public function wali(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function waliKelas(): HasMany
     {
-        return $this->belongsTo(Guru::class, 'wali_id');
+        return $this->hasMany(WaliKelas::class);
     }
 
     /**

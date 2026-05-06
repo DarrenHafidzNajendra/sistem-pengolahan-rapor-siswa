@@ -8,6 +8,7 @@ use App\Models\KelasSiswa;
 use App\Models\Mapel;
 use App\Models\Kelas;
 use App\Models\Semester;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 
 class PresensiController extends Controller
@@ -15,11 +16,8 @@ class PresensiController extends Controller
     public function showPresensi(Request $request)
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
-
-        // Ambil data user guru yang sedang login
         $user = auth()->user();
 
-        // Daftar pengampu untuk dropdown (Hanya milik guru yang login)
         $pengampuList = Pengampu::with(['mapel', 'kelas'])
             ->when($semesterAktif, fn($q) => $q->where('semester_id', $semesterAktif->id))
             ->where('guru_id', $user->guru_id)
@@ -29,7 +27,6 @@ class PresensiController extends Controller
         $mapelList = $pengampuList->pluck('mapel')->unique('id')->values();
         $kelasList = $pengampuList->pluck('kelas')->unique('id')->values();
 
-        // Pilih pengampu berdasarkan form filter
         $mapelId = $request->get('mapel_id');
         $kelasId = $request->get('kelas_id');
 
@@ -42,49 +39,48 @@ class PresensiController extends Controller
             $selectedPengampu = $pengampuList->firstWhere('id', $selectedPengampuId);
         }
 
-        // Proteksi Akses: Jika pengampu tidak ditemukan (mencoba akses ID guru lain), kembalikan
         if ($request->filled('pengampu_id') && !$selectedPengampu) {
             return redirect()->route('presensi')->with('error', 'Anda tidak memiliki hak akses untuk melakukan absensi pada kelas ini.');
         }
 
         $tanggal = $request->get('tanggal', now()->format('Y-m-d'));
 
-        // Ambil daftar siswa + presensi
         $presensiList = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
+
         if ($selectedPengampu && $semesterAktif) {
-            $siswaIds = KelasSiswa::where('kelas_id', $selectedPengampu->kelas_id)
-                ->where('semester_id', $semesterAktif->id)
-                ->pluck('siswa_id');
-
-            $presensiMap = Presensi::where('pengampu_id', $selectedPengampu->id)
-                ->where('tanggal', $tanggal)
-                ->whereIn('siswa_id', $siswaIds)
-                ->get()
-                ->keyBy('siswa_id');
-
-            $presensiList = \App\Models\Siswa::whereIn('id', $siswaIds)
+            $presensiList = Siswa::whereHas('kelasSiswa', function($q) use ($selectedPengampu, $semesterAktif) {
+                    $q->where('kelas_id', $selectedPengampu->kelas_id)
+                      ->where('semester_id', $semesterAktif->id);
+                })
                 ->orderBy('nama_siswa')
                 ->paginate(20)
                 ->withQueryString();
 
-            $presensiList->getCollection()->transform(function ($siswa) use ($presensiMap) {
-                $p = $presensiMap->get($siswa->id);
-                $siswa->presensi_status = $p ? $p->status : null;
-                $siswa->presensi_keterangan = $p ? $p->keterangan : '';
-                return $siswa;
+            $siswaIds = collect($presensiList->items())->pluck('id');
+            
+            $ksMap = KelasSiswa::whereIn('siswa_id', $siswaIds)
+                ->where('kelas_id', $selectedPengampu->kelas_id)
+                ->where('semester_id', $semesterAktif->id)
+                ->get()
+                ->keyBy('siswa_id');
+
+            $ksIds = $ksMap->pluck('id');
+
+            $presensiMap = Presensi::where('pengampu_id', $selectedPengampu->id)
+                ->where('tanggal', $tanggal)
+                ->whereIn('kelas_siswa_id', $ksIds)
+                ->get()
+                ->keyBy('kelas_siswa_id');
+
+            // Attach presensi status to each student object for the view
+            $presensiList->getCollection()->transform(function ($s) use ($ksMap, $presensiMap) {
+                $ks = $ksMap->get($s->id);
+                $p = $presensiMap->get($ks?->id);
+                $s->presensi_status = $p ? $p->status : null;
+                $s->presensi_keterangan = $p ? $p->keterangan : '';
+                return $s;
             });
         }
-
-        // Pre-build JSON-safe array for Alpine.js
-        $presensiJsonData = collect($presensiList->items())->map(function ($s) {
-            return [
-                'id' => $s->id,
-                'nis' => $s->nis,
-                'nama' => $s->nama_siswa,
-                'status' => $s->presensi_status ?? null, 
-                'ket' => $s->presensi_keterangan ?? '',
-            ];
-        })->values();
 
         return view('pages.presensi', compact(
             'pengampuList',
@@ -92,8 +88,7 @@ class PresensiController extends Controller
             'kelasList',
             'selectedPengampu',
             'tanggal',
-            'presensiList',
-            'presensiJsonData'
+            'presensiList'
         ));
     }
 
@@ -107,19 +102,24 @@ class PresensiController extends Controller
 
         $pengampu = Pengampu::findOrFail($request->pengampu_id);
         
-        // Proteksi Otoritas
         if ($pengampu->guru_id !== auth()->user()->guru_id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return redirect()->back()->with('error', 'Otorisasi gagal.');
         }
 
         foreach ($request->presensi as $siswaId => $data) {
-            // Hanya simpan jika status dipilih (tidak null/empty)
             if (isset($data['status']) && !empty($data['status'])) {
+                $ks = KelasSiswa::where('siswa_id', $siswaId)
+                    ->where('kelas_id', $pengampu->kelas_id)
+                    ->where('semester_id', $pengampu->semester_id)
+                    ->first();
+
+                if (!$ks) continue;
+
                 Presensi::updateOrCreate(
                     [
-                        'pengampu_id' => $pengampu->id,
-                        'siswa_id'    => $siswaId,
-                        'tanggal'     => $request->tanggal,
+                        'kelas_siswa_id' => $ks->id,
+                        'pengampu_id'    => $pengampu->id,
+                        'tanggal'        => $request->tanggal,
                     ],
                     [
                         'status'     => $data['status'],
@@ -129,6 +129,6 @@ class PresensiController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Data presensi berhasil disimpan ke database.');
+        return redirect()->back()->with('success', 'Data presensi berhasil disimpan.');
     }
 }

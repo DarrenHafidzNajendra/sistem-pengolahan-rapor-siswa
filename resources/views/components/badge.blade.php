@@ -27,7 +27,7 @@
     $dotClass = $dotStyles[$type] ?? $dotStyles['default'];
 @endphp
 
-<span {{ $attributes->merge(['class' => "inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md border $classes"]) }}>
+<span {{ $attributes->merge(['class' => "inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded border $classes"]) }}>
     @if($dot)
         <span class="w-1.5 h-1.5 rounded-full {{ $dotClass }}"></span>
     @endif

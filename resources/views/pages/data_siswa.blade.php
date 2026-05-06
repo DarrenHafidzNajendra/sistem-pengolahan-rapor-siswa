@@ -11,17 +11,17 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="nis" class="block text-sm font-semibold text-gray-700 mb-1.5">NIS</label>
-                        <input type="text" id="nis" name="nis" placeholder="Masukkan NIS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
+                        <input type="text" id="nis" name="nis" placeholder="Masukkan NIS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white">
                     </div>
                     <div>
                         <label for="nama_siswa" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Siswa</label>
-                        <input type="text" id="nama_siswa" name="nama_siswa" placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
+                        <input type="text" id="nama_siswa" name="nama_siswa" placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                        <select id="kelas" name="kelas_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
+                        <select id="kelas" name="kelas_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
                             <option value="">Pilih Kelas</option>
                             @foreach($kelasList as $kelas)
                                 <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
@@ -30,7 +30,7 @@
                     </div>
                     <div>
                         <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
-                        <select id="jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
+                        <select id="jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
                             <option value="">Pilih Jenis Kelamin</option>
                             <option value="Laki-laki">Laki-laki</option>
                             <option value="Perempuan">Perempuan</option>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="mb-6">
                     <label for="status_siswa" class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
-                    <select id="status_siswa" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
+                    <select id="status_siswa" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
                         <option value="">Pilih Status</option>
                         <option value="Aktif">Aktif</option>
                         <option value="Tidak Aktif">Tidak Aktif</option>
@@ -48,16 +48,16 @@
                 <div class="flex items-center gap-3 mt-8">
                     <button type="submit" 
                             @click.prevent="openTambah = false; $dispatch('notify', { message: 'Data siswa baru berhasil ditambahkan ke sistem.' })"
-                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors">
+                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
                         <i class="fa-solid fa-check"></i>
                         <span>Simpan Data</span>
                     </button>
-                    <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
+                    <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
                 </div>
             </form>
         </x-modal>
 
-        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div class="bg-white rounded border border-gray-200 overflow-hidden">
             {{-- Toolbar Section --}}
             <x-search-toolbar 
                 placeholder="Cari siswa berdasarkan NIS atau Nama..." 
@@ -74,21 +74,21 @@
                 <table class="w-full">
                     <thead class="bg-gray-900 border-b border-gray-800">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">NO</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">NIS</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Nama Siswa</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Kelas</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Jenis Kelamin</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Aksi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">NIS</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Jenis Kelamin</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($siswaData as $i => $s)
-                        <tr class="hover:bg-blue-50/40 transition-colors">
+                        <tr>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $siswaData->firstItem() + $i }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $s->nis }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700 font-bold">{{ $s->nama_siswa }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $s->nis }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $s->nama_siswa }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $s->kelasSiswa->first()?->kelas?->nama_kelas ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $s->jenis_kelamin }}</td>
                             <td class="px-6 py-4 text-sm"><x-badge :type="$s->status === 'Aktif' ? 'success' : 'danger'">{{ $s->status }}</x-badge></td>

@@ -10,34 +10,17 @@ class Nilai extends Model
     protected $table = 'nilai';
 
     protected $fillable = [
+        'kelas_siswa_id',
         'pengampu_id',
-        'siswa_id',
-        // Pengetahuan
-        'tugas',
-        'ulangan_harian',
-        'uts',
-        'uas',
-        // Keterampilan
-        'praktik',
-        'proyek',
-        'portofolio',
-        // Sikap
-        'sikap_spiritual',
-        'sikap_sosial',
-        // Catatan
+        'jenis_nilai',
+        'skor',
         'catatan_guru',
     ];
 
     protected function casts(): array
     {
         return [
-            'tugas' => 'decimal:2',
-            'ulangan_harian' => 'decimal:2',
-            'uts' => 'decimal:2',
-            'uas' => 'decimal:2',
-            'praktik' => 'decimal:2',
-            'proyek' => 'decimal:2',
-            'portofolio' => 'decimal:2',
+            'skor' => 'decimal:2',
         ];
     }
 
@@ -50,53 +33,11 @@ class Nilai extends Model
     }
 
     /**
-     * Relasi ke siswa.
+     * Relasi ke riwayat kelas siswa.
      */
-    public function siswa(): BelongsTo
+    public function kelasSiswa(): BelongsTo
     {
-        return $this->belongsTo(Siswa::class);
-    }
-
-    /**
-     * Hitung rata-rata pengetahuan.
-     */
-    public function getRataPengetahuanAttribute(): ?float
-    {
-        $values = array_filter([
-            $this->tugas,
-            $this->ulangan_harian,
-            $this->uts,
-            $this->uas,
-        ], fn($v) => $v !== null);
-
-        return count($values) > 0 ? round(array_sum($values) / count($values), 2) : null;
-    }
-
-    /**
-     * Hitung rata-rata keterampilan.
-     */
-    public function getRataKeterampilanAttribute(): ?float
-    {
-        $values = array_filter([
-            $this->praktik,
-            $this->proyek,
-            $this->portofolio,
-        ], fn($v) => $v !== null);
-
-        return count($values) > 0 ? round(array_sum($values) / count($values), 2) : null;
-    }
-
-    /**
-     * Hitung predikat berdasarkan nilai rata-rata.
-     */
-    public function getPredikatPengetahuanAttribute(): string
-    {
-        return self::hitungPredikat($this->rata_pengetahuan);
-    }
-
-    public function getPredikatKeterampilanAttribute(): string
-    {
-        return self::hitungPredikat($this->rata_keterampilan);
+        return $this->belongsTo(KelasSiswa::class, 'kelas_siswa_id');
     }
 
     /**

@@ -3,138 +3,142 @@
 
 @section('content')
     <div class="max-w-full" x-data="inputNilai()">
-        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <div class="p-6 border-b border-gray-100 bg-gray-50/30">
+        <!-- Header Section - Flat & Clean -->
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Input Capaian Belajar</h2>
+            <p class="text-sm text-gray-500 mt-1">Kelola nilai akademik siswa untuk mata pelajaran dan kelas yang diampu.</p>
+        </div>
+
+        <div class="bg-white rounded border border-gray-200 overflow-hidden shadow-sm">
+            <!-- Form Filter (GET) -->
+            <div class="p-6 border-b border-gray-100 bg-gray-50/50">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-                    <div class="space-y-1">
-                        <h2 class="text-xl font-bold text-gray-900">Input Capaian Belajar</h2>
-                        <p class="text-sm text-gray-500">Kelola nilai pengetahuan, keterampilan, dan sikap siswa.</p>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                        <form action="{{ route('input_nilai') }}" method="GET" class="flex flex-wrap items-center gap-3">
-                            <input type="hidden" name="tab" :value="activeTab">
-                            <select name="mapel_id" class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg bg-white focus:border-gray-900 outline-none transition-colors cursor-pointer">
-                                @foreach($mapelList as $mapel)
-                                    <option value="{{ $mapel->id }}" {{ ($selectedPengampu && $selectedPengampu->mapel_id == $mapel->id) || request('mapel_id') == $mapel->id ? 'selected' : '' }}>{{ $mapel->nama_mapel }}</option>
-                                @endforeach
-                            </select>
-                            <select name="kelas_id" class="px-4 py-2.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg bg-white focus:border-gray-900 outline-none transition-colors cursor-pointer">
-                                @foreach($kelasList as $kelas)
-                                    <option value="{{ $kelas->id }}" {{ ($selectedPengampu && $selectedPengampu->kelas_id == $kelas->id) || request('kelas_id') == $kelas->id ? 'selected' : '' }}>{{ $kelas->nama_kelas }}</option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 whitespace-nowrap">
-                                <i class="fa-solid fa-magnifying-glass text-xs"></i><span>Cari</span>
-                            </button>
-                        </form>
+                    <form action="{{ route('input_nilai') }}" method="GET" class="flex flex-wrap items-center gap-3">
+                        <input type="hidden" name="tab" :value="activeTab">
+                        <select name="mapel_id" class="px-4 py-2 text-sm font-semibold text-gray-700 border border-gray-300 rounded bg-white focus:border-gray-900 outline-none transition-colors cursor-pointer">
+                            @foreach($mapelList as $mapel)
+                                <option value="{{ $mapel->id }}" {{ ($selectedPengampu && $selectedPengampu->mapel_id == $mapel->id) || request('mapel_id') == $mapel->id ? 'selected' : '' }}>{{ $mapel->nama_mapel }}</option>
+                            @endforeach
+                        </select>
+                        <select name="kelas_id" class="px-4 py-2 text-sm font-semibold text-gray-700 border border-gray-300 rounded bg-white focus:border-gray-900 outline-none transition-colors cursor-pointer">
+                            @foreach($kelasList as $kelas)
+                                <option value="{{ $kelas->id }}" {{ ($selectedPengampu && $selectedPengampu->kelas_id == $kelas->id) || request('kelas_id') == $kelas->id ? 'selected' : '' }}>{{ $kelas->nama_kelas }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="px-5 py-2 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i><span>Tampilkan</span>
+                        </button>
+                    </form>
+
+                    <div class="flex items-center gap-3 w-full lg:w-auto">
+                        <button type="button" 
+                                @click="isEditing = !isEditing"
+                                :class="isEditing ? 'bg-amber-600' : 'bg-blue-600'" 
+                                class="px-5 py-2 text-white text-sm font-semibold rounded transition-colors flex items-center gap-2">
+                            <i class="fa-solid" :class="isEditing ? 'fa-xmark' : 'fa-pen-to-square'"></i>
+                            <span x-text="isEditing ? 'Batal Edit' : 'Edit Nilai'"></span>
+                        </button>
                         
-                        <form action="{{ route('input_nilai.store') }}" method="POST" class="w-full lg:w-auto">
-                            @csrf
-                            <input type="hidden" name="pengampu_id" value="{{ $selectedPengampu?->id }}">
-                            <input type="hidden" name="active_tab" :value="activeTab">
-                            <button :type="isEditing ? 'submit' : 'button'" 
-                                    @click="if(!isEditing) { isEditing = true; $event.preventDefault(); }"
-                                    :class="isEditing ? 'bg-gray-900' : 'bg-blue-600'" 
-                                    class="w-full lg:w-[140px] justify-center px-5 py-2.5 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2">
-                                <i class="fa-solid" :class="isEditing ? 'fa-floppy-disk' : 'fa-pen-to-square'"></i>
-                                <span x-text="isEditing ? 'Simpan Data' : 'Edit Nilai'"></span>
-                            </button>
+                        <button type="submit" form="formSimpanNilai" x-show="isEditing"
+                                class="px-5 py-2 bg-gray-900 text-white text-sm font-semibold rounded transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Simpan Perubahan</span>
+                        </button>
                     </div>
                 </div>
-                <div class="flex items-center gap-1 mt-8 p-1 bg-gray-100 rounded-lg w-fit border border-gray-200">
-                    <button type="button" @click="activeTab = 'pengetahuan'" :class="activeTab === 'pengetahuan' ? 'bg-white text-blue-600 border-gray-200' : 'text-gray-500 hover:text-gray-700 border-transparent'" class="px-6 py-2.5 text-xs font-bold rounded-lg transition-colors flex items-center gap-2 border">
-                        <i class="fa-solid fa-book-open"></i> Pengetahuan
-                    </button>
-                    <button type="button" @click="activeTab = 'keterampilan'" :class="activeTab === 'keterampilan' ? 'bg-white text-blue-600 border-gray-200' : 'text-gray-500 hover:text-gray-700 border-transparent'" class="px-6 py-2.5 text-xs font-bold rounded-lg transition-colors flex items-center gap-2 border">
-                        <i class="fa-solid fa-screwdriver-wrench"></i> Keterampilan
-                    </button>
-                    <button type="button" @click="activeTab = 'sikap'" :class="activeTab === 'sikap' ? 'bg-white text-blue-600 border-gray-200' : 'text-gray-500 hover:text-gray-700 border-transparent'" class="px-6 py-2.5 text-xs font-bold rounded-lg transition-colors flex items-center gap-2 border">
-                        <i class="fa-solid fa-hands-praying"></i> Sikap & Spiritual
-                    </button>
-                    <button type="button" @click="activeTab = 'catatan'" :class="activeTab === 'catatan' ? 'bg-white text-blue-600 border-gray-200' : 'text-gray-500 hover:text-gray-700 border-transparent'" class="px-6 py-2.5 text-xs font-bold rounded-lg transition-colors flex items-center gap-2 border">
-                        <i class="fa-solid fa-comment-dots"></i> Catatan Guru
-                    </button>
+
+                <!-- Tabs Selector -->
+                <div class="flex items-center gap-1 mt-6 p-1 bg-gray-100 rounded w-fit border border-gray-200">
+                    <button type="button" @click="activeTab = 'pengetahuan'" :class="activeTab === 'pengetahuan' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-5 py-2 text-xs font-semibold rounded transition-all">Pengetahuan</button>
+                    <button type="button" @click="activeTab = 'keterampilan'" :class="activeTab === 'keterampilan' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-5 py-2 text-xs font-semibold rounded transition-all">Keterampilan</button>
+                    <button type="button" @click="activeTab = 'sikap'" :class="activeTab === 'sikap' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-5 py-2 text-xs font-semibold rounded transition-all">Sikap & Karakter</button>
+                    <button type="button" @click="activeTab = 'catatan'" :class="activeTab === 'catatan' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-5 py-2 text-xs font-semibold rounded transition-all">Catatan Guru</button>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full border-collapse">
-                    <thead class="bg-gray-900 border-b border-gray-800">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Data Siswa</th>
-                            <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Tugas</th>
-                            <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">UH</th>
-                            <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">UTS</th>
-                            <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">UAS</th>
-                            <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Praktik</th>
-                            <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Proyek</th>
-                            <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Portofolio</th>
-                            <th x-show="activeTab === 'sikap'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Spiritual</th>
-                            <th x-show="activeTab === 'sikap'" class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Sosial</th>
-                            <th x-show="activeTab === 'catatan'" class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Catatan Guru Mata Pelajaran</th>
-                            <th x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Nilai Akhir</th>
-                            <th x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Predikat</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @foreach($siswaJsonData as $index => $siswa)
-                            <tr class="hover:bg-blue-50/40 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col">
-                                        <span class="text-sm font-bold text-gray-900">{{ $siswa['nama'] }}</span>
-                                        <span class="text-[11px] text-gray-400 font-medium">{{ $siswa['nis'] }}</span>
-                                    </div>
-                                </td>
-                                <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center">
-                                    <input type="number" name="nilai[{{ $siswa['id'] }}][p_tugas]" x-model.number="siswaList[{{ $index }}].p_tugas" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
-                                </td>
-                                <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center">
-                                    <input type="number" name="nilai[{{ $siswa['id'] }}][p_uh]" x-model.number="siswaList[{{ $index }}].p_uh" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
-                                </td>
-                                <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center">
-                                    <input type="number" name="nilai[{{ $siswa['id'] }}][p_uts]" x-model.number="siswaList[{{ $index }}].p_uts" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
-                                </td>
-                                <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center">
-                                    <input type="number" name="nilai[{{ $siswa['id'] }}][p_uas]" x-model.number="siswaList[{{ $index }}].p_uas" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
-                                </td>
-                                <td x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center">
-                                    <input type="number" name="nilai[{{ $siswa['id'] }}][k_praktik]" x-model.number="siswaList[{{ $index }}].k_praktik" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
-                                </td>
-                                <td x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center">
-                                    <input type="number" name="nilai[{{ $siswa['id'] }}][k_proyek]" x-model.number="siswaList[{{ $index }}].k_proyek" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
-                                </td>
-                                <td x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center">
-                                    <input type="number" name="nilai[{{ $siswa['id'] }}][k_portofolio]" x-model.number="siswaList[{{ $index }}].k_portofolio" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
-                                </td>
-                                <td x-show="activeTab === 'sikap'" class="px-4 py-4 text-center">
-                                    <select name="nilai[{{ $siswa['id'] }}][s_spiritual]" x-model="siswaList[{{ $index }}].s_spiritual" :disabled="!isEditing" class="px-3 py-2 text-xs font-bold rounded-lg border border-gray-200 outline-none focus:border-gray-900 transition-colors cursor-pointer" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
-                                        <option value="A">Sangat Baik (A)</option><option value="B">Baik (B)</option><option value="C">Cukup (C)</option><option value="D">Kurang (D)</option>
-                                    </select>
-                                </td>
-                                <td x-show="activeTab === 'sikap'" class="px-4 py-4 text-center">
-                                    <select name="nilai[{{ $siswa['id'] }}][s_sosial]" x-model="siswaList[{{ $index }}].s_sosial" :disabled="!isEditing" class="px-3 py-2 text-xs font-bold rounded-lg border border-gray-200 outline-none focus:border-gray-900 transition-colors cursor-pointer" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
-                                        <option value="A">Sangat Baik (A)</option><option value="B">Baik (B)</option><option value="C">Cukup (C)</option><option value="D">Kurang (D)</option>
-                                    </select>
-                                </td>
-                                <td x-show="activeTab === 'catatan'" class="px-6 py-4">
-                                    <textarea name="nilai[{{ $siswa['id'] }}][catatan]" x-model="siswaList[{{ $index }}].catatan" :disabled="!isEditing" rows="1" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors resize-none" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'" placeholder="Tambahkan catatan pencapaian siswa..."></textarea>
-                                </td>
-                                <td x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center">
-                                    <span class="text-sm font-black text-gray-900" x-text="getDisplayAvg(siswaList[{{ $index }}])"></span>
-                                </td>
-                                <td x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center">
-                                    <div class="inline-block px-3 py-1.5 text-[10px] font-black rounded-lg" :class="getPredikatClass(siswaList[{{ $index }}])" x-text="getDisplayPredikat(siswaList[{{ $index }}])"></div>
-                                </td>
+            <!-- Form Simpan (POST) -->
+            <form action="{{ route('input_nilai.store') }}" method="POST" id="formSimpanNilai">
+                @csrf
+                <input type="hidden" name="pengampu_id" value="{{ $selectedPengampu?->id }}">
+                <input type="hidden" name="active_tab" :value="activeTab">
+
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead class="bg-gray-900">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-tight">Nama Siswa</th>
+                                <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-bold text-white tracking-tight">Tugas</th>
+                                <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-bold text-white tracking-tight">UH</th>
+                                <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-bold text-white tracking-tight">UTS</th>
+                                <th x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center text-xs font-bold text-white tracking-tight">UAS</th>
+                                <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-bold text-white tracking-tight">Praktik</th>
+                                <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-bold text-white tracking-tight">Proyek</th>
+                                <th x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center text-xs font-bold text-white tracking-tight">Portofolio</th>
+                                <th x-show="activeTab === 'sikap'" class="px-4 py-4 text-center text-xs font-bold text-white tracking-tight">Spiritual</th>
+                                <th x-show="activeTab === 'sikap'" class="px-4 py-4 text-center text-xs font-bold text-white tracking-tight">Sosial</th>
+                                <th x-show="activeTab === 'catatan'" class="px-6 py-4 text-left text-xs font-bold text-white tracking-tight">Catatan Capaian</th>
+                                <th x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center text-xs font-bold text-white tracking-tight">Nilai Akhir</th>
+                                <th x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center text-xs font-bold text-white tracking-tight">Predikat</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </form>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @foreach($siswaJsonData as $index => $siswa)
+                                <tr class="">
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-bold text-gray-900">{{ $siswa['nama'] }}</span>
+                                            <span class="text-[11px] text-gray-400 font-medium">{{ $siswa['nis'] }}</span>
+                                        </div>
+                                    </td>
+                                    <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center">
+                                        <input type="number" name="nilai[{{ $siswa['id'] }}][p_tugas]" x-model.number="siswaList[{{ $index }}].p_tugas" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
+                                    </td>
+                                    <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center">
+                                        <input type="number" name="nilai[{{ $siswa['id'] }}][p_uh]" x-model.number="siswaList[{{ $index }}].p_uh" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
+                                    </td>
+                                    <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center">
+                                        <input type="number" name="nilai[{{ $siswa['id'] }}][p_uts]" x-model.number="siswaList[{{ $index }}].p_uts" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
+                                    </td>
+                                    <td x-show="activeTab === 'pengetahuan'" class="px-4 py-4 text-center">
+                                        <input type="number" name="nilai[{{ $siswa['id'] }}][p_uas]" x-model.number="siswaList[{{ $index }}].p_uas" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
+                                    </td>
+                                    <td x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center">
+                                        <input type="number" name="nilai[{{ $siswa['id'] }}][k_praktik]" x-model.number="siswaList[{{ $index }}].k_praktik" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
+                                    </td>
+                                    <td x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center">
+                                        <input type="number" name="nilai[{{ $siswa['id'] }}][k_proyek]" x-model.number="siswaList[{{ $index }}].k_proyek" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
+                                    </td>
+                                    <td x-show="activeTab === 'keterampilan'" class="px-4 py-4 text-center">
+                                        <input type="number" name="nilai[{{ $siswa['id'] }}][k_portofolio]" x-model.number="siswaList[{{ $index }}].k_portofolio" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-16 px-2 py-2 text-sm text-center border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
+                                    </td>
+                                    <td x-show="activeTab === 'sikap'" class="px-4 py-4 text-center">
+                                        <select name="nilai[{{ $siswa['id'] }}][s_spiritual]" x-model="siswaList[{{ $index }}].s_spiritual" :disabled="!isEditing" class="px-3 py-2 text-xs font-bold rounded-lg border border-gray-200 outline-none focus:border-gray-900 transition-colors cursor-pointer" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
+                                            <option value="A">SB (A)</option><option value="B">B (B)</option><option value="C">C (C)</option><option value="D">K (D)</option>
+                                        </select>
+                                    </td>
+                                    <td x-show="activeTab === 'sikap'" class="px-4 py-4 text-center">
+                                        <select name="nilai[{{ $siswa['id'] }}][s_sosial]" x-model="siswaList[{{ $index }}].s_sosial" :disabled="!isEditing" class="px-3 py-2 text-xs font-bold rounded-lg border border-gray-200 outline-none focus:border-gray-900 transition-colors cursor-pointer" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
+                                            <option value="A">SB (A)</option><option value="B">B (B)</option><option value="C">C (C)</option><option value="D">K (D)</option>
+                                        </select>
+                                    </td>
+                                    <td x-show="activeTab === 'catatan'" class="px-6 py-4">
+                                        <textarea name="nilai[{{ $siswa['id'] }}][catatan]" x-model="siswaList[{{ $index }}].catatan" :disabled="!isEditing" rows="1" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors resize-none" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'" placeholder="Catatan..."></textarea>
+                                    </td>
+                                    <td x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center">
+                                        <span class="text-sm font-bold text-gray-900" x-text="getDisplayAvg(siswaList[{{ $index }}])"></span>
+                                    </td>
+                                    <td x-show="activeTab !== 'catatan'" class="px-6 py-4 text-center">
+                                        <div class="inline-block px-3 py-1 text-[10px] font-bold rounded-lg" :class="getPredikatClass(siswaList[{{ $index }}])" x-text="getDisplayPredikat(siswaList[{{ $index }}])"></div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+
             <div class="p-6 bg-gray-50/30 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-[11px] text-gray-400 font-medium italic">
-                    <i class="fa-solid fa-circle-info mr-1"></i> Nilai dihitung otomatis berdasarkan bobot standar pendidikan.
-                </p>
+                <p class="text-[11px] text-gray-400 font-medium italic"><i class="fa-solid fa-circle-info mr-1"></i> Nilai akhir dihitung otomatis berdasarkan rata-rata murni.</p>
                 <div class="w-full md:w-auto">
                     <x-pagination :paginator="$siswaList" />
                 </div>
@@ -151,9 +155,6 @@ function inputNilai() {
         isEditing: false,
         siswaList: @json($siswaJsonData),
 
-        toggleEdit() {
-            this.isEditing = !this.isEditing;
-        },
         updateAll(siswa) {
             const p = ((siswa.p_tugas||0) + (siswa.p_uh||0) + (siswa.p_uts||0) + (siswa.p_uas||0)) / 4;
             siswa.p_avg = p > 0 ? Math.round(p * 10) / 10 : null;

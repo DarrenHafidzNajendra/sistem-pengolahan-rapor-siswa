@@ -6,6 +6,8 @@ use App\Models\Nilai;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\Semester;
+use App\Models\WaliKelas;
+use App\Models\KelasSiswa;
 use Illuminate\Http\Request;
 
 class RaporController extends Controller
@@ -16,11 +18,7 @@ class RaporController extends Controller
 
         $query = Siswa::with(['kelasSiswa' => function ($q) use ($semesterAktif) {
             if ($semesterAktif) {
-                $q->where('semester_id', $semesterAktif->id)->with('kelas');
-            }
-        }, 'nilai' => function ($q) use ($semesterAktif) {
-            if ($semesterAktif) {
-                $q->whereHas('pengampu', fn($p) => $p->where('semester_id', $semesterAktif->id));
+                $q->where('semester_id', $semesterAktif->id)->with(['kelas', 'nilai']);
             }
         }])
         ->where('status', 'Aktif');
@@ -43,8 +41,7 @@ class RaporController extends Controller
         $user = auth()->user();
         if (!$user->isAdmin()) {
             if ($user->isWaliKelas()) {
-                // Guru adalah Wali Kelas, batasi hanya untuk kelas yang dia ampu
-                $managedKelasIds = $user->managedKelas()->pluck('id')->toArray();
+                $managedKelasIds = WaliKelas::where('guru_id', $user->guru_id)->pluck('kelas_id')->toArray();
                 
                 $query->whereHas('kelasSiswa', function ($q) use ($managedKelasIds, $semesterAktif) {
                     $q->whereIn('kelas_id', $managedKelasIds);
@@ -53,24 +50,32 @@ class RaporController extends Controller
                     }
                 });
             } else {
-                // Guru bukan Wali Kelas, tidak boleh melihat data rapor
-                $query->whereRaw('1 = 0'); // Menghasilkan hasil kosong secara aman
+                $query->whereRaw('1 = 0');
             }
         }
 
         $siswaData = $query->orderBy('nama_siswa')->paginate(20)->withQueryString();
 
-        // Hitung rata-rata dan status kelulusan per siswa
+        // Hitung rata-rata dan status kelulusan per siswa (Aggregasi Vertikal)
         $siswaData->getCollection()->transform(function ($siswa) {
-            $nilaiList = $siswa->nilai;
-            if ($nilaiList->isEmpty()) {
+            $ks = $siswa->kelasSiswa->first();
+            if (!$ks || $ks->nilai->isEmpty()) {
                 $siswa->rata_rata = null;
                 $siswa->status_lulus = '-';
                 return $siswa;
             }
 
-            $avgValues = $nilaiList->map(fn($n) => $n->rata_pengetahuan)->filter();
-            $siswa->rata_rata = $avgValues->isNotEmpty() ? round($avgValues->avg(), 1) : null;
+            // Kelompokkan nilai per mata pelajaran (pengampu) untuk dihitung rata-ratanya
+            $nilaiPerMapel = $ks->nilai->groupBy('pengampu_id')->map(function ($group) {
+                // Hanya hitung rata-rata dari jenis nilai akademik
+                $akademik = $group->whereIn('jenis_nilai', [
+                    'p_tugas', 'p_uh', 'p_uts', 'p_uas', 
+                    'k_praktik', 'k_proyek', 'k_portofolio'
+                ]);
+                return $akademik->isNotEmpty() ? $akademik->avg('skor') : null;
+            })->filter();
+
+            $siswa->rata_rata = $nilaiPerMapel->isNotEmpty() ? round($nilaiPerMapel->avg(), 1) : null;
 
             if ($siswa->rata_rata === null) {
                 $siswa->status_lulus = '-';
@@ -85,13 +90,12 @@ class RaporController extends Controller
             return $siswa;
         });
 
-        $kelasList = Kelas::orderBy('nama_kelas');
-        
+        $kelasListQuery = Kelas::orderBy('nama_kelas');
         if (!$user->isAdmin() && $user->isWaliKelas()) {
-            $kelasList->whereIn('id', $user->managedKelas()->pluck('id')->toArray());
+            $managedKelasIds = WaliKelas::where('guru_id', $user->guru_id)->pluck('kelas_id')->toArray();
+            $kelasListQuery->whereIn('id', $managedKelasIds);
         }
-
-        $kelasList = $kelasList->get();
+        $kelasList = $kelasListQuery->get();
 
         return view('pages.data_rapor', compact('siswaData', 'kelasList'));
     }
@@ -108,7 +112,7 @@ class RaporController extends Controller
             return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
         }
 
-        $kelasSiswa = \App\Models\KelasSiswa::where('siswa_id', $request->siswa_id)
+        $kelasSiswa = KelasSiswa::where('siswa_id', $request->siswa_id)
             ->where('semester_id', $semesterAktif->id)
             ->first();
 
@@ -116,11 +120,15 @@ class RaporController extends Controller
             return redirect()->back()->with('error', 'Data penempatan siswa tidak ditemukan.');
         }
 
-        // Cek otorisasi mutlak: Hanya Wali Kelas dari kelas tersebut yang bisa simpan (Admin pun diblokir sesuai permintaan)
+        // Otorisasi Wali Kelas via Tabel WaliKelas
         $user = auth()->user();
-        $kelas = Kelas::find($kelasSiswa->kelas_id);
-        if (!$user->isGuru() || !$kelas || $kelas->wali_id !== $user->guru_id) {
-            return redirect()->back()->with('error', 'Akses Ditolak: Hanya Wali Kelas yang bersangkutan yang dapat memberikan catatan rapor.');
+        $isAuthorized = WaliKelas::where('guru_id', $user->guru_id)
+            ->where('kelas_id', $kelasSiswa->kelas_id)
+            ->where('semester_id', $semesterAktif->id)
+            ->exists();
+
+        if (!$user->isGuru() || !$isAuthorized) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Hanya Wali Kelas yang bersangkutan yang dapat memberikan catatan rapor pada semester ini.');
         }
 
         $kelasSiswa->update([

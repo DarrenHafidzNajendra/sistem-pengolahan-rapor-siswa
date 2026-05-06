@@ -10,7 +10,7 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Mata Pelajaran</label>
                     <div class="relative">
-                        <select name="mapel_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white transition-all appearance-none cursor-pointer">
+                        <select name="mapel_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-white transition-all appearance-none cursor-pointer">
                             <option value="" disabled selected>Pilih Mata Pelajaran</option>
                             @foreach($mapels as $mapel)
                                 <option value="{{ $mapel->id }}">{{ $mapel->nama_mapel }} ({{ $mapel->kode_mapel }})</option>
@@ -23,7 +23,7 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">KKM (Kriteria Ketuntasan Minimal)</label>
                     <input type="number" name="kkm" value="75" min="0" max="100" required
-                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-all"
+                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-all"
                            placeholder="Contoh: 75">
                 </div>
 
@@ -53,7 +53,7 @@
                                @focus="open = true"
                                @click.away="open = false; if(!selectedId) search = ''"
                                placeholder="Cari dan pilih guru..." 
-                               class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-all pr-10"
+                               class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-all pr-10"
                                autocomplete="off">
                         
                         <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -92,7 +92,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                        <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white transition-all appearance-none cursor-pointer">
+                        <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-white transition-all appearance-none cursor-pointer">
                             @foreach($kelas as $k)
                                 <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
                             @endforeach
@@ -101,7 +101,7 @@
 
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Semester</label>
-                        <select name="semester_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none bg-white transition-all appearance-none cursor-pointer">
+                        <select name="semester_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-white transition-all appearance-none cursor-pointer">
                             @foreach($semesters as $smt)
                                 <option value="{{ $smt->id }}" {{ $smt->is_aktif ? 'selected' : '' }}>{{ $smt->semester }} {{ $smt->tahunAjaran->nama }}</option>
                             @endforeach
@@ -111,16 +111,16 @@
             </div>
 
             <div class="flex items-center gap-3 mt-8">
-                <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors">
+                <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
                     <i class="fa-solid fa-check"></i><span>Simpan Penugasan</span>
                 </button>
-                <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
+                <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
             </div>
         </form>
     </x-modal>
 
     <div class="max-w-full">
-        <div class="bg-white rounded-lg border border-gray-200">
+        <div class="bg-white rounded border border-gray-200">
             <x-search-toolbar 
                 placeholder="Cari pengampu, guru..." 
                 :filters="[
@@ -134,22 +134,22 @@
                 <table class="w-full">
                     <thead class="bg-gray-900">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">NO</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Kode Mapel</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Nama Mapel</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">KKM</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Pengampu</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Kelas</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Semester</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Aksi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kode Mapel</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Mapel</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">KKM</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Pengampu</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Semester</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @forelse($pengampus as $key => $p)
-                        <tr class="hover:bg-blue-50 transition-colors duration-150 border-l-4 border-transparent hover:border-blue-500 {{ $key % 2 === 0 ? 'bg-white' : 'bg-gray-50' }}">
+                        <tr>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $pengampus->firstItem() + $key }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $p->mapel->kode_mapel }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $p->mapel->nama_mapel }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold tracking-tight">{{ $p->mapel->kode_mapel }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $p->mapel->nama_mapel }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $p->kkm }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $p->guru->nama_guru }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $p->kelas->nama_kelas }}</td>

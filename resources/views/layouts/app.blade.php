@@ -28,7 +28,10 @@
 
     <style>
         [x-cloak] { display: none !important; }
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            letter-spacing: -0.03em; /* Slightly more aggressive tightening for Inter */
+        }
         {{-- Mengoptimalkan tampilan pada zoom 100% agar lebih padat --}}
         input, select, button { font-size: 0.875rem !important; }
 
@@ -120,7 +123,7 @@
 
                     {{-- Text --}}
                     <div class="flex-1 min-w-0">
-                        <p class="text-[10px] font-bold uppercase tracking-widest mb-0.5"
+                        <p class="text-[10px] font-bold tracking-widest mb-0.5"
                            :class="{
                                'text-emerald-400': $store.toast.type === 'success',
                                'text-red-400': $store.toast.type === 'error',

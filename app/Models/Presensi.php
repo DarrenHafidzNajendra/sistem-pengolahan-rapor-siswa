@@ -10,8 +10,8 @@ class Presensi extends Model
     protected $table = 'presensi';
 
     protected $fillable = [
+        'kelas_siswa_id',
         'pengampu_id',
-        'siswa_id',
         'tanggal',
         'status',
         'keterangan',
@@ -33,10 +33,10 @@ class Presensi extends Model
     }
 
     /**
-     * Relasi ke siswa.
+     * Relasi ke riwayat kelas siswa.
      */
-    public function siswa(): BelongsTo
+    public function kelasSiswa(): BelongsTo
     {
-        return $this->belongsTo(Siswa::class);
+        return $this->belongsTo(KelasSiswa::class, 'kelas_siswa_id');
     }
 }
