@@ -35,10 +35,10 @@
 
         {{-- Data Master (Dropdown) --}}
         @if(auth()->check() && auth()->user()->isAdmin())
-        <div class="px-2 mb-2" x-data="{ open: {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel') ? 'true' : 'false' }} }">
+        <div class="px-2 mb-2" x-data="{ open: {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel') || request()->is('akademik') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                     class="relative flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                           {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel')
+                           {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel') || request()->is('akademik')
                               ? 'bg-gray-900 text-white font-semibold'
                               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -74,6 +74,10 @@
                 <a href="{{ route('data_mapel') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('data_mapel') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Mata Pelajaran
+                </a>
+                <a href="{{ route('akademik') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
+                                   {{ request()->is('akademik') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
+                    Tahun Ajaran
                 </a>
             </div>
         </div>

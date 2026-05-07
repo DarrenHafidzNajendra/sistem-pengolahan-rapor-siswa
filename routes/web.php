@@ -13,6 +13,7 @@ use App\Http\Controllers\RekapnilaiController;
 use App\Http\Controllers\RaporController;
 use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\InputNilaiController;
+use App\Http\Controllers\AkademikController;
 
 use App\Http\Controllers\UbahKataSandiController;
 
@@ -54,6 +55,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
         Route::resource('pengampu', PengampuController::class)->except(['index']);
         Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');
+        
+        // Akademik Management
+        Route::get('/akademik', [AkademikController::class, 'index'])->name('akademik');
+        Route::post('/akademik/tahun-ajaran', [AkademikController::class, 'storeTahunAjaran'])->name('akademik.ta.store');
+        Route::post('/akademik/semester', [AkademikController::class, 'storeSemester'])->name('akademik.smt.store');
+        Route::post('/akademik/set-aktif/{id}', [AkademikController::class, 'setAktif'])->name('akademik.set_aktif');
+        Route::post('/akademik/ta/nonaktifkan/{id}', [AkademikController::class, 'nonaktifkanTa'])->name('akademik.ta.nonaktifkan');
+        Route::post('/akademik/ta/set-aktif/{id}', [AkademikController::class, 'setAktifTa'])->name('akademik.ta.set_aktif');
     });
 
     // Guru Only Routes
