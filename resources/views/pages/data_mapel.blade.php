@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3 mt-8">
-                    <button type="submit" @click.prevent="openTambah = false; $dispatch('notify', { message: 'Mata pelajaran baru berhasil ditambahkan.' })" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
+                    <button type="submit" @click.prevent="openTambah = false; $dispatch('notify', { message: 'Mata pelajaran baru berhasil ditambahkan.', type: 'success' })" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
                         <i class="fa-solid fa-check"></i><span>Simpan Mapel</span>
                     </button>
                     <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>

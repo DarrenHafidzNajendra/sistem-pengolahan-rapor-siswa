@@ -185,23 +185,7 @@ class DatabaseSeeder extends Seeder
                     }
                 }
             }
-
-            // =============================================
-            // 10. PRESENSI
-            // =============================================
-            foreach ($ksList as $ks) {
-                if ($ks->kelas_id == $kelasList[0]->id) {
-                    foreach ($pengampuList as $pengampu) {
-                        Presensi::create([
-                            'kelas_siswa_id' => $ks->id,
-                            'pengampu_id' => $pengampu->id,
-                            'tanggal' => now()->format('Y-m-d'),
-                            'status' => 'hadir'
-                        ]);
-                    }
-                }
-            }
-
+            
             DB::commit();
             $this->command->info('✅ Database berhasil di-seed dengan struktur Normalized!');
 

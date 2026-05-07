@@ -91,79 +91,100 @@
 
     @stack('head-scripts')
     @stack('styles')
-</head>
 <body class="bg-gray-50 font-sans antialiased text-gray-900" @yield('body-attrs')>
-
-    {{-- ═══ Flat Toast Notification ═══ --}}
-    <div x-data x-show="$store.toast.show" x-cloak
-         class="fixed bottom-6 right-6 z-[100] w-[360px]">
-
-        <div :class="$store.toast.leaving ? 'toast-leave' : 'toast-enter'">
-            <div class="bg-gray-900 rounded-lg overflow-hidden border border-gray-700">
-
-                {{-- Content Row --}}
-                <div class="flex items-center gap-3 px-4 py-3">
-
-                    {{-- Flat Icon --}}
-                    <div class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
-                         :class="{
-                            'bg-emerald-500': $store.toast.type === 'success',
-                            'bg-red-500': $store.toast.type === 'error',
-                            'bg-amber-500': $store.toast.type === 'warning',
-                            'bg-blue-500': $store.toast.type === 'info'
-                         }">
-                        <i class="fa-solid text-white text-xs"
-                           :class="{
-                               'fa-check': $store.toast.type === 'success',
-                               'fa-xmark': $store.toast.type === 'error',
-                               'fa-exclamation': $store.toast.type === 'warning',
-                               'fa-info': $store.toast.type === 'info'
-                           }"></i>
-                    </div>
-
-                    {{-- Text --}}
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[10px] font-bold tracking-widest mb-0.5"
-                           :class="{
-                               'text-emerald-400': $store.toast.type === 'success',
-                               'text-red-400': $store.toast.type === 'error',
-                               'text-amber-400': $store.toast.type === 'warning',
-                               'text-blue-400': $store.toast.type === 'info'
-                           }"
-                           x-text="$store.toast.type === 'success' ? 'Berhasil' : 
-                                   $store.toast.type === 'error' ? 'Gagal' : 
-                                   $store.toast.type === 'warning' ? 'Peringatan' : 'Informasi'"></p>
-                        <p class="text-sm font-medium text-white leading-snug truncate" x-text="$store.toast.message"></p>
-                    </div>
-
-                    {{-- Close --}}
-                    <button @click="$store.toast.dismiss()" 
-                            class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded text-gray-500 hover:text-white transition-colors">
-                        <i class="fa-solid fa-xmark text-xs"></i>
-                    </button>
+ 
+    {{-- ═══ Global Notifications (Success Modal) ═══ --}}
+    <div x-data="{ showSuccess: false, successMsg: '' }" 
+         @notify.window="
+            if(($event.detail.type || 'success') === 'success') { 
+                setTimeout(() => {
+                    showSuccess = true; 
+                    successMsg = $event.detail.message;
+                }, 300);
+            }
+         ">
+        {{-- 🟢 Flat Success Pop-up Modal --}}
+        <div x-show="showSuccess" 
+             x-transition:enter="transition opacity ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition opacity ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-gray-900/50" x-cloak>
+            
+            {{-- Card with its own transition --}}
+            <div x-show="showSuccess"
+                 x-transition:enter="transition ease-out duration-300 delay-75"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="bg-white rounded-xl p-8 max-w-sm w-full shadow-2xl text-center border border-gray-100">
+                <div class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <i class="fa-solid fa-check text-2xl"></i>
                 </div>
-
-                {{-- Flat Progress Bar --}}
-                <div class="h-[3px] bg-gray-800">
-                    <div class="h-full toast-bar"
-                         :class="{
-                             'bg-emerald-500': $store.toast.type === 'success',
-                             'bg-red-500': $store.toast.type === 'error',
-                             'bg-amber-500': $store.toast.type === 'warning',
-                             'bg-blue-500': $store.toast.type === 'info'
-                         }"></div>
-                </div>
+                <h2 class="text-lg font-bold text-gray-900 mb-1">Berhasil</h2>
+                <p class="text-[12px] font-medium text-gray-500 mb-8 leading-relaxed px-4" x-text="successMsg"></p>
+                <button @click="showSuccess = false" 
+                        class="w-full py-3 bg-gray-900 text-white text-xs font-bold rounded hover:bg-gray-800 transition-all active:scale-[0.98]">
+                    Selesai
+                </button>
             </div>
         </div>
     </div>
 
+        {{-- 🔴 Static Error Alerts (Akan muncul di posisi absolut di atas konten melalui portal atau tetap di sini) --}}
+        {{-- Note: Agar error tetap di atas konten, saya akan memisahkannya atau menaruhnya di main. --}}
+    </div>
+
     {{-- Sidebar --}}
     <x-sidebar />
-
+ 
     {{-- Main Content --}}
     <main class="ml-52 min-h-screen bg-gray-50 p-4 lg:p-5"> {{-- ml disesuaikan dengan lebar sidebar baru --}}
+        <div class="flex flex-col gap-5">
+            {{-- Error Alerts di dalam main agar tetap nempel di atas konten --}}
+            <div class="space-y-3">
+                @if(session('error'))
+                    <div x-data="{ show: true }" x-show="show" x-transition
+                         class="p-4 bg-red-50 border border-red-200 rounded text-red-700 text-xs font-bold flex items-center justify-between shadow-sm transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 rounded bg-red-500 text-white flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
+                            </div>
+                            <span>{{ session('error') }}</span>
+                        </div>
+                        <button @click="show = false" class="text-red-400 hover:text-red-700">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div x-data="{ show: true }" x-show="show" x-transition
+                         class="p-4 bg-red-50 border border-red-200 rounded text-red-700 text-xs font-bold space-y-2 shadow-sm border-l-4 border-l-red-500 transition-all relative">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                            <span class="uppercase tracking-wider">Terjadi Kesalahan:</span>
+                        </div>
+                        <ul class="list-disc list-inside pl-1 space-y-1 font-medium text-[11px]">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button @click="show = false" class="absolute top-4 right-4 text-red-400 hover:text-red-700">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                @endif
+            </div>
+        </div>
+
         @yield('content')
-    </main>
+    </div>
+</main>
 
     @stack('scripts')
     
