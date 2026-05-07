@@ -15,10 +15,22 @@ class RaporController extends Controller
     public function showRapor(Request $request)
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
+        
+        // Ambil semua semester, urutkan berdasarkan Tanggal Mulai Tahun Ajaran terbaru
+        $allSemesters = Semester::join('tahun_ajaran', 'semester.tahun_ajaran_id', '=', 'tahun_ajaran.id')
+            ->select('semester.*')
+            ->orderBy('tahun_ajaran.tanggal_mulai', 'desc') // Menggunakan tanggal agar urutan pasti akurat
+            ->orderBy('semester.semester', 'desc')      // Genap (2) di atas Ganjil (1)
+            ->with('tahunAjaran')
+            ->get();
+        
+        // Gunakan semester dari request jika ada, jika tidak gunakan semester aktif
+        $selectedSemesterId = $request->get('semester_id', $semesterAktif?->id);
+        $selectedSemester = Semester::find($selectedSemesterId);
 
-        $query = Siswa::with(['kelasSiswa' => function ($q) use ($semesterAktif) {
-            if ($semesterAktif) {
-                $q->where('semester_id', $semesterAktif->id)->with(['kelas', 'nilai']);
+        $query = Siswa::with(['kelasSiswa' => function ($q) use ($selectedSemesterId) {
+            if ($selectedSemesterId) {
+                $q->where('semester_id', $selectedSemesterId)->with(['kelas', 'nilai']);
             }
         }])
         ->where('status', 'Aktif');
@@ -29,25 +41,41 @@ class RaporController extends Controller
 
         if ($request->filled('kelas_id')) {
             $kelasId = $request->kelas_id;
-            $query->whereHas('kelasSiswa', function ($q) use ($kelasId, $semesterAktif) {
+            $query->whereHas('kelasSiswa', function ($q) use ($kelasId, $selectedSemesterId) {
                 $q->where('kelas_id', $kelasId);
-                if ($semesterAktif) {
-                    $q->where('semester_id', $semesterAktif->id);
+                if ($selectedSemesterId) {
+                    $q->where('semester_id', $selectedSemesterId);
                 }
             });
         }
 
-        // Restriksi Akses: Hanya Wali Kelas yang bisa melihat rapor kelasnya
+        // Restriksi Akses: Wali Kelas bisa melihat kelas binaannya + rekam jejak siswa binaannya sekarang
         $user = auth()->user();
         if (!$user->isAdmin()) {
             if ($user->isWaliKelas()) {
-                $managedKelasIds = WaliKelas::where('guru_id', $user->guru_id)->pluck('kelas_id')->toArray();
+                $semesterAktif = Semester::where('is_aktif', true)->first();
+
+                // 1. ID Siswa yang SAAT INI (Semester Aktif) dibina oleh guru ini
+                $activeSiswaIds = KelasSiswa::whereIn('kelas_id', function($q) use ($user, $semesterAktif) {
+                    $q->select('kelas_id')->from('wali_kelas')
+                      ->where('guru_id', $user->guru_id)
+                      ->where('semester_id', $semesterAktif?->id);
+                })->pluck('siswa_id')->toArray();
+
+                // 2. ID Kelas yang dipimpin guru ini PADA SEMESTER YANG DIPILIH
+                $managedKelasIds = WaliKelas::where('guru_id', $user->guru_id)
+                    ->where('semester_id', $selectedSemesterId)
+                    ->pluck('kelas_id')
+                    ->toArray();
                 
-                $query->whereHas('kelasSiswa', function ($q) use ($managedKelasIds, $semesterAktif) {
-                    $q->whereIn('kelas_id', $managedKelasIds);
-                    if ($semesterAktif) {
-                        $q->where('semester_id', $semesterAktif->id);
-                    }
+                $query->where(function($q) use ($activeSiswaIds, $managedKelasIds, $selectedSemesterId) {
+                    // Akses Kelas: Lihat semua siswa di kelas yang dipimpin pada semester terpilih
+                    $q->whereHas('kelasSiswa', function ($sq) use ($managedKelasIds, $selectedSemesterId) {
+                        $sq->whereIn('kelas_id', $managedKelasIds)
+                           ->where('semester_id', $selectedSemesterId);
+                    })
+                    // Akses Rekam Jejak: Lihat histori siswa binaan sekarang di semester mana pun
+                    ->orWhereIn('id', $activeSiswaIds);
                 });
             } else {
                 $query->whereRaw('1 = 0');
@@ -97,7 +125,12 @@ class RaporController extends Controller
         }
         $kelasList = $kelasListQuery->get();
 
-        return view('pages.data_rapor', compact('siswaData', 'kelasList'));
+        // Siapkan opsi semester untuk filter
+        $semesterOptions = $allSemesters->mapWithKeys(function($s) {
+            return [$s->id => $s->tahunAjaran->nama . ' - ' . $s->semester];
+        })->toArray();
+
+        return view('pages.data_rapor', compact('siswaData', 'kelasList', 'semesterOptions', 'selectedSemester'));
     }
 
     public function saveCatatan(Request $request)

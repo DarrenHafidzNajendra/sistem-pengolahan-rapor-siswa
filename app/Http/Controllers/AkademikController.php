@@ -18,18 +18,27 @@ class AkademikController extends Controller
     public function storeTahunAjaran(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|unique:tahun_ajaran,nama',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
         ], [
-            'nama.unique' => 'Tahun Pelajaran ini sudah ada di database.',
             'tanggal_selesai.after' => 'Tanggal selesai harus setelah tanggal mulai.'
         ]);
+
+        // Otomatis buat nama berdasarkan tahun dari tanggal_mulai
+        $startYear = date('Y', strtotime($request->tanggal_mulai));
+        $endYear = (int)$startYear + 1;
+        $nama = "{$startYear}/{$endYear}";
+
+        // Cek duplikasi nama secara manual karena tidak lagi di validasi di awal
+        $exists = TahunAjaran::where('nama', $nama)->exists();
+        if ($exists) {
+            return redirect()->back()->with('error', "Tahun Pelajaran {$nama} sudah ada di database.");
+        }
 
         DB::beginTransaction();
         try {
             $ta = TahunAjaran::create([
-                'nama' => $request->nama,
+                'nama' => $nama,
                 'tanggal_mulai' => $request->tanggal_mulai,
                 'tanggal_selesai' => $request->tanggal_selesai,
                 'is_aktif' => false

@@ -32,10 +32,23 @@
             </form>
         </x-modal>
 
-        <div class="bg-white rounded border border-gray-200">
+        <div class="bg-white rounded border border-gray-200 overflow-hidden shadow-sm">
+            {{-- Info Periode (Inside Container) --}}
+            <div class="px-5 py-3 bg-gray-50/50 border-b border-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Periode Laporan</span>
+                </div>
+                <div class="text-[11px] font-bold text-gray-700 bg-white px-3 py-1 rounded border border-gray-200 shadow-sm">
+                    <i class="fa-solid fa-calendar-day text-blue-500 mr-1.5"></i>
+                    {{ $selectedSemester ? $selectedSemester->tahunAjaran->nama . ' — ' . $selectedSemester->semester : 'Pilih Semester' }}
+                </div>
+            </div>
+
             <x-search-toolbar 
                 placeholder="Cari nama siswa..." 
                 :filters="[
+                    ['name' => 'semester_id', 'label' => 'Pilih Semester', 'options' => $semesterOptions],
                     ['name' => 'kelas_id', 'label' => 'Semua Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()]
                 ]"
                 :showTambah="false"
@@ -49,6 +62,7 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">NIS</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Tahun Ajaran</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Rata-Rata Nilai</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Catatan Wali</th>
@@ -62,6 +76,10 @@
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $r->nis }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $r->nama_siswa }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $r->kelasSiswa->first()?->kelas?->nama_kelas ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">
+                                {{ $r->kelasSiswa->first()?->semester?->tahunAjaran?->nama ?? '-' }} 
+                                <span class="text-[10px] text-gray-400 font-normal">({{ $r->kelasSiswa->first()?->semester?->semester ?? '-' }})</span>
+                            </td>
                             <td class="px-6 py-4 text-sm text-center font-bold {{ $r->rata_rata !== null ? ($r->rata_rata >= 80 ? 'text-green-600' : ($r->rata_rata >= 70 ? 'text-blue-600' : 'text-red-600')) : 'text-gray-400' }}">{{ $r->rata_rata ?? '-' }}</td>
                             <td class="px-6 py-4 text-center">
                                 @if($r->status_lulus === 'Lulus')
