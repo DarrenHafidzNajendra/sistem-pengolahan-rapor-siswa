@@ -32,10 +32,19 @@
             </form>
         </x-modal>
 
+        <div class="mb-5 flex flex-col gap-1">
+            <h1 class="text-xl font-bold text-gray-900 tracking-tight">Data Rapor Siswa</h1>
+            <p class="text-xs text-gray-500 font-medium">
+                Menampilkan data hasil belajar siswa untuk periode: 
+                <span class="text-blue-600 font-bold">{{ $selectedSemester ? $selectedSemester->tahunAjaran->nama . ' (' . $selectedSemester->semester . ')' : 'Tidak ada semester terpilih' }}</span>
+            </p>
+        </div>
+
         <div class="bg-white rounded border border-gray-200">
             <x-search-toolbar 
                 placeholder="Cari nama siswa..." 
                 :filters="[
+                    ['name' => 'semester_id', 'label' => 'Pilih Semester', 'options' => $semesterOptions],
                     ['name' => 'kelas_id', 'label' => 'Semua Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()]
                 ]"
                 :showTambah="false"
@@ -49,6 +58,7 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">NIS</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Tahun Ajaran</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Rata-Rata Nilai</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Catatan Wali</th>
@@ -62,6 +72,10 @@
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $r->nis }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $r->nama_siswa }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $r->kelasSiswa->first()?->kelas?->nama_kelas ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">
+                                {{ $r->kelasSiswa->first()?->semester?->tahunAjaran?->nama ?? '-' }} 
+                                <span class="text-[10px] text-gray-400 font-normal">({{ $r->kelasSiswa->first()?->semester?->semester ?? '-' }})</span>
+                            </td>
                             <td class="px-6 py-4 text-sm text-center font-bold {{ $r->rata_rata !== null ? ($r->rata_rata >= 80 ? 'text-green-600' : ($r->rata_rata >= 70 ? 'text-blue-600' : 'text-red-600')) : 'text-gray-400' }}">{{ $r->rata_rata ?? '-' }}</td>
                             <td class="px-6 py-4 text-center">
                                 @if($r->status_lulus === 'Lulus')

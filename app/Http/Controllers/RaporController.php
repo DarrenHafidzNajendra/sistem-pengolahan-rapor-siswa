@@ -15,10 +15,22 @@ class RaporController extends Controller
     public function showRapor(Request $request)
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
+        
+        // Ambil semua semester, urutkan berdasarkan Tanggal Mulai Tahun Ajaran terbaru
+        $allSemesters = Semester::join('tahun_ajaran', 'semester.tahun_ajaran_id', '=', 'tahun_ajaran.id')
+            ->select('semester.*')
+            ->orderBy('tahun_ajaran.tanggal_mulai', 'desc') // Menggunakan tanggal agar urutan pasti akurat
+            ->orderBy('semester.semester', 'desc')      // Genap (2) di atas Ganjil (1)
+            ->with('tahunAjaran')
+            ->get();
+        
+        // Gunakan semester dari request jika ada, jika tidak gunakan semester aktif
+        $selectedSemesterId = $request->get('semester_id', $semesterAktif?->id);
+        $selectedSemester = Semester::find($selectedSemesterId);
 
-        $query = Siswa::with(['kelasSiswa' => function ($q) use ($semesterAktif) {
-            if ($semesterAktif) {
-                $q->where('semester_id', $semesterAktif->id)->with(['kelas', 'nilai']);
+        $query = Siswa::with(['kelasSiswa' => function ($q) use ($selectedSemesterId) {
+            if ($selectedSemesterId) {
+                $q->where('semester_id', $selectedSemesterId)->with(['kelas', 'nilai']);
             }
         }])
         ->where('status', 'Aktif');
@@ -29,10 +41,10 @@ class RaporController extends Controller
 
         if ($request->filled('kelas_id')) {
             $kelasId = $request->kelas_id;
-            $query->whereHas('kelasSiswa', function ($q) use ($kelasId, $semesterAktif) {
+            $query->whereHas('kelasSiswa', function ($q) use ($kelasId, $selectedSemesterId) {
                 $q->where('kelas_id', $kelasId);
-                if ($semesterAktif) {
-                    $q->where('semester_id', $semesterAktif->id);
+                if ($selectedSemesterId) {
+                    $q->where('semester_id', $selectedSemesterId);
                 }
             });
         }
@@ -43,10 +55,10 @@ class RaporController extends Controller
             if ($user->isWaliKelas()) {
                 $managedKelasIds = WaliKelas::where('guru_id', $user->guru_id)->pluck('kelas_id')->toArray();
                 
-                $query->whereHas('kelasSiswa', function ($q) use ($managedKelasIds, $semesterAktif) {
+                $query->whereHas('kelasSiswa', function ($q) use ($managedKelasIds, $selectedSemesterId) {
                     $q->whereIn('kelas_id', $managedKelasIds);
-                    if ($semesterAktif) {
-                        $q->where('semester_id', $semesterAktif->id);
+                    if ($selectedSemesterId) {
+                        $q->where('semester_id', $selectedSemesterId);
                     }
                 });
             } else {
@@ -97,7 +109,12 @@ class RaporController extends Controller
         }
         $kelasList = $kelasListQuery->get();
 
-        return view('pages.data_rapor', compact('siswaData', 'kelasList'));
+        // Siapkan opsi semester untuk filter
+        $semesterOptions = $allSemesters->mapWithKeys(function($s) {
+            return [$s->id => $s->tahunAjaran->nama . ' - ' . $s->semester];
+        })->toArray();
+
+        return view('pages.data_rapor', compact('siswaData', 'kelasList', 'semesterOptions', 'selectedSemester'));
     }
 
     public function saveCatatan(Request $request)

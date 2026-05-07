@@ -34,7 +34,7 @@
                         <i class="fa-solid fa-calendar-days text-xs"></i>
                     </div>
                     <div>
-                        <h3 class="text-sm font-bold text-gray-900 tracking-tight">Tahun Pelajaran {{ explode('/', $ta->nama)[0] }}</h3>
+                        <h3 class="text-sm font-bold text-gray-900 tracking-tight">Tahun Pelajaran {{ $ta->nama }}</h3>
                         <p class="text-[10px] text-gray-400 font-medium mt-0.5 tracking-wide">
                             <i class="fa-regular fa-clock mr-1 text-[9px]"></i>
                             {{ $ta->tanggal_mulai->format('d M Y') }} — {{ $ta->tanggal_selesai->format('d M Y') }}
@@ -102,10 +102,9 @@
         <form action="{{ route('akademik.ta.store') }}" method="POST">
             @csrf
             <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tahun</label>
-                    <input type="text" name="nama" placeholder="Contoh: 2025" required
-                           class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors">
+                <div class="p-3 bg-blue-50 border border-blue-100 rounded flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
+                    <p class="text-[11px] text-blue-700 leading-relaxed">Nama Tahun Pelajaran akan dibuat secara otomatis dalam format <span class="font-bold">YYYY/YYYY</span> berdasarkan Tanggal Mulai yang Anda pilih.</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
