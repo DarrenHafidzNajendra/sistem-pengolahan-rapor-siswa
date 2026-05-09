@@ -10,15 +10,15 @@
                 <div class="space-y-4">
                     <div>
                         <label for="kode_kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Kelas</label>
-                        <input type="text" id="kode_kelas" name="kode_kelas" required placeholder="Contoh: X-MIPA-1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors">
+                        <input type="text" id="kode_kelas" name="kode_kelas" required placeholder="Contoh: X-MIPA-1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                     <div>
                         <label for="nama_kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Kelas</label>
-                        <input type="text" id="nama_kelas" name="nama_kelas" required placeholder="Contoh: X MIPA 1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors">
+                        <input type="text" id="nama_kelas" name="nama_kelas" required placeholder="Contoh: X MIPA 1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                     <div>
                         <label for="tingkat" class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
-                        <select id="tingkat" name="tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors cursor-pointer">
+                        <select id="tingkat" name="tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors cursor-pointer bg-gray-50">
                             <option value="X">X</option>
                             <option value="XI">XI</option>
                             <option value="XII">XII</option>
@@ -26,7 +26,7 @@
                     </div>
                     <div>
                         <label for="wali_id" class="block text-sm font-semibold text-gray-700 mb-1.5">Wali Kelas</label>
-                        <select id="wali_id" name="wali_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors cursor-pointer bg-white">
+                        <select id="wali_id" name="wali_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors cursor-pointer bg-gray-50">
                             <option value="">Pilih Wali Kelas (Opsional)</option>
                             @foreach($guruList as $guru)
                                 <option value="{{ $guru->id }}">{{ $guru->nama_guru }}</option>

@@ -32,7 +32,7 @@
                 <div class="space-y-1">
                     <label for="username" class="text-[10px] font-semibold text-gray-500">NIP</label>
                     <input type="text" id="username" name="username" required
-                           class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-white"
+                           class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-gray-50"
                            placeholder="NIP Anda">
                 </div>
 
@@ -43,12 +43,19 @@
                     </div>
                     <div class="relative">
                         <input type="password" :type="showPass ? 'text' : 'password'" id="password" name="password" required
-                               class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-white"
+                               class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-gray-50"
                                placeholder="••••••••">
                         <button type="button" @click="showPass = !showPass" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black">
                             <i class="fa-solid" :class="showPass ? 'fa-eye-slash' : 'fa-eye' shadow-none"></i>
                         </button>
                     </div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input type="checkbox" name="remember" class="w-3.5 h-3.5 border-gray-300 rounded text-black focus:ring-0 cursor-pointer">
+                        <span class="text-[10px] font-semibold text-gray-500 group-hover:text-black transition-colors">Ingat saya</span>
+                    </label>
                 </div>
 
                 <button type="submit" class="w-full py-3 bg-black text-white text-xs font-semibold tracking-tight rounded hover:bg-gray-800 transition-none">

@@ -11,17 +11,17 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="nis" class="block text-sm font-semibold text-gray-700 mb-1.5">NIS</label>
-                        <input type="text" id="nis" name="nis" placeholder="Masukkan NIS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white">
+                        <input type="text" id="nis" name="nis" placeholder="Masukkan NIS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-gray-50">
                     </div>
                     <div>
                         <label for="nama_siswa" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Siswa</label>
-                        <input type="text" id="nama_siswa" name="nama_siswa" placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white">
+                        <input type="text" id="nama_siswa" name="nama_siswa" placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-gray-50">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                        <select id="kelas" name="kelas_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
+                        <select id="kelas" name="kelas_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-gray-50 text-gray-700 appearance-none cursor-pointer">
                             <option value="">Pilih Kelas</option>
                             @foreach($kelasList as $kelas)
                                 <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
@@ -30,7 +30,7 @@
                     </div>
                     <div>
                         <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
-                        <select id="jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
+                        <select id="jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-gray-50 text-gray-700 appearance-none cursor-pointer">
                             <option value="">Pilih Jenis Kelamin</option>
                             <option value="Laki-laki">Laki-laki</option>
                             <option value="Perempuan">Perempuan</option>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="mb-6">
                     <label for="status_siswa" class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
-                    <select id="status_siswa" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
+                    <select id="status_siswa" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-gray-50 text-gray-700 appearance-none cursor-pointer">
                         <option value="">Pilih Status</option>
                         <option value="Aktif">Aktif</option>
                         <option value="Tidak Aktif">Tidak Aktif</option>

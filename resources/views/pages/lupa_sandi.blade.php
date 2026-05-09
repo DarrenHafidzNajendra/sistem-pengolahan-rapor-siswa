@@ -31,7 +31,7 @@
                     <div class="space-y-1">
                         <label for="email" class="text-[10px] font-semibold text-gray-500">Email</label>
                         <input type="email" id="email" name="email" required
-                               class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-white"
+                               class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-gray-50"
                                placeholder="email@sekolah.sch.id">
                     </div>
 

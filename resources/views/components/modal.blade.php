@@ -10,10 +10,10 @@
             document.body.style.overflow = '';
         }
     })"
-    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter="transition ease-out duration-200"
     x-transition:enter-start="opacity-0"
     x-transition:enter-end="opacity-100"
-    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave="transition ease-in duration-150"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
@@ -21,12 +21,12 @@
 >
     <div
         x-show="{{ $name }}"
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 scale-90"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95"
         x-transition:enter-end="opacity-100 scale-100"
-        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-90"
+        x-transition:leave-end="opacity-0 scale-95"
         class="bg-white rounded border border-gray-200 w-full {{ $maxWidth }}"
     >
         {{-- Modal Header --}}
