@@ -62,8 +62,11 @@
             <x-search-toolbar 
                 placeholder="Cari siswa berdasarkan NIS atau Nama..." 
                 :filters="[
-                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']],
-                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()]
+                    ['name' => 'tahun_ajaran_id', 'label' => 'Tahun Ajaran', 'options' => $tahunAjaranList->pluck('nama', 'id')->toArray()],
+                    ['name' => 'semester', 'label' => 'Semester', 'options' => ['Ganjil' => 'Ganjil', 'Genap' => 'Genap']],
+                    ['name' => 'angkatan', 'label' => 'Angkatan', 'options' => $angkatanList],
+                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()],
+                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
                 ]"
                 :resetUrl="route('data_siswa')"
                 tambahClick="openTambah = true"
@@ -77,7 +80,9 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">NIS</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Angkatan</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Tahun Ajaran/Sem</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Jenis Kelamin</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Status</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
@@ -89,7 +94,19 @@
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $siswaData->firstItem() + $i }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $s->nis }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $s->nama_siswa }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">
+                                <span class="px-2 py-1 bg-gray-100 border border-gray-200 rounded text-[10px] font-bold text-gray-700">
+                                    {{ $s->angkatan ?? '-' }}
+                                </span>
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $s->kelasSiswa->first()?->kelas?->nama_kelas ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">
+                                @if($ks = $s->kelasSiswa->first())
+                                    {{ $ks->semester?->tahunAjaran?->nama }} ({{ $ks->semester?->semester }})
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $s->jenis_kelamin }}</td>
                             <td class="px-6 py-4 text-sm"><x-badge :type="$s->status === 'Aktif' ? 'success' : 'danger'">{{ $s->status }}</x-badge></td>
                             <td class="px-6 py-4 text-center"><x-action-buttons /></td>

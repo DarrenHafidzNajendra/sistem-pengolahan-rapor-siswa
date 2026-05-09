@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
         // Akademik Management
         Route::get('/akademik', [AkademikController::class, 'index'])->name('akademik');
         Route::post('/akademik/tahun-ajaran', [AkademikController::class, 'storeTahunAjaran'])->name('akademik.ta.store');
+        Route::put('/akademik/tahun-ajaran/{id}', [AkademikController::class, 'updateTahunAjaran'])->name('akademik.ta.update');
         Route::post('/akademik/semester', [AkademikController::class, 'storeSemester'])->name('akademik.smt.store');
         Route::post('/akademik/set-aktif/{id}', [AkademikController::class, 'setAktif'])->name('akademik.set_aktif');
         Route::post('/akademik/ta/nonaktifkan/{id}', [AkademikController::class, 'nonaktifkanTa'])->name('akademik.ta.nonaktifkan');

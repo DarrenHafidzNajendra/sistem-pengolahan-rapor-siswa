@@ -55,6 +55,37 @@ class AkademikController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
     }
+    public function updateTahunAjaran(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after:tanggal_mulai',
+        ], [
+            'tanggal_selesai.after' => 'Tanggal selesai harus setelah tanggal mulai.'
+        ]);
+
+        $ta = TahunAjaran::findOrFail($id);
+        
+        // Regenerate nama berdasarkan tanggal_mulai
+        $startYear = date('Y', strtotime($request->tanggal_mulai));
+        $endYear = (int)$startYear + 1;
+        $nama = "{$startYear}/{$endYear}";
+
+        // Cek duplikasi nama (kecuali ID saat ini)
+        $exists = TahunAjaran::where('nama', $nama)->where('id', '!=', $id)->exists();
+        if ($exists) {
+            return redirect()->back()->with('error', "Tahun Pelajaran {$nama} sudah ada di database.");
+        }
+
+        $ta->update([
+            'nama' => $nama,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_selesai' => $request->tanggal_selesai,
+        ]);
+
+        return redirect()->back()->with('success', 'Tahun ajaran berhasil diperbarui.');
+    }
+
 
     public function storeSemester(Request $request)
     {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\Semester;
+use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 
 class SiswaController extends Controller
@@ -23,29 +24,75 @@ class SiswaController extends Controller
             });
         }
 
+        // Filter Angkatan
+        if ($request->filled('angkatan')) {
+            $query->where('angkatan', $request->angkatan);
+        }
+
         // Filter Status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filter Kelas
-        if ($request->filled('kelas_id')) {
-            $query->whereHas('kelasSiswa', function($q) use ($request, $semesterAktif) {
+        // Filter Periode Akademik (Kelas, Tahun Ajaran, Semester)
+        $query->whereHas('kelasSiswa', function($q) use ($request, $semesterAktif) {
+            // Filter Kelas
+            if ($request->filled('kelas_id')) {
                 $q->where('kelas_id', $request->kelas_id);
-                if ($semesterAktif) {
-                    $q->where('semester_id', $semesterAktif->id);
-                }
-            });
-        }
-
-        $siswaData = $query->with(['kelasSiswa' => function ($q) use ($semesterAktif) {
-            if ($semesterAktif) {
-                $q->where('semester_id', $semesterAktif->id)->with('kelas');
             }
+
+            // Filter Tahun Ajaran
+            if ($request->filled('tahun_ajaran_id')) {
+                $q->whereHas('semester', function($sq) use ($request) {
+                    $sq->where('tahun_ajaran_id', $request->tahun_ajaran_id);
+                });
+            }
+
+            // Filter Semester (Ganjil/Genap)
+            if ($request->filled('semester')) {
+                $q->whereHas('semester', function($sq) use ($request) {
+                    $sq->where('semester', $request->semester);
+                });
+            }
+
+            // Default: Jika tidak ada filter periode sama sekali, tampilkan yang aktif saat ini
+            if (!$request->filled('tahun_ajaran_id') && !$request->filled('semester') && !$request->filled('kelas_id') && $semesterAktif) {
+                $q->where('semester_id', $semesterAktif->id);
+            }
+        });
+
+        $siswaData = $query->with(['kelasSiswa' => function ($q) use ($request, $semesterAktif) {
+            // Filter yang tampil di tabel harus sama dengan filter pencarian
+            if ($request->filled('kelas_id')) {
+                $q->where('kelas_id', $request->kelas_id);
+            }
+
+            if ($request->filled('tahun_ajaran_id')) {
+                $q->whereHas('semester', function($sq) use ($request) {
+                    $sq->where('tahun_ajaran_id', $request->tahun_ajaran_id);
+                });
+            }
+
+            if ($request->filled('semester')) {
+                $q->whereHas('semester', function($sq) use ($request) {
+                    $sq->where('semester', $request->semester);
+                });
+            }
+
+            // Default jika tidak ada filter
+            if (!$request->filled('tahun_ajaran_id') && !$request->filled('semester') && !$request->filled('kelas_id') && $semesterAktif) {
+                $q->where('semester_id', $semesterAktif->id);
+            }
+
+            $q->with(['kelas', 'semester.tahunAjaran']);
         }])->orderBy('nama_siswa')->paginate(20)->withQueryString();
 
         $kelasList = Kelas::orderBy('nama_kelas')->get();
+        $tahunAjaranList = TahunAjaran::orderBy('nama', 'desc')->get();
+        
+        // Ambil daftar angkatan unik
+        $angkatanList = Siswa::whereNotNull('angkatan')->distinct()->orderBy('angkatan', 'desc')->pluck('angkatan', 'angkatan')->toArray();
 
-        return view('pages.data_siswa', compact('siswaData', 'kelasList'));
+        return view('pages.data_siswa', compact('siswaData', 'kelasList', 'tahunAjaranList', 'angkatanList', 'semesterAktif'));
     }
 }
