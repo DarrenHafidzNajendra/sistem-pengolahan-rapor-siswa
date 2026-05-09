@@ -17,7 +17,13 @@ class PengampuController extends Controller
 
         $query = Pengampu::query()->with(['guru', 'mapel', 'kelas', 'semester.tahunAjaran']);
 
-        if ($semesterAktif) {
+        // Filter Periode (Tahun Ajaran & Semester)
+        if ($request->filled('tahun_ajaran_id') || $request->filled('semester')) {
+            $query->whereHas('semester', function($q) use ($request) {
+                if ($request->filled('tahun_ajaran_id')) $q->where('tahun_ajaran_id', $request->tahun_ajaran_id);
+                if ($request->filled('semester')) $q->where('semester', $request->semester);
+            });
+        } else if ($semesterAktif) {
             $query->where('semester_id', $semesterAktif->id);
         }
 
@@ -34,11 +40,12 @@ class PengampuController extends Controller
         $pengampus = $query->orderBy('id')->paginate(20)->withQueryString();
 
         $gurus = Guru::where('status', 'Aktif')->orderBy('nama_guru')->get();
-        $mapels = Mapel::where('status', 'Aktif')->orderBy('nama_mapel')->get();
+        $mapels = Mapel::orderBy('nama_mapel')->get();
         $kelas = Kelas::orderBy('nama_kelas')->get();
+        $tahunAjaranList = \App\Models\TahunAjaran::orderBy('nama', 'desc')->get();
         $semesters = Semester::with('tahunAjaran')->orderByDesc('id')->get();
 
-        return view('pages.pengampu', compact('pengampus', 'gurus', 'mapels', 'kelas', 'semesters'));
+        return view('pages.pengampu', compact('pengampus', 'gurus', 'mapels', 'kelas', 'tahunAjaranList', 'semesterAktif', 'semesters'));
     }
 
     public function store(Request $request)

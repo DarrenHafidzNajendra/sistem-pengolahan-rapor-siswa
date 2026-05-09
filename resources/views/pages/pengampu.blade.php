@@ -124,6 +124,8 @@
             <x-search-toolbar 
                 placeholder="Cari pengampu, guru..." 
                 :filters="[
+                    ['name' => 'tahun_ajaran_id', 'label' => 'Tahun Ajaran', 'options' => $tahunAjaranList->pluck('nama', 'id')->toArray()],
+                    ['name' => 'semester', 'label' => 'Semester', 'options' => ['Ganjil' => 'Ganjil', 'Genap' => 'Genap']],
                     ['name' => 'mapel_id', 'label' => 'Filter Mapel', 'options' => $mapels->pluck('nama_mapel', 'id')->toArray()],
                     ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelas->pluck('nama_kelas', 'id')->toArray()]
                 ]"
@@ -140,7 +142,7 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">KKM</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Pengampu</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Semester</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Tahun Ajaran/Sem</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -153,7 +155,7 @@
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $p->kkm }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $p->guru->nama_guru }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $p->kelas->nama_kelas }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $p->semester->semester }} {{ $p->semester->tahunAjaran->nama }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $p->semester->tahunAjaran->nama }} ({{ $p->semester->semester }})</td>
                             <td class="px-6 py-4 text-center"><x-action-buttons /></td>
                         </tr>
                         @empty
