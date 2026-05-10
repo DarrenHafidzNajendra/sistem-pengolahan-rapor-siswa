@@ -30,7 +30,7 @@ class RaporController extends Controller
 
         $query = Siswa::with(['kelasSiswa' => function ($q) use ($selectedSemesterId) {
             if ($selectedSemesterId) {
-                $q->where('semester_id', $selectedSemesterId)->with(['kelas', 'nilai']);
+                $q->where('semester_id', $selectedSemesterId)->with(['kelas', 'nilai.komponenNilai']);
             }
         }])
         ->where('status', 'Aktif');
@@ -95,13 +95,31 @@ class RaporController extends Controller
 
             // Kelompokkan nilai per mata pelajaran (pengampu) untuk dihitung rata-ratanya
             $nilaiPerMapel = $ks->nilai->groupBy('pengampu_id')->map(function ($group) {
-                // Hanya hitung rata-rata dari jenis nilai akademik
-                $akademik = $group->whereIn('jenis_nilai', [
-                    'p_tugas', 'p_uh', 'p_uts', 'p_uas', 
-                    'k_praktik', 'k_proyek', 'k_portofolio'
-                ]);
-                return $akademik->isNotEmpty() ? $akademik->avg('skor') : null;
-            })->filter();
+                // 1. Hitung Pengetahuan (P)
+                $t_vals = $group->filter(fn($n) => $n->komponenNilai?->tipe === 'p_tugas')->pluck('skor');
+                $u_vals = $group->filter(fn($n) => $n->komponenNilai?->tipe === 'p_uh')->pluck('skor');
+                
+                $t_avg = $t_vals->isNotEmpty() ? $t_vals->avg() : null;
+                $u_avg = $u_vals->isNotEmpty() ? $u_vals->avg() : null;
+                
+                $nh_vals = array_filter([$t_avg, $u_avg], fn($v) => !is_null($v));
+                $nh = count($nh_vals) > 0 ? array_sum($nh_vals) / count($nh_vals) : 0;
+                
+                $uts = $group->where('jenis_nilai', 'p_uts')->first()?->skor ?? 0;
+                $uas = $group->where('jenis_nilai', 'p_uas')->first()?->skor ?? 0;
+                
+                $p_avg = ((2 * $nh) + $uts + $uas) / 4;
+                
+                // 2. Hitung Keterampilan (K)
+                $k_vals = $group->whereIn('jenis_nilai', ['k_praktik', 'k_proyek', 'k_portofolio'])->pluck('skor');
+                $k_avg = $k_vals->isNotEmpty() ? $k_vals->avg() : null;
+                
+                // 3. Rata-rata Mapel = (P + K) / 2
+                if ($k_avg !== null) {
+                    return ($p_avg + $k_avg) / 2;
+                }
+                return $p_avg;
+            })->filter(fn($v) => $v !== null);
 
             $siswa->rata_rata = $nilaiPerMapel->isNotEmpty() ? round($nilaiPerMapel->avg(), 1) : null;
 

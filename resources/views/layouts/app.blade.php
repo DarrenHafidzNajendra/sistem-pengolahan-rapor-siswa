@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title') - Sistem Pengolahan Rapor</title>
     
     {{-- Fonts --}}
@@ -13,6 +14,8 @@
     {{-- CSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    {{-- SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
         tailwind.config = {
@@ -34,58 +37,27 @@
         }
         {{-- Mengoptimalkan tampilan pada zoom 100% agar lebih padat --}}
         input, select, button { font-size: 0.875rem !important; }
-
-        /* ── Flat Toast Animations ── */
-        @keyframes toast-in {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes toast-out {
-            from { opacity: 1; transform: translateY(0); }
-            to   { opacity: 0; transform: translateY(12px); }
-        }
-        @keyframes toast-countdown {
-            from { width: 100%; }
-            to   { width: 0%; }
-        }
-        .toast-enter { animation: toast-in 0.3s ease-out forwards; }
-        .toast-leave { animation: toast-out 0.25s ease-in forwards; }
-        .toast-bar   { animation: toast-countdown 3.5s linear forwards; }
     </style>
 
     {{-- Alpine.js --}}
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.store('toast', {
-                show: false,
-                leaving: false,
-                message: '',
-                type: 'success',
-                _timer: null,
-
-                showNotification(msg, type = 'success') {
-                    if (this._timer) clearTimeout(this._timer);
-                    this.leaving = false;
-                    this.show = true;
-                    this.message = msg;
-                    this.type = type;
-                    this._timer = setTimeout(() => this.dismiss(), 3500);
-                },
-
-                dismiss() {
-                    this.leaving = true;
-                    setTimeout(() => {
-                        this.show = false;
-                        this.leaving = false;
-                    }, 250);
+        window.addEventListener('notify', (e) => {
+            const type = e.detail.type || 'success';
+            const message = e.detail.message;
+            
+            Swal.fire({
+                title: type === 'success' ? 'Berhasil' : (type === 'error' ? 'Kesalahan' : 'Informasi'),
+                text: message,
+                icon: type,
+                confirmButtonText: 'Selesai',
+                confirmButtonColor: '#111827',
+                customClass: {
+                    popup: 'rounded-xl border border-gray-100 shadow-2xl',
+                    confirmButton: 'px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded transition-all active:scale-[0.98]'
                 }
             });
-        });
-
-        window.addEventListener('notify', (e) => {
-            Alpine.store('toast').showNotification(e.detail.message, e.detail.type);
         });
     </script>
 
@@ -93,51 +65,7 @@
     @stack('styles')
 <body class="bg-gray-50 font-sans antialiased text-gray-900" @yield('body-attrs')>
  
-    {{-- ═══ Global Notifications (Success Modal) ═══ --}}
-    <div x-data="{ showSuccess: false, successMsg: '' }" 
-         @notify.window="
-            if(($event.detail.type || 'success') === 'success') { 
-                setTimeout(() => {
-                    showSuccess = true; 
-                    successMsg = $event.detail.message;
-                }, 300);
-            }
-         ">
-        {{-- 🟢 Flat Success Pop-up Modal --}}
-        <div x-show="showSuccess" 
-             x-transition:enter="transition opacity ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition opacity ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-gray-900/50" x-cloak>
-            
-            {{-- Card with its own transition --}}
-            <div x-show="showSuccess"
-                 x-transition:enter="transition ease-out duration-300 delay-75"
-                 x-transition:enter-start="opacity-0 scale-95"
-                 x-transition:enter-end="opacity-100 scale-100"
-                 x-transition:leave="transition ease-in duration-150"
-                 x-transition:leave-start="opacity-100 scale-100"
-                 x-transition:leave-end="opacity-0 scale-95"
-                 class="bg-white rounded-xl p-8 max-w-sm w-full shadow-2xl text-center border border-gray-100">
-                <div class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5">
-                    <i class="fa-solid fa-check text-2xl"></i>
-                </div>
-                <h2 class="text-lg font-bold text-gray-900 mb-1">Berhasil</h2>
-                <p class="text-[12px] font-medium text-gray-500 mb-8 leading-relaxed px-4" x-text="successMsg"></p>
-                <button @click="showSuccess = false" 
-                        class="w-full py-3 bg-gray-900 text-white text-xs font-bold rounded hover:bg-gray-800 transition-all active:scale-[0.98]">
-                    Selesai
-                </button>
-            </div>
-        </div>
-    </div>
 
-        {{-- 🔴 Static Error Alerts (Akan muncul di posisi absolut di atas konten melalui portal atau tetap di sini) --}}
-        {{-- Note: Agar error tetap di atas konten, saya akan memisahkannya atau menaruhnya di main. --}}
-    </div>
 
     {{-- Sidebar --}}
     <x-sidebar />
@@ -193,12 +121,6 @@
             @if(session('success'))
                 window.dispatchEvent(new CustomEvent('notify', {
                     detail: { message: "{{ session('success') }}", type: 'success' }
-                }));
-            @endif
-
-            @if(session('error'))
-                window.dispatchEvent(new CustomEvent('notify', {
-                    detail: { message: "{{ session('error') }}", type: 'error' }
                 }));
             @endif
         });

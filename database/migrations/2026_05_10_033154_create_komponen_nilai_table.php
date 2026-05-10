@@ -11,17 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nilai', function (Blueprint $table) {
+        Schema::create('komponen_nilai', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kelas_siswa_id')->constrained('kelas_siswa')->onDelete('cascade');
             $table->foreignId('pengampu_id')->constrained('pengampu')->onDelete('cascade');
-            
-            $table->string('jenis_nilai'); // e.g., 'Tugas 1', 'UTS', 'UAS', 'Sikap'
-            $table->decimal('skor', 5, 2)->default(0);
-            
+            $table->string('nama_komponen');
+            $table->string('tipe'); // p_tugas, p_uh, k_praktik, etc.
             $table->timestamps();
-
-            $table->unique(['kelas_siswa_id', 'pengampu_id', 'jenis_nilai'], 'uq_nilai_siswa');
         });
     }
 
@@ -30,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nilai');
+        Schema::dropIfExists('komponen_nilai');
     }
 };

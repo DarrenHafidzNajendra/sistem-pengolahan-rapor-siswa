@@ -32,6 +32,7 @@
             </form>
         </x-modal>
 
+
         <div class="bg-white rounded border border-gray-200 overflow-hidden shadow-sm">
             {{-- Info Periode (Inside Container) --}}
             <div class="px-5 py-3 bg-gray-50/50 border-b border-gray-100 flex items-center justify-between">
@@ -92,6 +93,7 @@
                                     <span class="text-sm text-gray-400">-</span>
                                 @endif
                             </td>
+
                             <td class="px-6 py-4">
                                 <div class="flex flex-col gap-1">
                                     <p class="text-[11px] text-gray-500 italic line-clamp-1 truncate w-40">{{ $r->kelasSiswa->first()?->catatan_wali ?? 'Belum ada catatan' }}</p>

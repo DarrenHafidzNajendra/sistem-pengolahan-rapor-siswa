@@ -14,6 +14,19 @@ class KelasController extends Controller
     public function showKelas(Request $request)
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
+        
+        // Tentukan semester mana yang dipakai untuk filter (Wali & Jumlah Siswa)
+        $targetSemesterId = null;
+        if ($request->filled('tahun_ajaran_id') || $request->filled('semester')) {
+            $semQuery = Semester::query();
+            if ($request->filled('tahun_ajaran_id')) $semQuery->where('tahun_ajaran_id', $request->tahun_ajaran_id);
+            if ($request->filled('semester')) $semQuery->where('semester', $request->semester);
+            
+            $targetSemester = $semQuery->first();
+            $targetSemesterId = $targetSemester?->id;
+        } else {
+            $targetSemesterId = $semesterAktif?->id;
+        }
 
         $query = Kelas::query();
 
@@ -25,25 +38,26 @@ class KelasController extends Controller
             $query->where('tingkat', $request->tingkat);
         }
 
-        $kelasData = $query->with(['waliKelas' => function ($q) use ($semesterAktif) {
-            if ($semesterAktif) {
-                $q->where('semester_id', $semesterAktif->id)->with('guru');
+        $kelasData = $query->with(['waliKelas' => function ($q) use ($targetSemesterId) {
+            if ($targetSemesterId) {
+                $q->where('semester_id', $targetSemesterId)->with('guru');
             }
-        }])->withCount(['kelasSiswa' => function ($q) use ($semesterAktif) {
-            if ($semesterAktif) {
-                $q->where('semester_id', $semesterAktif->id);
+        }])->withCount(['kelasSiswa' => function ($q) use ($targetSemesterId) {
+            if ($targetSemesterId) {
+                $q->where('semester_id', $targetSemesterId);
             }
         }])->orderBy('nama_kelas')->paginate(20)->withQueryString();
 
-        // Transform agar view tetap bisa mengakses $kelas->wali
         $kelasData->getCollection()->transform(function ($kelas) {
             $kelas->wali = $kelas->waliKelas->first()?->guru;
             return $kelas;
         });
 
+        $displaySemester = $targetSemesterId ? Semester::with('tahunAjaran')->find($targetSemesterId) : $semesterAktif;
         $guruList = Guru::where('status', 'Aktif')->orderBy('nama_guru')->get();
+        $tahunAjaranList = \App\Models\TahunAjaran::orderBy('nama', 'desc')->get();
 
-        return view('pages.data_kelas', compact('kelasData', 'guruList'));
+        return view('pages.data_kelas', compact('kelasData', 'guruList', 'tahunAjaranList', 'semesterAktif', 'displaySemester'));
     }
 
     public function store(Request $request)

@@ -3,7 +3,15 @@
 @section('title', 'Pengaturan Akademik')
 
 @section('content')
-<div x-data="{ openTA: false, openSemester: false, taId: null, taNama: '' }">
+<div x-data="{ 
+    openTA: false, 
+    openEditTA: false, 
+    openSemester: false, 
+    taId: null, 
+    taNama: '', 
+    taMulai: '', 
+    taSelesai: '' 
+}">
     <div class="space-y-6">
     {{-- Toolbar --}}
     <div class="bg-white border border-gray-200 rounded p-4 flex items-center justify-between shadow-sm">
@@ -41,9 +49,20 @@
                         </p>
                     </div>
                 </div>
-                @if($ta->is_aktif)
-                    <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded uppercase tracking-wider border border-emerald-200">Aktif</span>
-                @endif
+                <div class="flex items-center gap-2">
+                    @if($ta->is_aktif)
+                        <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded uppercase tracking-wider border border-emerald-200">Aktif</span>
+                    @endif
+                    <button @click="
+                        openEditTA = true; 
+                        taId = '{{ $ta->id }}'; 
+                        taNama = '{{ $ta->nama }}';
+                        taMulai = '{{ $ta->tanggal_mulai->format('Y-m-d') }}';
+                        taSelesai = '{{ $ta->tanggal_selesai->format('Y-m-d') }}';
+                    " class="w-8 h-8 flex items-center justify-center bg-white border border-gray-200 rounded text-gray-500 hover:text-gray-900 hover:border-gray-900 transition-all shadow-sm">
+                        <i class="fa-solid fa-pen-to-square text-[10px]"></i>
+                    </button>
+                </div>
             </div>
 
             {{-- Semester Options --}}
@@ -110,12 +129,12 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai</label>
                         <input type="date" name="tanggal_mulai" required
-                               class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors">
+                               class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Selesai</label>
                         <input type="date" name="tanggal_selesai" required
-                               class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors">
+                               class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
             </div>
@@ -124,6 +143,38 @@
                     <i class="fa-solid fa-check"></i><span>Simpan Tahun Ajaran</span>
                 </button>
                 <button type="button" @click="openTA = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
+            </div>
+        </form>
+    </x-modal>
+
+    {{-- Modal Edit Tahun Ajaran --}}
+    <x-modal name="openEditTA" title="Edit Tahun Ajaran">
+        <form :action="'{{ route('akademik.ta.update', ['id' => 'ID_PLACEHOLDER']) }}'.replace('ID_PLACEHOLDER', taId)" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="space-y-4">
+                <div class="p-3 bg-blue-50 border border-blue-100 rounded flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
+                    <p class="text-[11px] text-blue-700 leading-relaxed">Nama Tahun Pelajaran <span class="font-bold" x-text="taNama"></span> akan diperbarui secara otomatis berdasarkan Tanggal Mulai yang baru.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai</label>
+                        <input type="date" name="tanggal_mulai" required x-model="taMulai"
+                               class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Selesai</label>
+                        <input type="date" name="tanggal_selesai" required x-model="taSelesai"
+                               class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 mt-8">
+                <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
+                    <i class="fa-solid fa-floppy-disk"></i><span>Simpan Perubahan</span>
+                </button>
+                <button type="button" @click="openEditTA = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
             </div>
         </form>
     </x-modal>

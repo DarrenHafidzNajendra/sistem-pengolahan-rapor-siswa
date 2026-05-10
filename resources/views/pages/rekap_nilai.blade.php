@@ -22,30 +22,34 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Mapel</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Tugas</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">UH</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">UTS</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">UAS</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Nilai Akhir</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Kelengkapan</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Catatan</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @forelse($nilaiData as $i => $n)
                         <tr>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $nilaiData->firstItem() + $i }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $n->kelasSiswa->siswa->nama_siswa }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->pengampu->kelas->nama_kelas }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->pengampu->mapel->nama_mapel }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $n->siswa->nama_siswa }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_kelas }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_mapel }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->tugas ?? '-' }}</td>
+                            <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uh ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uts ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uas ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm font-bold text-gray-900">{{ $n->rata_pengetahuan ?? '-' }}</td>
-                            @php $kkm = $n->pengampu->kkm; $tuntas = $n->rata_pengetahuan !== null && $n->rata_pengetahuan >= $kkm; @endphp
+                            <td class="px-6 py-4 text-center">
+                                <x-badge :type="$n->is_lengkap ? 'success' : 'danger'">{{ $n->is_lengkap ? 'Lengkap' : 'Belum Lengkap' }}</x-badge>
+                            </td>
+                            @php $kkm = $n->kkm; $tuntas = $n->rata_pengetahuan !== null && $n->rata_pengetahuan >= $kkm; @endphp
                             <td class="px-6 py-4 text-center"><x-badge :type="$tuntas ? 'success' : 'warning'">{{ $tuntas ? 'Tuntas' : 'Belum Tuntas' }}</x-badge></td>
-                            <td class="px-6 py-4 text-sm text-gray-500 italic">{{ $n->catatan_guru ?? '-' }}</td>
                         </tr>
                         @empty
-                        <tr><td colspan="10" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data nilai</p></td></tr>
+                        <tr><td colspan="11" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data nilai</p></td></tr>
                         @endforelse
                     </tbody>
                 </table>

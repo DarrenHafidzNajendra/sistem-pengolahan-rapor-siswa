@@ -16,38 +16,87 @@ class RekapNilaiController extends Controller
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
 
-        // Menggunakan Query Builder untuk agregasi Pivot agar performa optimal
-        $query = Nilai::query()
-            ->select('kelas_siswa_id', 'pengampu_id')
-            // Pivot vertikal ke horizontal untuk rekap
-            ->selectRaw("MAX(CASE WHEN jenis_nilai = 'p_tugas' THEN skor END) as tugas")
-            ->selectRaw("MAX(CASE WHEN jenis_nilai = 'p_uts' THEN skor END) as uts")
-            ->selectRaw("MAX(CASE WHEN jenis_nilai = 'p_uas' THEN skor END) as uas")
-            ->selectRaw("MAX(CASE WHEN jenis_nilai = 'catatan' THEN catatan_guru END) as catatan_guru")
-            ->selectRaw("ROUND(AVG(CASE WHEN jenis_nilai NOT IN ('s_spiritual', 's_sosial', 'catatan') THEN skor END), 2) as rata_pengetahuan")
-            ->groupBy('kelas_siswa_id', 'pengampu_id');
+        // Menggunakan Query Builder dari KelasSiswa agar semua siswa muncul meskipun belum ada nilai
+        $query = KelasSiswa::query()
+            ->select(
+                'kelas_siswa.id as kelas_siswa_id',
+                'pengampu.id as pengampu_id',
+                'kelas_siswa.siswa_id',
+                'pengampu.kkm',
+                'mapel.nama_mapel',
+                'kelas.nama_kelas'
+            )
+            ->join('pengampu', function($join) {
+                $join->on('kelas_siswa.kelas_id', '=', 'pengampu.kelas_id')
+                     ->on('kelas_siswa.semester_id', '=', 'pengampu.semester_id');
+            })
+            ->join('mapel', 'pengampu.mapel_id', '=', 'mapel.id')
+            ->join('kelas', 'pengampu.kelas_id', '=', 'kelas.id')
+            ->leftJoin('nilai', function($join) {
+                $join->on('kelas_siswa.id', '=', 'nilai.kelas_siswa_id')
+                     ->on('pengampu.id', '=', 'nilai.pengampu_id');
+            })
+            ->leftJoin('komponen_nilai', 'nilai.komponen_nilai_id', '=', 'komponen_nilai.id')
+            // Pivot vertikal ke horizontal - Mendukung Komponen Dinamis
+            ->selectRaw("ROUND(AVG(CASE WHEN komponen_nilai.tipe = 'p_tugas' THEN nilai.skor END), 1) as tugas")
+            ->selectRaw("ROUND(AVG(CASE WHEN komponen_nilai.tipe = 'p_uh' THEN nilai.skor END), 1) as uh")
+            ->selectRaw("MAX(CASE WHEN nilai.jenis_nilai = 'p_uts' THEN nilai.skor END) as uts")
+            ->selectRaw("MAX(CASE WHEN nilai.jenis_nilai = 'p_uas' THEN nilai.skor END) as uas")
+            // Perhitungan Rata-rata Pengetahuan: ((2 * NH) + UTS + UAS) / 4
+            ->selectRaw("
+                ROUND(
+                    (
+                        (
+                            (COALESCE(AVG(CASE WHEN komponen_nilai.tipe = 'p_tugas' THEN nilai.skor END), 0) + 
+                             COALESCE(AVG(CASE WHEN komponen_nilai.tipe = 'p_uh' THEN nilai.skor END), 0)) 
+                             / (CASE WHEN EXISTS (SELECT 1 FROM komponen_nilai kn2 WHERE kn2.pengampu_id = pengampu.id AND kn2.tipe IN ('p_tugas', 'p_uh')) THEN 2 ELSE 1 END)
+                             * 2
+                        ) +
+                        COALESCE(MAX(CASE WHEN nilai.jenis_nilai = 'p_uts' THEN nilai.skor END), 0) +
+                        COALESCE(MAX(CASE WHEN nilai.jenis_nilai = 'p_uas' THEN nilai.skor END), 0)
+                    ) / 4, 1
+                ) as rata_pengetahuan
+            ")
+            // Cek Kelengkapan (3 Aspek): Pengetahuan, Keterampilan, dan Sikap
+            ->selectRaw("
+                CASE WHEN 
+                    -- Pengetahuan Lengkap
+                    MAX(CASE WHEN komponen_nilai.tipe = 'p_tugas' THEN nilai.skor END) IS NOT NULL AND
+                    MAX(CASE WHEN komponen_nilai.tipe = 'p_uh' THEN nilai.skor END) IS NOT NULL AND
+                    MAX(CASE WHEN nilai.jenis_nilai = 'p_uts' THEN nilai.skor END) IS NOT NULL AND
+                    MAX(CASE WHEN nilai.jenis_nilai = 'p_uas' THEN nilai.skor END) IS NOT NULL AND
+                    -- Keterampilan Minimal 1
+                    (MAX(CASE WHEN nilai.jenis_nilai = 'k_praktik' THEN nilai.skor END) IS NOT NULL OR
+                     MAX(CASE WHEN nilai.jenis_nilai = 'k_proyek' THEN nilai.skor END) IS NOT NULL OR
+                     MAX(CASE WHEN nilai.jenis_nilai = 'k_portofolio' THEN nilai.skor END) IS NOT NULL) AND
+                    -- Sikap Lengkap
+                    MAX(CASE WHEN nilai.jenis_nilai = 's_spiritual' THEN nilai.skor END) IS NOT NULL AND
+                    MAX(CASE WHEN nilai.jenis_nilai = 's_sosial' THEN nilai.skor END) IS NOT NULL
+                THEN 1 ELSE 0 END as is_lengkap
+            ")
+            ->groupBy('kelas_siswa.id', 'pengampu.id', 'kelas_siswa.siswa_id', 'pengampu.kkm', 'mapel.nama_mapel', 'kelas.nama_kelas');
 
         // Filter berdasarkan Semester Aktif
         if ($semesterAktif) {
-            $query->whereHas('pengampu', fn($q) => $q->where('semester_id', $semesterAktif->id));
+            $query->where('kelas_siswa.semester_id', $semesterAktif->id);
         }
 
         // Filter Pencarian & Dropdown
         if ($request->search) {
-            $query->whereHas('kelasSiswa.siswa', function ($q) use ($request) {
+            $query->whereHas('siswa', function ($q) use ($request) {
                 $q->where('nama_siswa', 'like', '%' . $request->search . '%');
             });
         }
 
         if ($request->kelas_id) {
-            $query->whereHas('pengampu', fn($q) => $q->where('kelas_id', $request->kelas_id));
+            $query->where('pengampu.kelas_id', $request->kelas_id);
         }
 
         if ($request->mapel_id) {
-            $query->whereHas('pengampu', fn($q) => $q->where('mapel_id', $request->mapel_id));
+            $query->where('pengampu.mapel_id', $request->mapel_id);
         }
 
-        $nilaiData = $query->with(['kelasSiswa.siswa', 'pengampu.mapel', 'pengampu.kelas'])
+        $nilaiData = $query->with(['siswa'])
             ->paginate(20)
             ->withQueryString();
 

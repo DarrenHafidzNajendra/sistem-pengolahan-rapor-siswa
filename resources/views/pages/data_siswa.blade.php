@@ -3,25 +3,87 @@
 @section('title', 'Data Siswa')
 
 @section('content')
-    <div class="max-w-full" x-data="{ openTambah: false }">
+    <div class="max-w-full" x-data="{ 
+        openTambah: false, 
+        openEdit: false, 
+        openLihat: false, 
+        selectedSiswa: {
+            kelas_id: '',
+            kelas_nama: ''
+        },
+        editSiswa(siswa) {
+            this.selectedSiswa = { ...siswa };
+            // Ambil ID kelas dari relasi kelasSiswa pertama
+            if (siswa.kelas_siswa && siswa.kelas_siswa.length > 0) {
+                this.selectedSiswa.kelas_id = siswa.kelas_siswa[0].kelas_id;
+            } else {
+                this.selectedSiswa.kelas_id = '';
+            }
+            this.openEdit = true;
+        },
+        lihatSiswa(siswa) {
+            this.selectedSiswa = { ...siswa };
+            if (siswa.kelas_siswa && siswa.kelas_siswa.length > 0 && siswa.kelas_siswa[0].kelas) {
+                this.selectedSiswa.kelas_nama = siswa.kelas_siswa[0].kelas.nama_kelas;
+            } else {
+                this.selectedSiswa.kelas_nama = '-';
+            }
+            this.openLihat = true;
+        },
+        konfirmasiHapus(id, nama) {
+            Swal.fire({
+                title: 'Hapus Data Siswa?',
+                text: 'Apakah Anda yakin ingin menghapus ' + nama + '? Semua data terkait siswa ini akan ikut terhapus!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#111827',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/data_siswa/' + id;
+                    
+                    const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
+                    
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = csrfToken;
+                    
+                    const methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+                    
+                    form.appendChild(csrfInput);
+                    form.appendChild(methodInput);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+    }">
         {{-- Modal Tambah Siswa --}}
-        <x-modal name="openTambah" title="Tambah Siswa">
-            <form action="" method="">
+        <x-modal name="openTambah" title="Tambah Siswa Baru">
+            <form action="{{ route('data_siswa.store') }}" method="POST">
                 @csrf
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label for="nis" class="block text-sm font-semibold text-gray-700 mb-1.5">NIS</label>
-                        <input type="text" id="nis" name="nis" placeholder="Masukkan NIS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">NIS</label>
+                        <input type="text" name="nis" required placeholder="Masukkan NIS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                     <div>
-                        <label for="nama_siswa" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Siswa</label>
-                        <input type="text" id="nama_siswa" name="nama_siswa" placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap</label>
+                        <input type="text" name="nama_siswa" required placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label for="kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                        <select id="kelas" name="kelas_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas (Semester Ini)</label>
+                        <select name="kelas_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="">Pilih Kelas</option>
                             @foreach($kelasList as $kelas)
                                 <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
@@ -29,32 +91,124 @@
                         </select>
                     </div>
                     <div>
-                        <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
-                        <select id="jenis_kelamin" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
+                        <select name="jenis_kelamin" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="">Pilih Jenis Kelamin</option>
                             <option value="Laki-laki">Laki-laki</option>
                             <option value="Perempuan">Perempuan</option>
                         </select>
                     </div>
                 </div>
-                <div class="mb-6">
-                    <label for="status_siswa" class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
-                    <select id="status_siswa" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-900 transition-colors bg-white text-gray-700 appearance-none cursor-pointer">
-                        <option value="">Pilih Status</option>
-                        <option value="Aktif">Aktif</option>
-                        <option value="Tidak Aktif">Tidak Aktif</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Angkatan</label>
+                        <input type="number" name="angkatan" required placeholder="Contoh: 2024" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
+                        <select name="status" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="flex items-center gap-3 mt-8">
-                    <button type="submit" 
-                            @click.prevent="openTambah = false; $dispatch('notify', { message: 'Data siswa baru berhasil ditambahkan ke sistem.' })"
-                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
-                        <i class="fa-solid fa-check"></i>
-                        <span>Simpan Data</span>
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
+                        <i class="fa-solid fa-save"></i><span>Simpan Data</span>
                     </button>
                     <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
                 </div>
             </form>
+        </x-modal>
+
+        {{-- Modal Edit Siswa --}}
+        <x-modal name="openEdit" title="Edit Data Siswa">
+            <form :action="`/data_siswa/${selectedSiswa.id}`" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">NIS</label>
+                        <input type="text" name="nis" x-model="selectedSiswa.nis" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap</label>
+                        <input type="text" name="nama_siswa" x-model="selectedSiswa.nama_siswa" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas (Semester Ini)</label>
+                        <select name="kelas_id" x-model="selectedSiswa.kelas_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="">Pilih Kelas</option>
+                            @foreach($kelasList as $kelas)
+                                <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
+                        <select name="jenis_kelamin" x-model="selectedSiswa.jenis_kelamin" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Angkatan</label>
+                        <input type="number" name="angkatan" x-model="selectedSiswa.angkatan" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
+                        <select name="status" x-model="selectedSiswa.status" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Nonaktif">Nonaktif</option>
+                            <option value="Alumni">Alumni</option>
+                            <option value="Mutasi">Mutasi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 mt-8">
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
+                        <i class="fa-solid fa-save"></i><span>Simpan Perubahan</span>
+                    </button>
+                    <button type="button" @click="openEdit = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
+                </div>
+            </form>
+        </x-modal>
+
+        {{-- Modal Lihat Siswa --}}
+        <x-modal name="openLihat" title="Detail Informasi Siswa">
+            <div class="space-y-4">
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">NIS</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedSiswa.nis"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Nama Lengkap</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedSiswa.nama_siswa"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Jenis Kelamin</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedSiswa.jenis_kelamin"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Angkatan</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedSiswa.angkatan"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Status Saat Ini</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2">
+                        <span class="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider" 
+                              :class="selectedSiswa.status === 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+                              x-text="selectedSiswa.status"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="mt-8">
+                <button type="button" @click="openLihat = false" class="w-full px-6 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded hover:bg-gray-800 transition-colors">Tutup</button>
+            </div>
         </x-modal>
 
         <div class="bg-white rounded border border-gray-200 overflow-hidden">
@@ -62,8 +216,11 @@
             <x-search-toolbar 
                 placeholder="Cari siswa berdasarkan NIS atau Nama..." 
                 :filters="[
-                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']],
-                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()]
+                    ['name' => 'tahun_ajaran_id', 'label' => 'Tahun Ajaran', 'options' => $tahunAjaranList->pluck('nama', 'id')->toArray()],
+                    ['name' => 'semester', 'label' => 'Semester', 'options' => ['Ganjil' => 'Ganjil', 'Genap' => 'Genap']],
+                    ['name' => 'angkatan', 'label' => 'Angkatan', 'options' => $angkatanList],
+                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()],
+                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
                 ]"
                 :resetUrl="route('data_siswa')"
                 tambahClick="openTambah = true"
@@ -77,7 +234,9 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">NIS</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Angkatan</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Tahun Ajaran/Sem</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Jenis Kelamin</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Status</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
@@ -89,14 +248,32 @@
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $siswaData->firstItem() + $i }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $s->nis }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $s->nama_siswa }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">
+                                <span class="px-2 py-1 bg-gray-100 border border-gray-200 rounded text-[10px] font-bold text-gray-700">
+                                    {{ $s->angkatan ?? '-' }}
+                                </span>
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $s->kelasSiswa->first()?->kelas?->nama_kelas ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">
+                                @if($ks = $s->kelasSiswa->first())
+                                    {{ $ks->semester?->tahunAjaran?->nama }} ({{ $ks->semester?->semester }})
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $s->jenis_kelamin }}</td>
                             <td class="px-6 py-4 text-sm"><x-badge :type="$s->status === 'Aktif' ? 'success' : 'danger'">{{ $s->status }}</x-badge></td>
-                            <td class="px-6 py-4 text-center"><x-action-buttons /></td>
+                            <td class="px-6 py-4 text-center">
+                                <x-action-buttons 
+                                    :lihatClick="'lihatSiswa(' . json_encode($s) . ')'"
+                                    :editClick="'editSiswa(' . json_encode($s) . ')'"
+                                    :hapusClick="'konfirmasiHapus(' . $s->id . ', \'' . addslashes($s->nama_siswa) . '\')'"
+                                />
+                            </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="9" class="px-6 py-8 text-center text-gray-500">
                                 <p class="text-sm font-medium">Tidak ada data siswa</p>
                             </td>
                         </tr>

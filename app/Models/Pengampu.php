@@ -59,6 +59,11 @@ class Pengampu extends Model
         return $this->hasMany(Nilai::class);
     }
 
+    public function komponenNilai(): HasMany
+    {
+        return $this->hasMany(KomponenNilai::class);
+    }
+
     /**
      * Relasi ke presensi.
      */

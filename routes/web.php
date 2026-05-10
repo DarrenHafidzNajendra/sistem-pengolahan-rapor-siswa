@@ -47,11 +47,27 @@ Route::middleware('auth')->group(function () {
 
     // Admin Only Routes
     Route::middleware('role:admin')->group(function () {
+        // Master Data Management
         Route::get('/data_siswa', [SiswaController::class, 'showDataSiswa'])->name('data_siswa');
+        Route::post('/data_siswa', [SiswaController::class, 'store'])->name('data_siswa.store');
+        Route::put('/data_siswa/{id}', [SiswaController::class, 'update'])->name('data_siswa.update');
+        Route::delete('/data_siswa/{id}', [SiswaController::class, 'destroy'])->name('data_siswa.destroy');
+
         Route::get('/data_guru', [GuruController::class, 'showGuru'])->name('data_guru');
+        Route::post('/data_guru', [GuruController::class, 'store'])->name('data_guru.store');
+        Route::put('/data_guru/{id}', [GuruController::class, 'update'])->name('data_guru.update');
+        Route::delete('/data_guru/{id}', [GuruController::class, 'destroy'])->name('data_guru.destroy');
+
         Route::get('/data_kelas', [KelasController::class, 'showKelas'])->name('data_kelas');
         Route::post('/data_kelas', [KelasController::class, 'store'])->name('data_kelas.store');
+        Route::put('/data_kelas/{id}', [KelasController::class, 'update'])->name('data_kelas.update');
+        Route::delete('/data_kelas/{id}', [KelasController::class, 'destroy'])->name('data_kelas.destroy');
+
         Route::get('/data_mapel', [MapelController::class, 'showMapel'])->name('data_mapel');
+        Route::post('/data_mapel', [MapelController::class, 'store'])->name('data_mapel.store');
+        Route::put('/data_mapel/{id}', [MapelController::class, 'update'])->name('data_mapel.update');
+        Route::delete('/data_mapel/{id}', [MapelController::class, 'destroy'])->name('data_mapel.destroy');
+
         Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
         Route::resource('pengampu', PengampuController::class)->except(['index']);
         Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');
@@ -59,6 +75,7 @@ Route::middleware('auth')->group(function () {
         // Akademik Management
         Route::get('/akademik', [AkademikController::class, 'index'])->name('akademik');
         Route::post('/akademik/tahun-ajaran', [AkademikController::class, 'storeTahunAjaran'])->name('akademik.ta.store');
+        Route::put('/akademik/tahun-ajaran/{id}', [AkademikController::class, 'updateTahunAjaran'])->name('akademik.ta.update');
         Route::post('/akademik/semester', [AkademikController::class, 'storeSemester'])->name('akademik.smt.store');
         Route::post('/akademik/set-aktif/{id}', [AkademikController::class, 'setAktif'])->name('akademik.set_aktif');
         Route::post('/akademik/ta/nonaktifkan/{id}', [AkademikController::class, 'nonaktifkanTa'])->name('akademik.ta.nonaktifkan');
@@ -69,6 +86,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:guru')->group(function () {
         Route::get('/input_nilai', [InputNilaiController::class, 'showInputNilai'])->name('input_nilai');
         Route::post('/input_nilai', [InputNilaiController::class, 'store'])->name('input_nilai.store');
+        Route::post('/komponen_nilai', [InputNilaiController::class, 'storeKomponen'])->name('komponen_nilai.store');
+        Route::delete('/komponen_nilai/{id}', [InputNilaiController::class, 'destroyKomponen'])->name('komponen_nilai.destroy');
 
     });
 });

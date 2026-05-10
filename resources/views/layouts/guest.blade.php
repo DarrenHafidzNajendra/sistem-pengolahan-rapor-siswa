@@ -13,6 +13,8 @@
     {{-- CSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    {{-- SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         tailwind.config = {
@@ -43,6 +45,32 @@
     @yield('content')
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script>
+        window.addEventListener('notify', (e) => {
+            const type = e.detail.type || 'success';
+            const message = e.detail.message;
+            
+            Swal.fire({
+                title: type === 'success' ? 'Berhasil' : (type === 'error' ? 'Kesalahan' : 'Informasi'),
+                text: message,
+                icon: type,
+                confirmButtonText: 'Selesai',
+                confirmButtonColor: '#111827',
+                customClass: {
+                    popup: 'rounded-xl border border-gray-100 shadow-2xl',
+                    confirmButton: 'px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded transition-all active:scale-[0.98]'
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            @if(session('success'))
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: { message: "{{ session('success') }}", type: 'success' }
+                }));
+            @endif
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>

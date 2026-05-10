@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('kelas_siswa', function (Blueprint $table) {
-            $table->text('catatan_wali')->nullable();
+        Schema::table('user', function (Blueprint $table) {
+            $table->dropColumn('email_verified_at');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('kelas_siswa', function (Blueprint $table) {
-            $table->dropColumn('catatan_wali');
+        Schema::table('user', function (Blueprint $table) {
+            $table->timestamp('email_verified_at')->nullable()->after('email');
         });
     }
 };

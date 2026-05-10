@@ -9,6 +9,7 @@ use App\Models\Mapel;
 use App\Models\KelasSiswa;
 use App\Models\Semester;
 use App\Models\Siswa;
+use App\Models\KomponenNilai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -46,8 +47,12 @@ class InputNilaiController extends Controller
 
         $siswaList = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
         $siswaJsonData = collect([]);
+        $komponenList = collect([]);
 
         if ($selectedPengampu && $semesterAktif) {
+            // Ambil Komponen Dinamis
+            $komponenList = KomponenNilai::where('pengampu_id', $selectedPengampu->id)->get();
+
             // Ambil KelasSiswa (Bridge antara Siswa, Kelas, dan Semester)
             $siswaList = Siswa::whereHas('kelasSiswa', function($q) use ($selectedPengampu, $semesterAktif) {
                     $q->where('kelas_id', $selectedPengampu->kelas_id)
@@ -73,43 +78,74 @@ class InputNilaiController extends Controller
                 ->get()
                 ->groupBy('kelas_siswa_id');
 
-            $siswaJsonData = collect($siswaList->items())->map(function ($s) use ($kelasSiswaMap, $nilaiGrouped) {
+            $siswaJsonData = collect($siswaList->items())->map(function ($s) use ($kelasSiswaMap, $nilaiGrouped, $komponenList) {
                 $ks = $kelasSiswaMap->get($s->id);
                 $nSiswa = $nilaiGrouped->get($ks->id) ?? collect([]);
                 
-                // Helper to get score by type
-                $getSkor = fn($type) => $nSiswa->firstWhere('jenis_nilai', $type)?->skor;
-                $getCatatan = fn() => $nSiswa->firstWhere('jenis_nilai', 'catatan')?->catatan_guru;
+                // Helper to get score by component ID
+                $getSkorKomp = fn($comp_id) => $nSiswa->firstWhere('komponen_nilai_id', $comp_id)?->skor;
+                // Helper to get score by fixed type (UTS/UAS/Sikap)
+                $getSkorFixed = fn($type) => $nSiswa->firstWhere('jenis_nilai', $type)->whereNull('komponen_nilai_id')->first()?->skor;
 
-                // Hitung Rata-rata (Manual karena data vertikal)
-                $p_vals = array_filter([$getSkor('p_tugas'), $getSkor('p_uh'), $getSkor('p_uts'), $getSkor('p_uas')], fn($v) => $v !== null);
-                $p_avg = count($p_vals) > 0 ? round(array_sum($p_vals) / count($p_vals), 2) : null;
+                // Hitung Rata-rata Pengetahuan dengan pembobotan dinamis
+                $t_vals = [];
+                $uh_vals = [];
+                
+                foreach($komponenList as $komp) {
+                    $val = $getSkorKomp($komp->id);
+                    if ($val !== null) {
+                        if ($komp->tipe === 'p_tugas') $t_vals[] = $val;
+                        if ($komp->tipe === 'p_uh') $uh_vals[] = $val;
+                    }
+                }
+                
+                $t_avg = count($t_vals) > 0 ? array_sum($t_vals) / count($t_vals) : null;
+                $uh_avg = count($uh_vals) > 0 ? array_sum($uh_vals) / count($uh_vals) : null;
 
-                $k_vals = array_filter([$getSkor('k_praktik'), $getSkor('k_proyek'), $getSkor('k_portofolio')], fn($v) => $v !== null);
+                $nh_components = array_filter([$t_avg, $uh_avg], fn($v) => $v !== null);
+                $p_uts = $nSiswa->where('jenis_nilai', 'p_uts')->first()?->skor;
+                $p_uas = $nSiswa->where('jenis_nilai', 'p_uas')->first()?->skor;
+
+                if (count($nh_components) > 0 || $p_uts !== null || $p_uas !== null) {
+                    $nh = count($nh_components) > 0 ? array_sum($nh_components) / count($nh_components) : 0;
+                    $p_avg = round(((2 * $nh) + ($p_uts ?? 0) + ($p_uas ?? 0)) / 4, 1);
+                } else {
+                    $p_avg = null;
+                }
+
+                $k_vals = array_filter([
+                    $nSiswa->where('jenis_nilai', 'k_praktik')->first()?->skor,
+                    $nSiswa->where('jenis_nilai', 'k_proyek')->first()?->skor,
+                    $nSiswa->where('jenis_nilai', 'k_portofolio')->first()?->skor
+                ], fn($v) => $v !== null);
+                
                 $k_avg = count($k_vals) > 0 ? round(array_sum($k_vals) / count($k_vals), 2) : null;
 
                 // Konversi Skor Sikap kembali ke Huruf (4=A, 3=B, 2=C, 1=D)
                 $numToChar = [4 => 'A', 3 => 'B', 2 => 'C', 1 => 'D', 0 => 'B'];
                 
-                return [
+                // Construct score array for dynamic components
+                $scores = [];
+                foreach($komponenList as $komp) {
+                    $scores['comp_' . $komp->id] = $getSkorKomp($komp->id);
+                }
+
+                return array_merge([
                     'id' => $s->id,
                     'nis' => $s->nis,
                     'nama' => $s->nama_siswa,
-                    'p_tugas' => $getSkor('p_tugas'),
-                    'p_uh' => $getSkor('p_uh'),
-                    'p_uts' => $getSkor('p_uts'),
-                    'p_uas' => $getSkor('p_uas'),
+                    'p_uts' => $p_uts,
+                    'p_uas' => $p_uas,
                     'p_avg' => $p_avg,
                     'p_pred' => Nilai::hitungPredikat($p_avg),
-                    'k_praktik' => $getSkor('k_praktik'),
-                    'k_proyek' => $getSkor('k_proyek'),
-                    'k_portofolio' => $getSkor('k_portofolio'),
+                    'k_praktik' => $nSiswa->where('jenis_nilai', 'k_praktik')->first()?->skor,
+                    'k_proyek' => $nSiswa->where('jenis_nilai', 'k_proyek')->first()?->skor,
+                    'k_portofolio' => $nSiswa->where('jenis_nilai', 'k_portofolio')->first()?->skor,
                     'k_avg' => $k_avg,
                     'k_pred' => Nilai::hitungPredikat($k_avg),
-                    's_spiritual' => $numToChar[(int)$getSkor('s_spiritual')] ?? 'B',
-                    's_sosial' => $numToChar[(int)$getSkor('s_sosial')] ?? 'B',
-                    'catatan' => $getCatatan() ?? '',
-                ];
+                    's_spiritual' => ($recS = $nSiswa->where('jenis_nilai', 's_spiritual')->first()) ? ($numToChar[(int)$recS->skor] ?? '') : '',
+                    's_sosial' => ($recSo = $nSiswa->where('jenis_nilai', 's_sosial')->first()) ? ($numToChar[(int)$recSo->skor] ?? '') : '',
+                ], $scores);
             })->values();
         }
 
@@ -119,7 +155,8 @@ class InputNilaiController extends Controller
             'kelasList',
             'selectedPengampu',
             'siswaList',
-            'siswaJsonData'
+            'siswaJsonData',
+            'komponenList'
         ));
     }
 
@@ -144,52 +181,65 @@ class InputNilaiController extends Controller
 
                 if (!$ks) continue;
 
-                // Daftar jenis nilai yang akan disimpan
-                $mapTypes = [
-                    'p_tugas' => $fields['p_tugas'] ?? null,
-                    'p_uh'    => $fields['p_uh'] ?? null,
-                    'p_uts'   => $fields['p_uts'] ?? null,
-                    'p_uas'   => $fields['p_uas'] ?? null,
-                    'k_praktik' => $fields['k_praktik'] ?? null,
-                    'k_proyek'  => $fields['k_proyek'] ?? null,
-                    'k_portofolio' => $fields['k_portofolio'] ?? null,
-                ];
+                foreach ($fields as $key => $value) {
+                    // Tentukan kriteria pencarian (Unique Key)
+                    $searchCriteria = [
+                        'kelas_siswa_id' => $ks->id, 
+                        'pengampu_id' => $pengampu->id,
+                    ];
 
-                // Simpan Nilai Akademik
-                foreach ($mapTypes as $type => $value) {
-                    if ($value !== null) {
-                        Nilai::updateOrCreate(
-                            ['kelas_siswa_id' => $ks->id, 'pengampu_id' => $pengampu->id, 'jenis_nilai' => $type],
-                            ['skor' => $value]
-                        );
+                    if (str_starts_with($key, 'comp_')) {
+                        $searchCriteria['komponen_nilai_id'] = str_replace('comp_', '', $key);
+                        $searchCriteria['jenis_nilai'] = 'dynamic';
+                    } else {
+                        $searchCriteria['jenis_nilai'] = $key;
+                        $searchCriteria['komponen_nilai_id'] = null;
+                        
+                        // Handle Sikap conversion
+                        if (in_array($key, ['s_spiritual', 's_sosial']) && $value !== null && $value !== '') {
+                            $charToNum = ['A' => 4, 'B' => 3, 'C' => 2, 'D' => 1];
+                            $value = $charToNum[$value] ?? 3;
+                        }
                     }
-                }
 
-                // Simpan Nilai Sikap (Convert Huruf ke Angka: A=4, B=3, C=2, D=1)
-                $charToNum = ['A' => 4, 'B' => 3, 'C' => 2, 'D' => 1];
-                $sikapTypes = ['s_spiritual', 's_sosial'];
-                foreach ($sikapTypes as $type) {
-                    if (isset($fields[$type])) {
-                        Nilai::updateOrCreate(
-                            ['kelas_siswa_id' => $ks->id, 'pengampu_id' => $pengampu->id, 'jenis_nilai' => $type],
-                            ['skor' => $charToNum[$fields[$type]] ?? 3]
-                        );
+                    // Logika: Jika value kosong/null, hapus data. Jika ada isi, simpan/update.
+                    if ($value === null || $value === '') {
+                        Nilai::where($searchCriteria)->delete();
+                    } else {
+                        Nilai::updateOrCreate($searchCriteria, ['skor' => $value]);
                     }
-                }
-
-                // Simpan Catatan (sebagai jenis_nilai khusus)
-                if (isset($fields['catatan'])) {
-                    Nilai::updateOrCreate(
-                        ['kelas_siswa_id' => $ks->id, 'pengampu_id' => $pengampu->id, 'jenis_nilai' => 'catatan'],
-                        ['catatan_guru' => $fields['catatan'], 'skor' => 0]
-                    );
                 }
             }
         });
 
         return redirect()->back()->with([
-            'success' => 'Data nilai siswa berhasil disimpan dengan struktur vertikal (Normalized).',
+            'success' => 'Data nilai berhasil disimpan.',
             'active_tab' => $request->active_tab
         ]);
+    }
+
+    public function storeKomponen(Request $request)
+    {
+        $request->validate([
+            'pengampu_id' => 'required|exists:pengampu,id',
+            'nama_komponen' => 'required|string|max:100',
+            'tipe' => 'required|in:p_tugas,p_uh'
+        ]);
+
+        KomponenNilai::create($request->all());
+
+        return redirect()->back()->with('success', 'Komponen nilai berhasil ditambahkan.');
+    }
+
+    public function destroyKomponen($id)
+    {
+        $komponen = KomponenNilai::findOrFail($id);
+        
+        // Hapus semua nilai yang tertempel pada komponen ini
+        Nilai::where('komponen_nilai_id', $id)->delete();
+        
+        $komponen->delete();
+
+        return redirect()->back()->with('success', 'Komponen nilai dan seluruh datanya berhasil dihapus.');
     }
 }

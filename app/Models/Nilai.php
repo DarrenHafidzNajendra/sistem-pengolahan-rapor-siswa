@@ -14,7 +14,7 @@ class Nilai extends Model
         'pengampu_id',
         'jenis_nilai',
         'skor',
-        'catatan_guru',
+        'komponen_nilai_id',
     ];
 
     protected function casts(): array
@@ -38,6 +38,11 @@ class Nilai extends Model
     public function kelasSiswa(): BelongsTo
     {
         return $this->belongsTo(KelasSiswa::class, 'kelas_siswa_id');
+    }
+
+    public function komponenNilai(): BelongsTo
+    {
+        return $this->belongsTo(KomponenNilai::class, 'komponen_nilai_id');
     }
 
     /**

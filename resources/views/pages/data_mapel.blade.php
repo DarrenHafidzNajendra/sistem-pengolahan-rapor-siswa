@@ -10,15 +10,15 @@
                 <div class="space-y-4">
                     <div>
                         <label for="kode_mapel" class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Mapel</label>
-                        <input type="text" id="kode_mapel" name="kode_mapel" placeholder="Contoh: MTK-W" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors">
+                        <input type="text" id="kode_mapel" name="kode_mapel" placeholder="Contoh: MTK-W" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                     <div>
                         <label for="nama_mapel" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Mata Pelajaran</label>
-                        <input type="text" id="nama_mapel" name="nama_mapel" placeholder="Masukkan nama mapel" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors">
+                        <input type="text" id="nama_mapel" name="nama_mapel" placeholder="Masukkan nama mapel" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                     <div>
                         <label for="kelompok" class="block text-sm font-semibold text-gray-700 mb-1.5">Kelompok</label>
-                        <select id="kelompok" name="kelompok" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors cursor-pointer">
+                        <select id="kelompok" name="kelompok" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors cursor-pointer bg-gray-50">
                             <option value="Wajib">Wajib</option>
                             <option value="Peminatan">Peminatan</option>
                             <option value="Muatan Lokal">Muatan Lokal</option>
