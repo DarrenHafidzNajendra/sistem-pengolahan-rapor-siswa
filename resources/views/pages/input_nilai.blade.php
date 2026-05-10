@@ -136,8 +136,8 @@
                                         </div>
                                     </td>
 
-                                    {{-- Render Input Komponen Dinamis --}}
-                                    @foreach($komponenList as $komp)
+                                    {{-- Render Input Komponen Dinamis (Hanya Tugas & UH) --}}
+                                    @foreach($komponenList->whereIn('tipe', ['p_tugas', 'p_uh']) as $komp)
                                         <td x-show="activeTab === 'pengetahuan'" class="px-2 py-4 text-center border-r border-gray-50">
                                             <input type="number" name="nilai[{{ $siswa['id'] }}][comp_{{ $komp->id }}]" x-model.number="siswaList[{{ $index }}].comp_{{ $komp->id }}" @input="updateAll(siswaList[{{ $index }}])" :disabled="!isEditing" class="w-12 px-1 py-2 text-xs text-center border border-gray-200 rounded focus:border-gray-900 outline-none transition-colors" :class="!isEditing ? 'bg-gray-50 border-transparent text-gray-500' : 'bg-white'">
                                         </td>

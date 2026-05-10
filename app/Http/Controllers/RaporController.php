@@ -103,18 +103,21 @@ class RaporController extends Controller
                 $u_avg = $u_vals->isNotEmpty() ? $u_vals->avg() : null;
                 
                 $nh_vals = array_filter([$t_avg, $u_avg], fn($v) => !is_null($v));
-                $nh = count($nh_vals) > 0 ? array_sum($nh_vals) / count($nh_vals) : 0;
+                $nh = count($nh_vals) > 0 ? array_sum($nh_vals) / count($nh_vals) : null;
                 
-                $uts = $group->where('jenis_nilai', 'p_uts')->first()?->skor ?? 0;
-                $uas = $group->where('jenis_nilai', 'p_uas')->first()?->skor ?? 0;
+                $uts = $group->where('jenis_nilai', 'p_uts')->first()?->skor;
+                $uas = $group->where('jenis_nilai', 'p_uas')->first()?->skor;
                 
-                $p_avg = ((2 * $nh) + $uts + $uas) / 4;
+                // Rumus Dinamis (Sesuai Dashboard)
+                $total_p = (2 * ($nh ?? 0)) + ($uts ?? 0) + ($uas ?? 0);
+                $pembagi = ( ($nh !== null ? 2 : 0) + ($uts !== null ? 1 : 0) + ($uas !== null ? 1 : 0) ) ?: 1;
+                $p_avg = $total_p / $pembagi;
                 
                 // 2. Hitung Keterampilan (K)
                 $k_vals = $group->whereIn('jenis_nilai', ['k_praktik', 'k_proyek', 'k_portofolio'])->pluck('skor');
                 $k_avg = $k_vals->isNotEmpty() ? $k_vals->avg() : null;
                 
-                // 3. Rata-rata Mapel = (P + K) / 2
+                // 3. Rata-rata Mapel = (P + K) / 2 jika K ada, jika tidak hanya P
                 if ($k_avg !== null) {
                     return ($p_avg + $k_avg) / 2;
                 }

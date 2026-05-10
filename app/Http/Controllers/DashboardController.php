@@ -14,6 +14,8 @@ class DashboardController extends Controller
 {
     public function showDashboard()
     {
+        $semesterAktif = \App\Models\Semester::where('is_aktif', true)->first();
+        
         $totalSiswa = Siswa::where('status', 'Aktif')->count();
         $totalGuru = Guru::where('status', 'Aktif')->count();
         $totalKelas = Kelas::count();
@@ -24,9 +26,9 @@ class DashboardController extends Controller
         $distKeterampilan = ['A' => 0, 'B' => 0, 'C' => 0, 'D' => 0, 'E' => 0];
         $distSikap = ['A' => 0, 'B' => 0, 'C' => 0, 'D' => 0]; // SB, B, C, K
         
-        // Ambil data Pengetahuan & Keterampilan
-        // Perbaikan: Gunakan perhitungan yang lebih adil jika UTS/UAS belum diisi
-        $nilaiAggregat = Nilai::leftJoin('komponen_nilai', 'nilai.komponen_nilai_id', '=', 'komponen_nilai.id')
+        // Query Nilai hanya untuk Semester Aktif
+        $nilaiAggregat = Nilai::join('kelas_siswa', 'nilai.kelas_siswa_id', '=', 'kelas_siswa.id')
+            ->leftJoin('komponen_nilai', 'nilai.komponen_nilai_id', '=', 'komponen_nilai.id')
             ->select('nilai.kelas_siswa_id', 'nilai.pengampu_id')
             ->selectRaw("
                 AVG(CASE WHEN komponen_nilai.tipe='p_tugas' THEN nilai.skor END) as t_avg,
@@ -35,33 +37,36 @@ class DashboardController extends Controller
                 MAX(CASE WHEN nilai.jenis_nilai='p_uas' THEN nilai.skor END) as uas_val,
                 AVG(CASE WHEN nilai.jenis_nilai IN ('k_praktik','k_proyek','k_portofolio') THEN nilai.skor END) as k_avg
             ")
+            ->where('kelas_siswa.semester_id', $semesterAktif?->id)
             ->whereIn('nilai.jenis_nilai', ['p_uts','p_uas','dynamic','k_praktik','k_proyek','k_portofolio'])
             ->groupBy('nilai.kelas_siswa_id', 'nilai.pengampu_id')
             ->get();
 
         foreach ($nilaiAggregat as $n) {
-            // Hitung Rata-rata Pengetahuan (P) - Rumus Ketat (Bagi 4)
+            // Hitung NH (Rata-rata Tugas & UH)
             $nh_vals = array_filter([$n->t_avg, $n->u_avg], fn($v) => !is_null($v));
-            $nh = count($nh_vals) > 0 ? array_sum($nh_vals) / count($nh_vals) : 0;
+            $nh = count($nh_vals) > 0 ? array_sum($nh_vals) / count($nh_vals) : null;
             
-            $uts = $n->uts_val ?? 0;
-            $uas = $n->uas_val ?? 0;
+            $uts = $n->uts_val;
+            $uas = $n->uas_val;
 
-            // Samakan dengan rumus di Blade: ((2 * NH) + UTS + UAS) / 4
-            $p_avg = ((2 * $nh) + $uts + $uas) / 4;
+            // Logika Pembagi Dinamis (Sesuai jumlah komponen yang ada)
+            $total_skor = (2 * ($nh ?? 0)) + ($uts ?? 0) + ($uas ?? 0);
+            $pembagi = ( ($nh !== null ? 2 : 0) + ($uts !== null ? 1 : 0) + ($uas !== null ? 1 : 0) ) ?: 1;
+            
+            $p_avg = $total_skor / $pembagi;
             
             if ($p_avg >= 90) $distribusi['A']++;
             elseif ($p_avg >= 80) $distribusi['B']++;
             elseif ($p_avg >= 70) $distribusi['C']++;
             elseif ($p_avg > 0) $distribusi['D']++;
 
-            // Hitung Rata-rata Keterampilan (K) - Rumus Standar
-            if (!is_null($n->k_avg)) {
-                $k_avg = $n->k_avg;
-                if ($k_avg >= 90) $distKeterampilan['A']++;
-                elseif ($k_avg >= 80) $distKeterampilan['B']++;
-                elseif ($k_avg >= 70) $distKeterampilan['C']++;
-                elseif ($k_avg > 0) $distKeterampilan['D']++;
+            // Keterampilan
+            if ($n->k_avg) {
+                if ($n->k_avg >= 90) $distKeterampilan['A']++;
+                elseif ($n->k_avg >= 80) $distKeterampilan['B']++;
+                elseif ($n->k_avg >= 70) $distKeterampilan['C']++;
+                elseif ($n->k_avg > 0) $distKeterampilan['D']++;
             }
         }
 
